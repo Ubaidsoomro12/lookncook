@@ -49,7 +49,7 @@
                     <i class="fa-solid fa-user-shield group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Role Management</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
+                <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group {{ request()->routeIs('admin.categories.*') ? 'bg-gray-950 text-white' : '' }}">
                     <i class="fa-solid fa-folder-tree group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Categories Management</span>
                 </a>
