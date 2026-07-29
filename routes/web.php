@@ -4,7 +4,7 @@ use App\Http\Controllers\front\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\front\PageController;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\ReviewController;
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
@@ -18,9 +18,7 @@ Route::controller(PageController::class)->group(function () {
     Route::get('/cart', 'cart')->name('cart');
 });
 
-
-Route::post('/contact-submit', [ContactController::class, 'store'])
-    ->name('contacts.store');
+Route::post('/contact-submit', [ContactController::class, 'store'])->name('contacts.store');
 
 //-------------------------------------------------------------- auth routes --------------------------------
 Route::get('/login', [AuthController::class, 'showAuthForm'])->name('login');
@@ -31,6 +29,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::post('/forgot-password/send', [AuthController::class, 'sendResetOtp'])->name('password.forgot.send');
 Route::post('/forgot-password/verify', [AuthController::class, 'updatePassword'])->name('password.forgot.submit');
+
+// Review routes (frontend)
+Route::post('/review/submit', [ReviewController::class, 'submit'])->name('review.submit');
 
 //-------------------------------------------------------------- protected routes ---------------------------
 Route::middleware(['auth'])->group(function () {
@@ -53,8 +54,13 @@ Route::middleware(['auth'])->group(function () {
             if (auth()->user()->role_id != 1) {
                 return redirect('/')->withErrors(['email' => 'You do not have administrative privileges to access this area.']);
             }
-            // FIXED EXACT PATH
             return view('admin.dashboard');
         })->name('dashboard');
+
+        // ✅ Reviews Management Routes
+        Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+        Route::post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
+        Route::post('/reviews/{id}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
+        Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     });
-}); 
+});

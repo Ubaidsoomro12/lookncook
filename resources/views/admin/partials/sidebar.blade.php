@@ -21,8 +21,8 @@
         <div class="px-4">
             <p class="text-xs font-bold text-gray-600 uppercase tracking-wider px-2 mb-2">Main</p>
             
-            <!-- Dashboard Menu Item with Theme Gradient Matching Image 1 Selection -->
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-[#ff2d7a] to-[#ff4b91] text-white font-medium shadow-md shadow-[#ff2d7a]/20 mb-6 transition-all">
+            <!-- Dashboard Menu Item -->
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('admin.dashboard') ? 'bg-gradient-to-r from-[#ff2d7a] to-[#ff4b91] text-white shadow-md shadow-[#ff2d7a]/20' : 'hover:bg-gray-950 hover:text-white' }} transition-all mb-6">
                 <i class="fa-solid fa-chart-pie text-lg"></i>
                 <span>Dashboard</span>
             </a>
@@ -41,8 +41,9 @@
                     <i class="fa-solid fa-rectangle-list group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Order Management</span>
                 </a>
-                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
-                    <i class="fa-solid fa-star group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+                <!-- ✅ FIXED: Reviews Management with route and active state -->
+                <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('admin.reviews*') ? 'bg-[#ff2d7a]/10 text-white border border-[#ff2d7a]/30' : 'hover:bg-gray-950 hover:text-white' }} transition-all group">
+                    <i class="fa-solid fa-star {{ request()->routeIs('admin.reviews*') ? 'text-[#ff2d7a]' : 'group-hover:text-[#ff2d7a]' }} text-sm transition-colors"></i>
                     <span>Reviews Management</span>
                 </a>
                 <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
