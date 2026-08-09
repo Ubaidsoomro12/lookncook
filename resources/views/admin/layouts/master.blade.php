@@ -14,7 +14,6 @@
         <!-- Top Navbar Row Component -->
         <header class="bg-white border-b border-gray-200 h-16 sticky top-0 z-30 flex items-center justify-between px-6">
             <div class="flex items-center gap-4">
-                <!-- FIXED: Added relative, sizing, and flex styles to keep icons perfectly centered when toggled -->
                 <button id="mobileMenuBtn" class="p-2 rounded-lg text-gray-600 hover:bg-gray-100 lg:hidden focus:outline-none relative w-10 h-10 flex items-center justify-center">
                     <i id="burgerIcon" class="fa-solid fa-bars text-xl block"></i>
                     <i id="closeIcon" class="fa-solid fa-xmark text-xl hidden text-[#ff2d7a]"></i>
@@ -49,9 +48,9 @@
             </div>
         </header>
 
-        <!-- Dynamic Workspace Content Section Body Component Wrapper Injection Layout Context Grid Box -->
+        <!-- ✅ FIXED: Changed from 'admin_content' to 'content' to match your view -->
         <main class="flex-1 p-6">
-            @yield('admin_content')
+            @yield('content')
         </main>
 
     </div>
