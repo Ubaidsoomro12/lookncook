@@ -4,7 +4,11 @@ use App\Http\Controllers\front\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\front\PageController;
 use App\Http\Controllers\AuthController;
+
+use App\Http\Controllers\Backend\CategoryController;
+
 use App\Http\Controllers\ReviewController;
+
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
@@ -18,7 +22,11 @@ Route::controller(PageController::class)->group(function () {
     Route::get('/cart', 'cart')->name('cart');
 });
 
+
+Route::post('/contact-submit', [ContactController::class, 'store'])
+    ->name('contacts.store');
 Route::post('/contact-submit', [ContactController::class, 'store'])->name('contacts.store');
+
 
 //-------------------------------------------------------------- auth routes --------------------------------
 Route::get('/login', [AuthController::class, 'showAuthForm'])->name('login');
@@ -50,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
 
     /* Admin Panel */
     Route::prefix('admin')->name('admin.')->group(function () {
+
         Route::get('/dashboard', function () {
             if (auth()->user()->role_id != 1) {
                 return redirect('/')->withErrors(['email' => 'You do not have administrative privileges to access this area.']);
@@ -57,10 +66,23 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
+
+        //-------------------------------------------------------------- category management routes --------------------------------
+        Route::prefix('categories')->name('categories.')->controller(CategoryController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/search', 'search')->name('search');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::put('/update/{id}', 'update')->name('update');
+            Route::delete('/delete/{id}', 'destroy')->name('destroy');
+        });
+
         // ✅ Reviews Management Routes
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
         Route::post('/reviews/{id}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
         Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
     });
 });
