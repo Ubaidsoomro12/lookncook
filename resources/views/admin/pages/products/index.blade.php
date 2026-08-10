@@ -1,35 +1,32 @@
 @extends('admin.layouts.master')
 
 @section('content')
-<!-- FIXED: Added CSRF meta tag here so AJAX delete works regardless of your master layout -->
-<meta name="csrf-token" content="{{ csrf_token() }}">
-
 <div class="max-w-7xl mx-auto">
 
     <!-- Header Row -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-800">Categories Management</h1>
-            <p class="text-sm text-gray-500 mt-1">Manage all product categories from here.</p>
+            <h1 class="text-2xl font-bold text-gray-800">Product Management</h1>
+            <p class="text-sm text-gray-500 mt-1">Manage all products from here.</p>
         </div>
-        <a href="{{ route('admin.categories.create') }}"
+        <a href="{{ route('admin.products.create') }}"
            class="inline-flex items-center gap-2 bg-gradient-to-r from-[#ff2d7a] to-[#ff4b91] text-white font-medium px-5 py-2.5 rounded-xl shadow-md shadow-[#ff2d7a]/20 hover:opacity-90 transition-all">
             <i class="fa-solid fa-plus"></i>
-            <span>Add New Category</span>
+            <span>Add New Product</span>
         </a>
     </div>
 
     <!-- Search + Table Card -->
     <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
 
-        <!-- Search Bar (top-left, instant/dynamic — no submit button) -->
+        <!-- Search Bar -->
         <div class="p-4 border-b border-gray-100 flex items-center justify-between gap-4">
             <div class="relative w-full sm:w-80">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
                 <input
                     type="text"
-                    id="categorySearchInput"
-                    placeholder="Search categories by name, slug or description..."
+                    id="productSearchInput"
+                    placeholder="Search products by name, description or category..."
                     class="w-full pl-9 pr-9 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff2d7a]/30 focus:border-[#ff2d7a] transition-all"
                     autocomplete="off"
                 >
@@ -43,18 +40,22 @@
                     <tr>
                         <th class="px-6 py-3">Image</th>
                         <th class="px-6 py-3">Name</th>
+                        <th class="px-6 py-3">Category</th>
                         <th class="px-6 py-3">Description</th>
-                        <th class="px-6 py-3">Slug</th>
+                        <th class="px-6 py-3">Old Price</th>
+                        <th class="px-6 py-3">Sale Price</th>
+                        <th class="px-6 py-3">Weight</th>
+                        <th class="px-6 py-3">Variation</th>
                         <th class="px-6 py-3">Status</th>
                         <th class="px-6 py-3 text-right">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="categoriesTableBody" class="divide-y divide-gray-100">
-                    @forelse($categories as $category)
-                        <tr data-row-id="{{ $category->id }}">
+                <tbody id="productsTableBody" class="divide-y divide-gray-100">
+                    @forelse($products as $product)
+                        <tr data-row-id="{{ $product->id }}">
                             <td class="px-6 py-3">
-                                @if($category->image)
-                                    <img src="{{ asset($category->image) }}" alt="{{ $category->name }}"
+                                @if($product->image)
+                                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}"
                                          class="w-12 h-12 rounded-lg object-cover border border-gray-200">
                                 @else
                                     <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-300">
@@ -62,13 +63,53 @@
                                     </div>
                                 @endif
                             </td>
-                            <td class="px-6 py-3 font-medium text-gray-800">{{ $category->name }}</td>
-                            <td class="px-6 py-3 text-gray-500 max-w-xs truncate">
-                                {{ $category->description ? Str::limit($category->description, 45) : '—' }}
+                            <td class="px-6 py-3 font-medium text-gray-800">{{ $product->name }}</td>
+                            <td class="px-6 py-3 text-gray-500">
+                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-pink-50 text-[#ff2d7a] border border-pink-100">
+                                    {{ $product->category->name ?? '—' }}
+                                </span>
                             </td>
-                            <td class="px-6 py-3 text-gray-500">{{ $category->slug }}</td>
+                            <td class="px-6 py-3 text-gray-500 max-w-xs truncate">
+                                {{ Str::limit($product->description, 45) }}
+                            </td>
+                            <td class="px-6 py-3 text-gray-500 whitespace-nowrap">
+                                {{ $product->price !== null ? 'Rs. ' . number_format((float) $product->price) : '—' }}
+                            </td>
+                            <td class="px-6 py-3 whitespace-nowrap">
+                                @if($product->sale_price)
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200">
+                                        Rs. {{ number_format((float) $product->sale_price) }}
+                                    </span>
+                                @else
+                                    <span class="text-gray-400">—</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-3 text-gray-500 whitespace-nowrap">
+                                {{ $product->weight ?: '—' }}
+                            </td>
+                            <td class="px-6 py-3 text-gray-500">
+                                @if(is_array($product->variation) && count($product->variation) > 0)
+                                    <div class="flex flex-wrap gap-1.5 max-w-[260px]">
+                                        @foreach($product->variation as $variant)
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-pink-50 text-[#ff2d7a] border border-pink-100 whitespace-nowrap">
+                                                <i class="fa-solid fa-weight-hanging text-[10px] opacity-60"></i>
+                                                {{ $variant['weight'] ?? '—' }}
+                                                <span class="text-gray-400 font-normal">•</span>
+                                                @if(!empty($variant['old_price']) && $variant['old_price'] > ($variant['price'] ?? 0))
+                                                    <span class="line-through text-gray-400">Rs.{{ number_format((float) $variant['old_price']) }}</span>
+                                                @endif
+                                                Rs.{{ number_format((float) ($variant['price'] ?? 0)) }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-400 border border-gray-100">
+                                        No variants
+                                    </span>
+                                @endif
+                            </td>
                             <td class="px-6 py-3">
-                                @if($category->status === 'active')
+                                @if($product->status === 'active')
                                     <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-600 border border-green-200">Active</span>
                                 @else
                                     <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500 border border-gray-200">Inactive</span>
@@ -76,15 +117,15 @@
                             </td>
                             <td class="px-6 py-3 text-right">
                                 <div class="flex justify-end gap-2">
-                                    <a href="{{ route('admin.categories.edit', $category->id) }}"
+                                    <a href="{{ route('admin.products.edit', $product->id) }}"
                                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" title="Edit">
                                         <i class="fa-solid fa-pen text-xs"></i>
                                     </a>
                                     <button type="button"
-                                        class="delete-category-btn w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all"
-                                        data-id="{{ $category->id }}"
-                                        data-name="{{ $category->name }}"
-                                        data-url="{{ route('admin.categories.destroy', $category->id) }}"
+                                        class="delete-product-btn w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all"
+                                        data-id="{{ $product->id }}"
+                                        data-name="{{ $product->name }}"
+                                        data-url="{{ route('admin.products.destroy', $product->id) }}"
                                         title="Delete">
                                         <i class="fa-solid fa-trash text-xs"></i>
                                     </button>
@@ -93,9 +134,9 @@
                         </tr>
                     @empty
                         <tr id="emptyRow">
-                            <td colspan="6" class="px-6 py-10 text-center text-gray-400">
-                                <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
-                                No categories found.
+                            <td colspan="10" class="px-6 py-10 text-center text-gray-400">
+                                <i class="fa-solid fa-box-open text-2xl mb-2 block"></i>
+                                No products found.
                             </td>
                         </tr>
                     @endforelse
@@ -103,9 +144,9 @@
             </table>
         </div>
 
-        @if($categories->hasPages())
+        @if($products->hasPages())
             <div class="px-6 py-4 border-t border-gray-100" id="paginationWrapper">
-                {{ $categories->links() }}
+                {{ $products->links() }}
             </div>
         @endif
     </div>
@@ -113,22 +154,19 @@
 
 <!-- ======================= DELETE CONFIRMATION MODAL ======================= -->
 <div id="deleteModal" class="fixed inset-0 z-[100] hidden">
-    <!-- Backdrop -->
     <div id="deleteModalBackdrop" class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity duration-300 opacity-0"></div>
 
-    <!-- Modal Box -->
     <div class="relative min-h-screen flex items-center justify-center p-4">
         <div id="deleteModalBox" class="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 transform transition-all duration-300 scale-95 opacity-0">
 
-            <!-- Icon -->
             <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4 ring-8 ring-red-50/50">
                 <i class="fa-solid fa-trash-can text-red-500 text-2xl"></i>
             </div>
 
-            <h3 class="text-lg font-bold text-gray-800 text-center">Delete Category?</h3>
+            <h3 class="text-lg font-bold text-gray-800 text-center">Delete Product?</h3>
             <p class="text-sm text-gray-500 text-center mt-2 leading-relaxed">
                 Are you sure you want to delete
-                <span id="deleteModalCategoryName" class="font-semibold text-gray-700">this category</span>?
+                <span id="deleteModalProductName" class="font-semibold text-gray-700">this product</span>?
                 This action cannot be undone.
             </p>
 
@@ -152,12 +190,12 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const searchInput   = document.getElementById('categorySearchInput');
-    const tableBody     = document.getElementById('categoriesTableBody');
+    const searchInput   = document.getElementById('productSearchInput');
+    const tableBody     = document.getElementById('productsTableBody');
     const loadingIcon   = document.getElementById('searchLoadingIcon');
     const paginationBox = document.getElementById('paginationWrapper');
-    const searchUrl     = "{{ route('admin.categories.search') }}";
-    const csrfToken     = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const searchUrl     = "{{ route('admin.products.search') }}";
+    const csrfToken     = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || "{{ csrf_token() }}";
 
     // ==================================================================
     // TOAST NOTIFICATION SYSTEM
@@ -186,25 +224,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
         toastContainer.appendChild(toast);
 
-        // Animate in
         requestAnimationFrame(() => {
             toast.classList.remove('translate-x-[120%]', 'opacity-0');
         });
 
-        // Progress bar countdown
         const progressBar = toast.querySelector('.toast-progress');
         progressBar.style.transition = `width ${duration}ms linear`;
         requestAnimationFrame(() => {
             requestAnimationFrame(() => { progressBar.style.width = '0%'; });
         });
 
-        // Manual close
         toast.querySelector('.toast-close-btn').addEventListener('click', () => removeToast(toast));
 
-        // Auto dismiss
         const timer = setTimeout(() => removeToast(toast), duration);
 
-        // Pause on hover
         toast.addEventListener('mouseenter', () => {
             clearTimeout(timer);
             progressBar.style.transition = 'none';
@@ -216,7 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Show flash messages from server (after create/update/delete redirects)
     @if(session('success'))
         showToast(@json(session('success')), 'success');
     @endif
@@ -228,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
     @endif
 
     // ==================================================================
-    // INSTANT / DYNAMIC SEARCH (JSON, no submit button)
+    // INSTANT / DYNAMIC SEARCH
     // ==================================================================
     let debounceTimer;
 
@@ -244,11 +276,11 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(res => res.json())
             .then(data => {
-                renderRows(data.categories);
+                renderRows(data.products);
                 if (paginationBox) paginationBox.style.display = query ? 'none' : '';
             })
             .catch(() => {
-                tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center text-red-400">Something went wrong. Try again.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="10" class="px-6 py-10 text-center text-red-400">Something went wrong. Try again.</td></tr>`;
             })
             .finally(() => loadingIcon.classList.add('hidden'));
         }, 300);
@@ -265,41 +297,84 @@ document.addEventListener('DOMContentLoaded', function () {
         return div.innerHTML;
     }
 
-    function renderRows(categories) {
-        if (!categories.length) {
+    function formatMoney(val) {
+        const n = parseFloat(val);
+        if (isNaN(n)) return '—';
+        return 'Rs. ' + n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    function renderVariationChips(variants) {
+        if (!Array.isArray(variants) || variants.length === 0) {
+            return `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-400 border border-gray-100">No variants</span>`;
+        }
+
+        const chips = variants.map(v => {
+            const weight = escapeHtml(v.weight ?? '—');
+            const price = parseFloat(v.price) || 0;
+            const oldPrice = parseFloat(v.old_price) || 0;
+            const oldPriceHtml = (oldPrice > price)
+                ? `<span class="line-through text-gray-400">Rs.${oldPrice.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span> `
+                : '';
+
+            return `
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-pink-50 text-[#ff2d7a] border border-pink-100 whitespace-nowrap">
+                    <i class="fa-solid fa-weight-hanging text-[10px] opacity-60"></i>
+                    ${weight}
+                    <span class="text-gray-400 font-normal">•</span>
+                    ${oldPriceHtml}Rs.${price.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </span>
+            `;
+        }).join('');
+
+        return `<div class="flex flex-wrap gap-1.5 max-w-[260px]">${chips}</div>`;
+    }
+
+    function renderRows(products) {
+        if (!products.length) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="px-6 py-10 text-center text-gray-400">
-                        <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
-                        No categories found.
+                    <td colspan="10" class="px-6 py-10 text-center text-gray-400">
+                        <i class="fa-solid fa-box-open text-2xl mb-2 block"></i>
+                        No products found.
                     </td>
                 </tr>`;
             return;
         }
 
-        tableBody.innerHTML = categories.map(cat => `
-            <tr data-row-id="${cat.id}">
+        tableBody.innerHTML = products.map(p => `
+            <tr data-row-id="${p.id}">
                 <td class="px-6 py-3">
-                    ${cat.image
-                        ? `<img src="${cat.image}" alt="${escapeHtml(cat.name)}" class="w-12 h-12 rounded-lg object-cover border border-gray-200">`
+                    ${p.image
+                        ? `<img src="${p.image}" alt="${escapeHtml(p.name)}" class="w-12 h-12 rounded-lg object-cover border border-gray-200">`
                         : `<div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-300"><i class="fa-solid fa-image"></i></div>`
                     }
                 </td>
-                <td class="px-6 py-3 font-medium text-gray-800">${escapeHtml(cat.name)}</td>
-                <td class="px-6 py-3 text-gray-500 max-w-xs truncate">${escapeHtml(truncate(cat.description, 45))}</td>
-                <td class="px-6 py-3 text-gray-500">${escapeHtml(cat.slug)}</td>
+                <td class="px-6 py-3 font-medium text-gray-800">${escapeHtml(p.name)}</td>
+                <td class="px-6 py-3 text-gray-500">
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-pink-50 text-[#ff2d7a] border border-pink-100">${escapeHtml(p.category)}</span>
+                </td>
+                <td class="px-6 py-3 text-gray-500 max-w-xs truncate">${escapeHtml(truncate(p.description, 45))}</td>
+                <td class="px-6 py-3 text-gray-500 whitespace-nowrap">${formatMoney(p.price)}</td>
+                <td class="px-6 py-3 whitespace-nowrap">
+                    ${p.sale_price
+                        ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-200">${formatMoney(p.sale_price)}</span>`
+                        : `<span class="text-gray-400">—</span>`
+                    }
+                </td>
+                <td class="px-6 py-3 text-gray-500 whitespace-nowrap">${escapeHtml(p.weight || '—')}</td>
+                <td class="px-6 py-3 text-gray-500">${renderVariationChips(p.variants)}</td>
                 <td class="px-6 py-3">
-                    ${cat.status === 'active'
+                    ${p.status === 'active'
                         ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-600 border border-green-200">Active</span>`
                         : `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500 border border-gray-200">Inactive</span>`
                     }
                 </td>
                 <td class="px-6 py-3 text-right">
                     <div class="flex justify-end gap-2">
-                        <a href="${cat.edit_url}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" title="Edit">
+                        <a href="${p.edit_url}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all" title="Edit">
                             <i class="fa-solid fa-pen text-xs"></i>
                         </a>
-                        <button type="button" class="delete-category-btn w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all" data-id="${cat.id}" data-name="${escapeHtml(cat.name)}" data-url="${cat.delete_url}" title="Delete">
+                        <button type="button" class="delete-product-btn w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-url="${p.delete_url}" title="Delete">
                             <i class="fa-solid fa-trash text-xs"></i>
                         </button>
                     </div>
@@ -314,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const deleteModal          = document.getElementById('deleteModal');
     const deleteModalBackdrop  = document.getElementById('deleteModalBackdrop');
     const deleteModalBox       = document.getElementById('deleteModalBox');
-    const deleteModalNameEl    = document.getElementById('deleteModalCategoryName');
+    const deleteModalNameEl    = document.getElementById('deleteModalProductName');
     const deleteModalCancelBtn = document.getElementById('deleteModalCancelBtn');
     const deleteModalConfirmBtn= document.getElementById('deleteModalConfirmBtn');
     const deleteModalConfirmText = document.getElementById('deleteModalConfirmText');
@@ -326,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function openDeleteModal(url, row, name) {
         pendingDeleteUrl = url;
         pendingDeleteRow = row;
-        deleteModalNameEl.textContent = name ? `"${name}"` : 'this category';
+        deleteModalNameEl.textContent = name ? `"${name}"` : 'this product';
 
         deleteModal.classList.remove('hidden');
         requestAnimationFrame(() => {
@@ -347,9 +422,8 @@ document.addEventListener('DOMContentLoaded', function () {
         pendingDeleteRow = null;
     }
 
-    // Open modal when any delete button is clicked (event delegation — works for search-rendered rows too)
     tableBody.addEventListener('click', function (e) {
-        const btn = e.target.closest('.delete-category-btn');
+        const btn = e.target.closest('.delete-product-btn');
         if (!btn) return;
         openDeleteModal(btn.dataset.url, btn.closest('tr'), btn.dataset.name);
     });
@@ -384,11 +458,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.success) {
                 pendingDeleteRow?.remove();
                 if (!tableBody.querySelector('tr')) {
-                    tableBody.innerHTML = `<tr><td colspan="6" class="px-6 py-10 text-center text-gray-400"><i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>No categories found.</td></tr>`;
+                    tableBody.innerHTML = `<tr><td colspan="10" class="px-6 py-10 text-center text-gray-400"><i class="fa-solid fa-box-open text-2xl mb-2 block"></i>No products found.</td></tr>`;
                 }
-                showToast('Category deleted successfully.', 'success');
+                showToast('Product deleted successfully.', 'success');
             } else {
-                showToast('Failed to delete category. Please try again.', 'error');
+                showToast('Failed to delete product. Please try again.', 'error');
             }
         })
         .catch(() => {

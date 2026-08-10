@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-@section('admin_content')
+@section('content')
 <div class="mb-8">
     <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Admin Dashboard</h1>
     <p class="text-sm text-gray-500 mt-0.5">Central overview of your platform's performance metrics context profile.</p>

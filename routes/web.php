@@ -4,21 +4,23 @@ use App\Http\Controllers\front\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\front\PageController;
 use App\Http\Controllers\AuthController;
-
 use App\Http\Controllers\Backend\CategoryController;
-
 use App\Http\Controllers\ReviewController;
-
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\Backend\ProductController;
+use App\Http\Controllers\Backend\CheckoutController;
+use App\Http\Controllers\Backend\PaymentController;
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
     Route::get('/', 'home')->name('home');
     Route::get('/menu', 'menu')->name('menu');
-    Route::get('/gallery', 'gallery')->name('gallery');
+    Route::get('/menu/product/{id}', 'productDetail')->name('product.details');
+    Route::get('/gallery', [PageController::class, 'gallery'])->name('gallery');
     Route::get('/about', 'about')->name('about');
     Route::get('/contact', 'contact')->name('contact');
     Route::get('/services', 'services')->name('services');
-    Route::get('/payment', 'payment')->name('payment');
+    // Route::get('/payment', 'payment')->name('payment');
     Route::get('/cart', 'cart')->name('cart');
 });
 
@@ -52,9 +54,7 @@ Route::middleware(['auth'])->group(function () {
                 </div>';
     })->name('dashboard');
 
-    Route::get('/payment', function () {
-        return view('pages.payment_page');
-    })->name('payment');
+    Route::get('/payment', [CheckoutController::class, 'index'])->name('payment');
 
     /* Admin Panel */
     Route::prefix('admin')->name('admin.')->group(function () {
@@ -78,11 +78,47 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
         });
 
+        //-------------------------------------------------------------- product management routes --------------------------------
+        Route::prefix('products')->name('products.')->controller(ProductController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/search', 'search')->name('search');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{id}', 'edit')->name('edit');
+            Route::put('/update/{id}', 'update')->name('update');
+            Route::delete('/delete/{id}', 'destroy')->name('destroy');
+        });
+
+        //-------------------------------------------------------------- payment management routes (NEW) --------------------------------
+        Route::prefix('payments')->name('payments.')->controller(PaymentController::class)->group(function () {
+            Route::get('/', 'index')->name('index');                     // admin.payments.index
+            Route::get('/search', 'search')->name('search');             // admin.payments.search
+            Route::get('/{order}', 'show')->name('show');                // admin.payments.show
+            Route::post('/{order}/approve', 'approve')->name('approve'); // admin.payments.approve
+            Route::delete('/{order}', 'destroy')->name('destroy');       // admin.payments.destroy
+        });
+
         // ✅ Reviews Management Routes
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
         Route::post('/reviews/{id}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
         Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
+        Route::get('/manage-gallery', [GalleryController::class, 'index'])->name('gallery.index');
+        Route::put('/manage-gallery/{id}', [GalleryController::class, 'update'])->name('gallery.update');
     });
 });
+
+
+// ============================================== PAYMENT & CHECKOUT ROUTES ==============================================
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+
+// Safepay callbacks
+Route::get('/order/success/{order}', [CheckoutController::class, 'safepaySuccess'])->name('order.safepay.success');
+Route::get('/order/cancel/{order}', [CheckoutController::class, 'safepayCancel'])->name('order.safepay.cancel');
+
+// NEW: Generic order success page (used for COD and after Safepay success can redirect here if needed)
+Route::get('/order/confirmation/{order}', [CheckoutController::class, 'orderSuccess'])->name('order.success');
+
+

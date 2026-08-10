@@ -20,6 +20,7 @@
     <!-- FOOTER -->
 
     @include('partials.footer')
+    @include('components.review_form')
 
     <!-- SCRIPTS -->
 

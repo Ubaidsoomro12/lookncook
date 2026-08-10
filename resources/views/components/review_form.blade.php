@@ -166,9 +166,9 @@
     ============================================ */
     .review-trigger {
         position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 999;
+        bottom: 63px;
+        left: 30px;
+         z-index: 9999 !important;
         width: 58px;
         height: 58px;
         background: linear-gradient(135deg, #ff2d7a, #ff6b9d);
@@ -667,7 +667,7 @@
             width: 50px;
             height: 50px;
             bottom: 18px;
-            right: 18px;
+            left: 18px;
         }
 
         .review-trigger i {

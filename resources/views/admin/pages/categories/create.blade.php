@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 
-@section('admin_content')
+@section('content')
 <div class="max-w-2xl mx-auto">
 
     <div class="flex items-center gap-3 mb-6">
