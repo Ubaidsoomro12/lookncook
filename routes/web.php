@@ -10,7 +10,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\CheckoutController;
 use App\Http\Controllers\Backend\PaymentController;
-
+use App\Http\Controllers\backend\AboutController;
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
     Route::get('/', 'home')->name('home');
@@ -106,6 +106,10 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/manage-gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::put('/manage-gallery/{id}', [GalleryController::class, 'update'])->name('gallery.update');
+
+
+        Route::get('/about', [AboutController::class, 'index'])->name('about.index');
+        Route::put('/about/{about}', [AboutController::class, 'update'])->name('about.update');
     });
 });
 

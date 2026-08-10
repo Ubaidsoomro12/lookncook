@@ -66,7 +66,8 @@
                     <span>Categories Management</span>
                 </a>
                 </a>
-                  <a href="{{ route('admin.gallery.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
+                <a href="{{ route('admin.gallery.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
                     <i class="fa-solid fa-user-shield group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Gallery Management</span>
                 </a>
@@ -75,6 +76,10 @@
                     <i class="fa-solid fa-motorcycle group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Riders Management</span>
                 </a>
+                <a href="{{ route('admin.about.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
+                    <i class="fa-solid fa-circle-info group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+                    <span>About Us</span>
             </nav>
         </div>
     </div>

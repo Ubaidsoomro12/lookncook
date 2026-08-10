@@ -5,6 +5,7 @@ namespace App\Http\Controllers\front;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Gallery;
+use App\Models\About; 
 
 class PageController extends Controller
 {
@@ -43,9 +44,27 @@ class PageController extends Controller
     $gallery = Gallery::first(); // Get the first (and only) gallery record
     return view('pages.gallery', compact('gallery'));
 }
+    // public function about()
+    // {
+    //     return view('pages.about');
+    // }
     public function about()
     {
-        return view('pages.about');
+        $about = About::first();
+
+        if (!$about) {
+            $about = (object) [
+                'title'          => 'Look N Cook Home Chef Catering Services',
+                'subtitle'       => 'More Than Just Food',
+                'subdescription' => 'Welcome to Look N Cook Home Chef. We bring delicious flavors, premium catering services, and unforgettable dining experiences.',
+                'description'    => 'Our chefs prepare fresh meals with passion and creativity, making every event memorable.',
+                'image1'         => 'about1.jpg',
+                'image2'         => 'about2.jpg',
+                'image3'         => 'about3.jpg'
+            ];
+        }
+
+        return view('pages.about', compact('about'));
     }
     public function contact()
     {
