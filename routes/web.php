@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\CheckoutController;
 use App\Http\Controllers\Backend\PaymentController;
 use App\Http\Controllers\backend\AboutController;
+use App\Http\Controllers\Backend\PaymentMethodController;
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
     Route::get('/', 'home')->name('home');
@@ -22,6 +23,8 @@ Route::controller(PageController::class)->group(function () {
     Route::get('/services', 'services')->name('services');
     // Route::get('/payment', 'payment')->name('payment');
     Route::get('/cart', 'cart')->name('cart');
+ Route::view('/view-orders', 'pages.view_orders')->name('view_orders');
+   
 });
 
 
@@ -89,6 +92,16 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
         });
 
+        Route::prefix('payment-methods')->name('payment-methods.')->controller(PaymentMethodController::class)->group(function () {
+            Route::get('/', 'index')->name('index');                    // admin.payment-methods.index
+            Route::get('/search', 'search')->name('search');            // admin.payment-methods.search
+            Route::get('/create', 'create')->name('create');            // admin.payment-methods.create
+            Route::post('/store', 'store')->name('store');              // admin.payment-methods.store
+            Route::get('/edit/{id}', 'edit')->name('edit');             // admin.payment-methods.edit
+            Route::put('/update/{id}', 'update')->name('update');       // admin.payment-methods.update
+            Route::delete('/delete/{id}', 'destroy')->name('destroy');  // admin.payment-methods.destroy
+        });
+
         //-------------------------------------------------------------- payment management routes (NEW) --------------------------------
         Route::prefix('payments')->name('payments.')->controller(PaymentController::class)->group(function () {
             Route::get('/', 'index')->name('index');                     // admin.payments.index
@@ -115,14 +128,13 @@ Route::middleware(['auth'])->group(function () {
 
 
 // ============================================== PAYMENT & CHECKOUT ROUTES ==============================================
+// ============================================== CHECKOUT ROUTES ==============================================
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
-// Safepay callbacks
-Route::get('/order/success/{order}', [CheckoutController::class, 'safepaySuccess'])->name('order.safepay.success');
-Route::get('/order/cancel/{order}', [CheckoutController::class, 'safepayCancel'])->name('order.safepay.cancel');
-
-// NEW: Generic order success page (used for COD and after Safepay success can redirect here if needed)
+// Generic order confirmation page (used for COD, mobile wallet and bank transfer orders)
 Route::get('/order/confirmation/{order}', [CheckoutController::class, 'orderSuccess'])->name('order.success');
 
-
+// // Safepay callbacks
+// Route::get('/order/success/{order}', [CheckoutController::class, 'safepaySuccess'])->name('order.safepay.success');
+// Route::get('/order/cancel/{order}', [CheckoutController::class, 'safepayCancel'])->name('order.safepay.cancel');

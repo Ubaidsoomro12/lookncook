@@ -23,12 +23,12 @@
         </div>
         <div>
             <p class="text-xs uppercase tracking-wider text-gray-400">Payment Method</p>
-            <p class="font-medium text-gray-800">{{ $order->paymentMethod?->name ?? $order->payment_method_slug ?? '—' }}</p>
+            <p class="font-medium text-gray-800">{{ $order->paymentMethod?->name ?? ucfirst($order->payment_method_slug ?? '—') }}</p>
         </div>
         <div>
             <p class="text-xs uppercase tracking-wider text-gray-400">Payment Status</p>
-            <span class="px-2.5 py-1 rounded-full text-xs font-semibold 
-                @if($order->payment_status === 'approved' || $order->payment_status === 'completed') bg-green-50 text-green-600 border border-green-200
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold
+                @if($order->payment_status === 'approved') bg-green-50 text-green-600 border border-green-200
                 @elseif($order->payment_status === 'pending') bg-yellow-50 text-yellow-600 border border-yellow-200
                 @elseif($order->payment_status === 'failed') bg-red-50 text-red-600 border border-red-200
                 @else bg-gray-100 text-gray-500 border border-gray-200 @endif">
@@ -37,7 +37,7 @@
         </div>
         <div>
             <p class="text-xs uppercase tracking-wider text-gray-400">Transaction Ref</p>
-            <p class="font-medium text-gray-800 text-sm break-all">{{ $order->transaction_reference ?? $order->stripe_payment_intent_id ?? '—' }}</p>
+            <p class="font-medium text-gray-800 text-sm break-all">{{ $order->transaction_reference ?? '—' }}</p>
         </div>
     </div>
 
@@ -48,6 +48,39 @@
         <p class="text-sm text-gray-700">{{ $order->delivery_address ?? '—' }}</p>
         <p class="text-sm text-gray-700">{{ $order->city ?? '' }}</p>
     </div>
+
+    @if($order->paymentMethod && $order->paymentMethod->type !== 'cod')
+        <hr class="my-4">
+        <div>
+            <p class="text-xs uppercase tracking-wider text-gray-400 mb-2">Customer's Submitted Payment Details</p>
+            <div class="grid grid-cols-2 gap-3 text-sm bg-slate-50 border border-slate-200 rounded-xl p-4">
+                @if($order->bank_name)
+                <div>
+                    <p class="text-[11px] text-gray-400">Bank</p>
+                    <p class="font-medium text-gray-800">{{ $order->bank_name }}</p>
+                </div>
+                @endif
+                <div>
+                    <p class="text-[11px] text-gray-400">Account Title</p>
+                    <p class="font-medium text-gray-800">{{ $order->account_title ?? '—' }}</p>
+                </div>
+                <div class="col-span-2">
+                    <p class="text-[11px] text-gray-400">Account Number / IBAN</p>
+                    <p class="font-medium text-gray-800 break-all">{{ $order->account_number ?? '—' }}</p>
+                </div>
+            </div>
+
+            @if($order->payment_screenshot)
+                <div class="mt-3">
+                    <p class="text-[11px] text-gray-400 mb-1.5">Payment Screenshot</p>
+                    <a href="{{ asset($order->payment_screenshot) }}" target="_blank">
+                        <img src="{{ asset($order->payment_screenshot) }}" alt="Payment proof"
+                             class="w-full max-w-xs rounded-xl border border-gray-200 hover:opacity-90 transition-all">
+                    </a>
+                </div>
+            @endif
+        </div>
+    @endif
 
     <hr class="my-4">
 

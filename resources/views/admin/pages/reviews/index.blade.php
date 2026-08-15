@@ -1,5 +1,6 @@
 {{-- resources/views/admin/pages/reviews/index.blade.php --}}
 @extends('admin.layouts.master')
+@section('title', 'View | Reviews')
 
 @section('content')
 <style>

@@ -4,13 +4,26 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\PaymentMethod; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
 class PaymentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (auth()->user()->role_id != 1) {
+                return redirect('/')->withErrors([
+                    'email' => 'You do not have administrative privileges to access this area.'
+                ]);
+            }
+            return $next($request);
+        });
+    }
+
     /**
-     * Display a listing of payments.
+     * Display a listing of orders (Orders admin section).
      */
     public function index()
     {
@@ -18,17 +31,18 @@ class PaymentController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
-        // Corrected view path: admin/pages/payments/index.blade.php
-        return view('admin.pages.payments.index', compact('orders'));
+        // Pass $paymentMethods to the view so filtering works
+        $paymentMethods = PaymentMethod::where('is_active', true)->get();
+
+        return view('admin.pages.payments.index', compact('orders', 'paymentMethods'));
     }
 
     /**
-     * Show the specified payment details (AJAX modal).
+     * Show the specified order details (AJAX modal).
      */
     public function show(Order $order)
     {
         $order->load(['user', 'paymentMethod', 'items.product']);
-        // Corrected view path: admin/pages/payments/_details_modal.blade.php
         $html = View::make('admin.pages.payments._details_modal', compact('order'))->render();
         return response()->json(['html' => $html]);
     }
@@ -38,7 +52,6 @@ class PaymentController extends Controller
      */
     public function approve(Order $order)
     {
-        // Only allow pending or failed payments to be approved
         if (!in_array($order->payment_status, ['pending', 'failed'])) {
             return response()->json([
                 'success' => false,
@@ -56,19 +69,19 @@ class PaymentController extends Controller
     }
 
     /**
-     * Remove the specified payment.
+     * Remove the specified order.
      */
     public function destroy(Order $order)
     {
         $order->delete();
         return response()->json([
             'success' => true,
-            'message' => 'Payment deleted successfully.'
+            'message' => 'Order deleted successfully.'
         ]);
     }
 
     /**
-     * Search payments via AJAX.
+     * Search orders via AJAX.
      */
     public function search(Request $request)
     {
@@ -79,8 +92,8 @@ class PaymentController extends Controller
                 $q->where('order_number', 'like', "%{$query}%")
                   ->orWhere('customer_name', 'like', "%{$query}%")
                   ->orWhere('customer_email', 'like', "%{$query}%")
-                  ->orWhere('transaction_reference', 'like', "%{$query}%")
-                  ->orWhere('stripe_payment_intent_id', 'like', "%{$query}%");
+                  ->orWhere('customer_phone', 'like', "%{$query}%") // Added phone search
+                  ->orWhere('transaction_reference', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->limit(15)
@@ -91,6 +104,9 @@ class PaymentController extends Controller
             $order->show_url = route('admin.payments.show', $order);
             $order->approve_url = route('admin.payments.approve', $order);
             $order->delete_url = route('admin.payments.destroy', $order);
+            // Expose phone and screenshot for the AJAX table render
+            $order->customer_phone = $order->customer_phone;
+            $order->payment_screenshot = $order->payment_screenshot;
             return $order;
         });
 

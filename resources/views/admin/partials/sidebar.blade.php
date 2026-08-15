@@ -42,11 +42,14 @@
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
                     <i class="fa-solid fa-utensils group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Product Management</span>
+                <a href="{{ route('admin.payment-methods.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
+                    <i class="fa-solid fa-credit-card group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+                    <span>Payment Methods</span>
                 </a>
                 <a href="{{ route('admin.payments.index') }}"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group {{ request()->routeIs('admin.payments.*') ? 'bg-gray-950 text-white' : '' }}">
-                    <i class="fa-solid fa-credit-card group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
-                    <span>Order Management</span>
+                <i class="fa-solid fa-shopping-bag group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+                <span>Order Management</span>
                 </a>
                 <!-- ✅ FIXED: Reviews Management with route and active state -->
                 <a href="{{ route('admin.reviews.index') }}"
@@ -80,6 +83,7 @@
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
                     <i class="fa-solid fa-circle-info group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>About Us</span>
+                </a>
             </nav>
         </div>
     </div>

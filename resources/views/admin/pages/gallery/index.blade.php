@@ -1,5 +1,6 @@
-{{-- resources/views/admin/pages/gallery/index.blade.php --}}
+
 @extends('admin.layouts.master')
+@section('title', 'View | Gallery')
 
 @section('content')
 <style>

@@ -1,4 +1,5 @@
 @extends('admin.layouts.master')
+@section('title', 'View | Products')
 
 @section('content')
 <div class="max-w-7xl mx-auto">

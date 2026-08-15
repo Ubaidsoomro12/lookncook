@@ -1,4 +1,6 @@
 @extends('admin.layouts.master')
+@section('title', 'Edit | Categories')
+
 
 @section('content')
 <div class="max-w-2xl mx-auto">

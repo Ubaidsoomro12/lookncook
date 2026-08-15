@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('title', 'About Details - Edit')
+@section('title', 'About Details')
 
 @section('content')
 <style>
@@ -15,15 +15,7 @@
     --muted:#8b8296;
     --border:#f1d9e8;
   }
-  *{box-sizing:border-box;}
-  html,body{ width:100%; overflow-x:hidden; }
-  body{
-    margin:0;
-    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-    background:var(--pink-50);
-    padding:32px 16px;
-    color:var(--ink);
-  }
+  
   .card{
     max-width:720px;
     width:100%;

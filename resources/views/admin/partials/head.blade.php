@@ -1,6 +1,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Dashboard - Look n Cook</title>
+<title>Admin | @yield('title')</title>
+
+<link rel="shortcut icon" href="{{ asset('images/lock-logo.png') }}" type="image/jpeg">
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 
 <!-- Fonts & Frameworks (Using Tailwind CSS for lightning-fast responsive utility styling) -->
 <script src="https://cdn.tailwindcss.com"></script>

@@ -1,4 +1,5 @@
 <?php
+// FILE: app/Models/Order.php
 
 namespace App\Models;
 
@@ -8,11 +9,11 @@ class Order extends Model
 {
     protected $fillable = [
         'user_id', 'order_number', 'total_amount',
-        'payment_method_slug', 'payment_status',
-        'stripe_payment_intent_id', 'stripe_status',
+        'payment_method_slug', 'payment_method_id', 'payment_status',
         'customer_name', 'customer_phone', 'customer_email',
         'city', 'delivery_address',
-        'bank_name', 'account_title', 'account_number', 'transaction_reference'
+        'bank_name', 'account_title', 'account_number', 'transaction_reference',
+        'payment_screenshot',
     ];
 
     public function user()
@@ -27,6 +28,6 @@ class Order extends Model
 
     public function paymentMethod()
     {
-        return $this->belongsTo(PaymentMethod::class, 'payment_method_slug', 'slug');
+        return $this->belongsTo(PaymentMethod::class);
     }
 }

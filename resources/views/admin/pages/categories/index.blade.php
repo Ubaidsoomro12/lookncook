@@ -1,4 +1,6 @@
 @extends('admin.layouts.master')
+@section('title', 'View | Categories')
+
 
 @section('content')
 <!-- FIXED: Added CSRF meta tag here so AJAX delete works regardless of your master layout -->
