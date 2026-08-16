@@ -12,6 +12,8 @@ use App\Http\Controllers\Backend\CheckoutController;
 use App\Http\Controllers\Backend\PaymentController;
 use App\Http\Controllers\backend\AboutController;
 use App\Http\Controllers\Backend\PaymentMethodController;
+use App\Http\Controllers\Backend\RiderController;
+use App\Http\Controllers\Backend\OrderAssignmentController;
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
     Route::get('/', 'home')->name('home');
@@ -69,6 +71,25 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
+
+        // ⭐ ADDED — rider assignment route for the "Assign Rider" popup on
+        // the Payments/Orders page. Produces route name: admin.orders.assign
+        //-------------------------------------------------------------- order rider-assignment routes --------------------------------
+        Route::prefix('orders')->name('orders.')->controller(OrderAssignmentController::class)->group(function () {
+            Route::post('/{order}/assign', 'assign')->name('assign'); // admin.orders.assign
+        });
+
+        //-------------------------------------------------------------- rider management routes --------------------------------
+        Route::prefix('riders')->name('riders.')->controller(RiderController::class)->group(function () {
+            Route::get('/', 'index')->name('index');                          // admin.riders.index
+            Route::get('/search', 'search')->name('search');                  // admin.riders.search
+            Route::get('/create', 'create')->name('create');                  // admin.riders.create
+            Route::post('/store', 'store')->name('store');                    // admin.riders.store
+            Route::get('/edit/{id}', 'edit')->name('edit');                   // admin.riders.edit
+            Route::put('/update/{id}', 'update')->name('update');             // admin.riders.update
+            Route::delete('/delete/{id}', 'destroy')->name('destroy');        // admin.riders.destroy
+            Route::patch('/toggle-status/{id}', 'toggleStatus')->name('toggle-status'); // admin.riders.toggle-status
+        });
 
         //-------------------------------------------------------------- category management routes --------------------------------
         Route::prefix('categories')->name('categories.')->controller(CategoryController::class)->group(function () {

@@ -49,6 +49,45 @@
         <p class="text-sm text-gray-700">{{ $order->city ?? '' }}</p>
     </div>
 
+    <hr class="my-4">
+
+    <div>
+        <p class="text-xs uppercase tracking-wider text-gray-400 mb-2">Rider Assignment</p>
+        @if($order->rider)
+            @php
+                $assignStatusColors = [
+                    'review'    => 'bg-amber-50 text-amber-600 border-amber-200',
+                    'preparing' => 'bg-blue-50 text-blue-600 border-blue-200',
+                    'completed' => 'bg-emerald-50 text-emerald-600 border-emerald-200',
+                    'delivered' => 'bg-green-50 text-green-700 border-green-300',
+                ];
+            @endphp
+            <div class="flex items-center gap-3 bg-pink-50/50 border border-pink-100 rounded-xl p-4">
+                @if($order->rider->image_url)
+                    <img src="{{ $order->rider->image_url }}" alt="{{ $order->rider->name }}" class="w-11 h-11 rounded-full object-cover border-2 border-pink-100">
+                @else
+                    <div class="w-11 h-11 rounded-full bg-pink-100 flex items-center justify-center text-[#ff2d7a] font-bold">
+                        {{ strtoupper(substr($order->rider->name, 0, 1)) }}
+                    </div>
+                @endif
+                <div class="flex-1">
+                    <p class="font-medium text-gray-800">{{ $order->rider->name }}</p>
+                    <p class="text-xs text-gray-500">{{ $order->rider->phone }} &middot; {{ ucfirst($order->rider->vehicle_type) }}{{ $order->rider->vehicle_number ? ' - '.$order->rider->vehicle_number : '' }}</p>
+                </div>
+                <div class="text-right">
+                    <span class="px-2.5 py-1 rounded-full text-xs font-semibold border {{ $assignStatusColors[$order->status] ?? 'bg-gray-100 text-gray-500 border-gray-200' }}">
+                        {{ ucfirst($order->status ?? 'review') }}
+                    </span>
+                    @if($order->estimated_time)
+                        <p class="text-xs text-gray-400 mt-1"><i class="fa-regular fa-clock"></i> {{ $order->estimated_time }}</p>
+                    @endif
+                </div>
+            </div>
+        @else
+            <p class="text-sm text-gray-400">No rider assigned yet. Use the <i class="fa-solid fa-motorcycle text-[#ff2d7a]"></i> button on the orders table to assign one.</p>
+        @endif
+    </div>
+
     @if($order->paymentMethod && $order->paymentMethod->type !== 'cod')
         <hr class="my-4">
         <div>

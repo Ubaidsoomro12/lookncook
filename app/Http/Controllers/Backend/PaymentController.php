@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\PaymentMethod; 
+use App\Models\PaymentMethod;
+use App\Models\Rider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 
@@ -27,14 +28,17 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['user', 'paymentMethod'])
+        $orders = Order::with(['user', 'paymentMethod', 'rider'])
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
         // Pass $paymentMethods to the view so filtering works
         $paymentMethods = PaymentMethod::where('is_active', true)->get();
 
-        return view('admin.pages.payments.index', compact('orders', 'paymentMethods'));
+        // Active riders for the "Assign Rider" popup dropdown
+        $riders = Rider::where('is_active', 1)->orderBy('name')->get();
+
+        return view('admin.pages.payments.index', compact('orders', 'paymentMethods', 'riders'));
     }
 
     /**
@@ -42,7 +46,7 @@ class PaymentController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['user', 'paymentMethod', 'items.product']);
+        $order->load(['user', 'paymentMethod', 'items.product', 'rider']);
         $html = View::make('admin.pages.payments._details_modal', compact('order'))->render();
         return response()->json(['html' => $html]);
     }
@@ -87,7 +91,7 @@ class PaymentController extends Controller
     {
         $query = $request->input('q', '');
 
-        $orders = Order::with(['user', 'paymentMethod'])
+        $orders = Order::with(['user', 'paymentMethod', 'rider'])
             ->where(function ($q) use ($query) {
                 $q->where('order_number', 'like', "%{$query}%")
                   ->orWhere('customer_name', 'like', "%{$query}%")
@@ -104,9 +108,16 @@ class PaymentController extends Controller
             $order->show_url = route('admin.payments.show', $order);
             $order->approve_url = route('admin.payments.approve', $order);
             $order->delete_url = route('admin.payments.destroy', $order);
+            $order->assign_url = route('admin.orders.assign', $order);
             // Expose phone and screenshot for the AJAX table render
             $order->customer_phone = $order->customer_phone;
             $order->payment_screenshot = $order->payment_screenshot;
+            // Expose rider assignment info for the AJAX table render
+            $order->rider_id = $order->rider_assigned;
+            $order->rider_name = $order->rider?->name;
+            $order->rider_image = $order->rider?->image_url;
+            $order->estimated_time = $order->estimated_time;
+            $order->status = $order->status;
             return $order;
         });
 

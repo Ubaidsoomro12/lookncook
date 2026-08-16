@@ -42,43 +42,45 @@
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
                     <i class="fa-solid fa-utensils group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Product Management</span>
-                <a href="{{ route('admin.payment-methods.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
-                    <i class="fa-solid fa-credit-card group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
-                    <span>Payment Methods</span>
-                </a>
-                <a href="{{ route('admin.payments.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group {{ request()->routeIs('admin.payments.*') ? 'bg-gray-950 text-white' : '' }}">
-                <i class="fa-solid fa-shopping-bag group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
-                <span>Order Management</span>
-                </a>
-                <!-- ✅ FIXED: Reviews Management with route and active state -->
-                <a href="{{ route('admin.reviews.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('admin.reviews*') ? 'bg-[#ff2d7a]/10 text-white border border-[#ff2d7a]/30' : 'hover:bg-gray-950 hover:text-white' }} transition-all group">
-                    <i
-                        class="fa-solid fa-star {{ request()->routeIs('admin.reviews*') ? 'text-[#ff2d7a]' : 'group-hover:text-[#ff2d7a]' }} text-sm transition-colors"></i>
-                    <span>Reviews Management</span>
-                </a>
-                <a href="#"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
-                    <i class="fa-solid fa-user-shield group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
-                    <span>Role Management</span>
-                </a>
-                <a href="{{ route('admin.categories.index') }}"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group {{ request()->routeIs('admin.categories.*') ? 'bg-gray-950 text-white' : '' }}">
-                    <i class="fa-solid fa-folder-tree group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
-                    <span>Categories Management</span>
-                </a>
+                    <a href="{{ route('admin.payment-methods.index') }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
+                        <i class="fa-solid fa-credit-card group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+                        <span>Payment Methods</span>
+                    </a>
+                    <a href="{{ route('admin.payments.index') }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group {{ request()->routeIs('admin.payments.*') ? 'bg-gray-950 text-white' : '' }}">
+                        <i class="fa-solid fa-shopping-bag group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+                        <span>Order Management</span>
+                    </a>
+                    <!-- ✅ FIXED: Reviews Management with route and active state -->
+                    <a href="{{ route('admin.reviews.index') }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('admin.reviews*') ? 'bg-[#ff2d7a]/10 text-white border border-[#ff2d7a]/30' : 'hover:bg-gray-950 hover:text-white' }} transition-all group">
+                        <i
+                            class="fa-solid fa-star {{ request()->routeIs('admin.reviews*') ? 'text-[#ff2d7a]' : 'group-hover:text-[#ff2d7a]' }} text-sm transition-colors"></i>
+                        <span>Reviews Management</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
+                        <i class="fa-solid fa-user-shield group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+                        <span>Role Management</span>
+                    </a>
+                    <a href="{{ route('admin.categories.index') }}"
+                        class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group {{ request()->routeIs('admin.categories.*') ? 'bg-gray-950 text-white' : '' }}">
+                        <i class="fa-solid fa-folder-tree group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+                        <span>Categories Management</span>
+                    </a>
                 </a>
                 <a href="{{ route('admin.gallery.index') }}"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
                     <i class="fa-solid fa-user-shield group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Gallery Management</span>
                 </a>
-                <a href="#"
+                <a href="{{ route('admin.riders.index') }}"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
                     <i class="fa-solid fa-motorcycle group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
                     <span>Riders Management</span>
                 </a>
+
                 <a href="{{ route('admin.about.index') }}"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
                     <i class="fa-solid fa-circle-info group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
