@@ -14,6 +14,8 @@ use App\Http\Controllers\backend\AboutController;
 use App\Http\Controllers\Backend\PaymentMethodController;
 use App\Http\Controllers\Backend\RiderController;
 use App\Http\Controllers\Backend\OrderAssignmentController;
+use App\Http\Controllers\Backend\UserController;
+
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
     Route::get('/', 'home')->name('home');
@@ -25,8 +27,8 @@ Route::controller(PageController::class)->group(function () {
     Route::get('/services', 'services')->name('services');
     // Route::get('/payment', 'payment')->name('payment');
     Route::get('/cart', 'cart')->name('cart');
- Route::view('/view-orders', 'pages.view_orders')->name('view_orders');
-   
+    Route::view('/view-orders', 'pages.view_orders')->name('view_orders');
+
 });
 
 
@@ -58,6 +60,13 @@ Route::middleware(['auth'])->group(function () {
                     <form action="' . route('logout') . '" method="POST">' . csrf_field() . '<button type="submit">Logout</button></form>
                 </div>';
     })->name('dashboard');
+     // ⭐ ADD THIS - POS Dashboard for Admin
+        Route::get('/pos/dashboard', function () {
+            if (auth()->user()->role_id != 3) {
+                return redirect('/')->withErrors(['email' => 'You do not have manager privileges.']);
+            }
+            return view('pos.pos_dashboard');
+        })->name('pos.dashboard');
 
     Route::get('/payment', [CheckoutController::class, 'index'])->name('payment');
 
@@ -71,6 +80,19 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
+       
+
+
+        // User Management Routes (NEW)
+        Route::prefix('users')->name('users.')->controller(UserController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/search', 'search')->name('search');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/edit/{user}', 'edit')->name('edit');
+            Route::put('/update/{user}', 'update')->name('update');
+            Route::delete('/delete/{user}', 'destroy')->name('destroy');
+        });
 
         // ⭐ ADDED — rider assignment route for the "Assign Rider" popup on
         // the Payments/Orders page. Produces route name: admin.orders.assign

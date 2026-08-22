@@ -191,6 +191,11 @@ class AuthController extends Controller
                 return redirect()->intended('/admin/dashboard');
             }
 
+            // Role ID 3 is Manager -> Send them to the manager dashboard
+            if ($user->role_id == 3) {
+                return redirect()->intended('/pos/dashboard');
+            }
+
             // Default fallback: Role ID 2 is User -> Send straight to home page index
             return redirect()->intended('/');
         }
@@ -204,13 +209,13 @@ class AuthController extends Controller
      * Terminate active sessions securely
      */
     public function logout(Request $request)
-{
-    Auth::logout();
+    {
+        Auth::logout();
 
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-    // Permanent Fix: Redirect directly to the login page route
-    return redirect()->route('login'); 
-}
+        // Permanent Fix: Redirect directly to the login page route
+        return redirect()->route('login');
+    }
 }

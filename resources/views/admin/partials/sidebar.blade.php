@@ -5,8 +5,8 @@
         <!-- Application App Branding Context Logo Area -->
         <div class="px-6 mb-8 flex items-center gap-3 relative">
             <div
-                class="w-12 h-12 bg-[#ff2d7a] rounded-full flex items-center justify-center text-white font-black text-xl border-2 border-white shadow-lg shadow-[#ff2d7a]/20 shrink-0">
-                LC
+                class="w-12 h-12 rounded-full flex items-center justify-center border-2 border-white shadow-lg shadow-[#ff2d7a]/20 shrink-0 overflow-hidden bg-white">
+                <img src="{{ asset('images/lock-logo.png') }}" alt="Look n Cook" class="w-full h-full object-cover">
             </div>
             <div>
                 <h1 class="text-white font-bold tracking-wide text-lg">Look n Cook</h1>
@@ -30,6 +30,11 @@
                 <i class="fa-solid fa-chart-pie text-lg"></i>
                 <span>Dashboard</span>
             </a>
+           <a href="{{ route('admin.users.index') }}"
+    class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-950 hover:text-white transition-all group">
+    <i class="fa-solid fa-users-gear group-hover:text-[#ff2d7a] text-sm transition-colors"></i>
+    <span>Users Management</span>
+</a>
 
             <p class="text-xs font-bold text-gray-600 uppercase tracking-wider px-2 mb-2">Management</p>
             <nav class="space-y-1">
