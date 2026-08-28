@@ -27,14 +27,11 @@
             </div>
         </a>
 
-        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+        <!-- ====== TOGGLER - SIRF SMALL SCREEN PE DIKHEGA ====== -->
+        <button class="navbar-toggler toggler-custom border-0 shadow-none" type="button" data-bs-toggle="collapse"
             data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false"
             aria-label="Toggle navigation">
-            <div class="custom-burger-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="mainNavbar">
@@ -58,7 +55,6 @@
                             style="background:#ff2d7a; font-size:10px; min-width:20px; height:20px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(255,45,122,0.35);">0</span>
                     </button>
                     
-                    <!-- INSTANT SYNC SCRIPT: This fixes the count flashing to 0 when navigating pages -->
                     <script>
                         (function() {
                             try {
@@ -181,7 +177,7 @@
     </div>
 </nav>
 
-<!-- ====== CART SIDEBAR (with +/- Quantity Buttons) ====== -->
+<!-- ====== CART SIDEBAR ====== -->
 <div id="cartSidebar"
      style="
         position:fixed;
@@ -197,7 +193,6 @@
         display:flex;
         flex-direction:column;
      ">
-    <!-- TOP -->
     <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
         <h4 class="fw-bold mb-0">Your Cart</h4>
         <button onclick="closeCart()" class="btn p-0 border-0 shadow-none"
@@ -206,7 +201,6 @@
         </button>
     </div>
 
-    <!-- ITEMS -->
     <div id="cartItems" class="flex-grow-1 overflow-auto p-4">
         <div class="text-center text-secondary mt-5" id="emptyCartText">
             <div style="font-size:70px; opacity:0.2;">🛒</div>
@@ -215,7 +209,6 @@
         </div>
     </div>
 
-    <!-- BOTTOM -->
     <div class="border-top p-4">
         <div class="d-flex justify-content-between mb-3">
             <h5 class="fw-bold">Total</h5>
@@ -295,6 +288,120 @@
 </div>
 
 <style>
+    /* ============================================
+       TOGGLER - SIRF MOBILE PE DIKHEGA
+       ============================================ */
+    
+    /* Default: Toggler ko hide karein */
+    .toggler-custom {
+        display: none !important;
+    }
+
+    /* Sirf mobile screens (under 992px) pe show */
+    @media (max-width: 991.98px) {
+        .toggler-custom {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px !important;
+            border: 2px solid #ff2d7a !important;
+            border-radius: 10px !important;
+            background: rgba(255, 45, 122, 0.08) !important;
+            transition: all 0.3s ease;
+        }
+
+        .toggler-custom:hover {
+            background: rgba(255, 45, 122, 0.15) !important;
+            transform: scale(1.05);
+        }
+
+        .toggler-custom:focus {
+            box-shadow: 0 0 0 3px rgba(255, 45, 122, 0.25) !important;
+            outline: none !important;
+        }
+
+        .toggler-custom .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 45, 122, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+            width: 26px !important;
+            height: 26px !important;
+            display: inline-block !important;
+        }
+    }
+
+    /* Extra small screens pe thoda chhota */
+    @media (max-width: 575.98px) {
+        .toggler-custom {
+            padding: 6px 10px !important;
+        }
+        .toggler-custom .navbar-toggler-icon {
+            width: 22px !important;
+            height: 22px !important;
+        }
+    }
+
+    /* ============================================
+       EXISTING STYLES (Kuch change nahi)
+    ============================================ */
+    
+    .topbar {
+        background: #000;
+        color: #fff;
+        font-size: 13px;
+        padding: 8px 0;
+    }
+
+    .custom-navbar {
+        background: #fff;
+        padding: 16px 0;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+        z-index: 999;
+        transition: 0.3s;
+    }
+
+    .navbar-nav .nav-link {
+        color: #111 !important;
+        font-weight: 600;
+        margin: 0 12px;
+        transition: 0.3s;
+        position: relative;
+    }
+
+    .navbar-nav .nav-link:hover {
+        color: #ff2d7a !important;
+    }
+
+    .navbar-nav .nav-link::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+        width: 0%;
+        height: 2px;
+        background: #ff2d7a;
+        transition: 0.3s;
+    }
+
+    .navbar-nav .nav-link:hover::after {
+        width: 100%;
+    }
+
+    .login-btn {
+        background: #ff2d7a;
+        color: #fff;
+        border-radius: 8px;
+        padding: 10px 28px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+        display: inline-block;
+    }
+
+    .login-btn:hover {
+        background: #e91e63;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
     .cart-btn-custom:hover, .wishlist-btn-custom:hover {
         transform: translateY(-2px) scale(1.04);
         background: rgba(255, 45, 122, 0.18) !important;
@@ -302,7 +409,6 @@
     }
     .cart-btn-custom:active, .wishlist-btn-custom:active { transform: scale(0.95); }
 
-    /* Sidebar cart item with +/- buttons */
     .cart-item-box {
         border: 1px solid rgba(0, 0, 0, 0.06);
         border-radius: 18px;
@@ -353,7 +459,6 @@
         .cart-item-box { flex-wrap: wrap; }
     }
 
-    /* TOAST STYLES (unchanged) */
     .add-cart-toast {
         position: fixed;
         top: 110px;
@@ -380,6 +485,7 @@
     .add-cart-toast .toast-sub { font-size: 12px; color: #777; margin-bottom: 4px; }
     .add-cart-toast .toast-cart-link { color: #ff2d7a; font-size: 12px; font-weight: 700; text-decoration: none; }
     .add-cart-toast .toast-close { border: none; background: transparent; color: #aaa; font-size: 20px; cursor: pointer; line-height: 1; align-self: flex-start; }
+    
     @media (max-width: 480px) {
         .add-cart-toast { width: calc(100% - 20px); right: -100%; }
         .add-cart-toast.show { right: 10px; }
@@ -414,7 +520,7 @@
         window.dispatchEvent(new Event('cartUpdated'));
     }
 
-    // ----- CART UI UPDATE (Sidebar with +/-) -----
+    // ----- CART UI UPDATE -----
     function updateCartUI() {
         syncCartFromStorage();
 
@@ -425,7 +531,6 @@
 
         if (!container) return;
 
-        // Clear container but preserve the empty message element if it exists
         const emptyClone = emptyMsg ? emptyMsg.cloneNode(true) : null;
         container.innerHTML = '';
 
@@ -471,7 +576,6 @@
     function addToCart(name, price, image, quantity = 1) {
         syncCartFromStorage();
 
-        // Normalize name to avoid whitespace / casing mismatches
         const key = name.trim();
         const existingIndex = cart.findIndex(item => item.name.trim() === key);
 
@@ -518,7 +622,7 @@
         closeWishlist();
         document.getElementById('cartSidebar').style.right = '0';
         document.getElementById('cartOverlay').style.display = 'block';
-        updateCartUI(); // refresh when opened
+        updateCartUI();
     }
 
     function closeCart() {
@@ -534,11 +638,6 @@
 
     function closeWishlist() {
         document.getElementById('wishlistSidebar').style.right = '-420px';
-    }
-
-    function closeAllSidebars() {
-        closeCart();
-        closeWishlist();
     }
 
     // ----- TOAST -----

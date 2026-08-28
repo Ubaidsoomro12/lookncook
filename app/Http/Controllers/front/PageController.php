@@ -5,53 +5,53 @@ namespace App\Http\Controllers\front;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Gallery;
-use App\Models\About; 
+use App\Models\About;
+use App\Models\Banner;
 
 class PageController extends Controller
 {
     public function home()
     {
-        return view('index');
+        $banners = Banner::where('status', true)
+            ->orderBy('section')
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('index', compact('banners'));
     }
 
     public function menu()
     {
-        // Using the absolute fully qualified class name guarantees Laravel finds the right path
         $categories = \App\Models\Category::where('status', 'active')->orderBy('name')->get();
-
         $products = \App\Models\Product::where('status', 'active')->with('category')->latest()->get();
-
         return view('pages.menu', compact('categories', 'products'));
     }
+
     public function productDetail($id)
     {
-        // Fetch the active product or fail with a 404 error
         $product = Product::with('category')->where('status', 'active')->findOrFail($id);
-
-        // Fetch similar items from the same category, excluding current product
         $similarProducts = Product::where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->where('status', 'active')
             ->latest()
             ->take(4)
             ->get();
-
         return view('pages.product_detail', compact('product', 'similarProducts'));
     }
 
- public function gallery()
-{
-    $gallery = Gallery::first(); // Get the first (and only) gallery record
-    return view('pages.gallery', compact('gallery'));
-}
-    // public function about()
-    // {
-    //     return view('pages.about');
-    // }
+    public function gallery()
+    {
+        $gallery = Gallery::first();
+        $banners = Banner::where('status', true)
+            ->orderBy('section')
+            ->orderBy('sort_order')
+            ->get();
+        return view('pages.gallery', compact('gallery', 'banners'));
+    }
+
     public function about()
     {
         $about = About::first();
-
         if (!$about) {
             $about = (object) [
                 'title'          => 'Look N Cook Home Chef Catering Services',
@@ -63,24 +63,38 @@ class PageController extends Controller
                 'image3'         => 'about3.jpg'
             ];
         }
-
-        return view('pages.about', compact('about'));
+        $banners = Banner::where('status', true)
+            ->orderBy('section')
+            ->orderBy('sort_order')
+            ->get();
+        return view('pages.about', compact('about', 'banners'));
     }
+
     public function contact()
     {
-        return view('pages.contact');
+        $banners = Banner::where('status', true)
+            ->orderBy('section')
+            ->orderBy('sort_order')
+            ->get();
+        return view('pages.contact', compact('banners'));
     }
+
     public function services()
     {
-        return view('pages.services');
+        $banners = Banner::where('status', true)
+            ->orderBy('section')
+            ->orderBy('sort_order')
+            ->get();
+        return view('pages.services', compact('banners'));
     }
+
     public function cart()
     {
         return view('pages.cart_page');
     }
+
     public function payment()
     {
         return view('pages.payment_page');
     }
-
 }

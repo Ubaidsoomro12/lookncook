@@ -72,11 +72,11 @@
         </div>
     </div>
 
-    <!-- Down Side: Complete Description Section -->
+    <!-- Down Side: Complete Description Section - FULL DESCRIPTION -->
     <div class="row mt-5">
         <div class="col-12">
             <h3 class="fw-bold border-bottom pb-2 mb-3 text-dark">Description</h3>
-            <p class="text-secondary lh-lg fs-5" style="white-space: pre-line;">
+            <p class="text-secondary lh-lg fs-5" style="white-space: pre-line; line-height: 1.8;">
                 {{ $product->description }}
             </p>
         </div>
@@ -105,7 +105,10 @@
                             <div class="card-body d-flex flex-column justify-content-between">
                                 <div>
                                     <h5 class="card-title fw-bold text-dark">{{ $similar->name }}</h5>
-                                    <p class="card-text text-muted small text-truncate">{{ $similar->description }}</p>
+                                    <!-- Similar items also show truncated description -->
+                                    <p class="card-text text-muted small" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ Str::limit($similar->description, 60, '...') }}
+                                    </p>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <span class="fw-bold text-danger">Rs. {{ number_format($similar->sale_price, 2) }}</span>

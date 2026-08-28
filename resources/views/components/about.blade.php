@@ -106,57 +106,29 @@
 
             <div class="col-lg-6">
 
-                <div class="row g-3">
+                <!-- LEFT WALI BADI IMAGE + RIGHT WALI CHHOTI IMAGES -->
+                <div class="d-flex gap-3">
 
-                    <!-- BIG IMAGE -->
-
-                    <div class="col-7">
-
-                        <div class="overflow-hidden rounded-4 shadow-lg h-100 about-image-box">
-
-                            <img src="{{ asset('images/about1.jpg') }}"
-                                 class="w-100 h-100 object-fit-cover about-image"
-                                 style="
-                                    min-height:420px;
-                                 "
-                                 alt="Food">
-
-                        </div>
-
+                    <!-- LEFT: BADI IMAGE (Full dikhegi) -->
+                    <div class="about-big-box">
+                        <img src="{{ asset('images/about1.jpg') }}"
+                             class="w-100 h-100 about-image"
+                             alt="Food">
                     </div>
 
-                    <!-- SMALL IMAGES -->
+                    <!-- RIGHT: 2 CHHOTI IMAGES (Ek ke upar ek) -->
+                    <div class="d-flex flex-column gap-3 about-small-col">
+                        
+                        <div class="about-small-box">
+                            <img src="{{ asset('images/about2.jpg') }}"
+                                 class="w-100 h-100 about-image"
+                                 alt="Dining">
+                        </div>
 
-                    <div class="col-5">
-
-                        <div class="d-flex flex-column gap-3 h-100">
-
-                            <!-- TOP IMAGE -->
-
-                            <div class="overflow-hidden rounded-4 shadow-lg about-image-box">
-
-                                <img src="{{ asset('images/about2.jpg') }}"
-                                     class="w-100 object-fit-cover about-image"
-                                     style="
-                                        height:200px;
-                                     "
-                                     alt="Dining">
-
-                            </div>
-
-                            <!-- BOTTOM IMAGE -->
-
-                            <div class="overflow-hidden rounded-4 shadow-lg about-image-box">
-
-                                <img src="{{ asset('images/about3.jpg') }}"
-                                     class="w-100 object-fit-cover about-image"
-                                     style="
-                                        height:200px;
-                                     "
-                                     alt="Cuisine">
-
-                            </div>
-
+                        <div class="about-small-box">
+                            <img src="{{ asset('images/about3.jpg') }}"
+                                 class="w-100 h-100 about-image"
+                                 alt="Cuisine">
                         </div>
 
                     </div>
@@ -177,44 +149,72 @@
 
 <style>
 
-.about-image-box{
-    transition:0.5s;
-}
-
+/* SABSE IMPORTANT: Images ko box ke andar perfect fit karega */
 .about-image{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     transition:0.6s;
 }
 
-.about-image-box:hover .about-image{
-    transform:scale(1.08);
+.about-big-box, .about-small-box{
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition:0.5s;
 }
 
-.about-image-box:hover{
+.about-big-box:hover, .about-small-box:hover{
     transform:translateY(-6px);
 }
 
-@media(max-width:992px){
-
-    .about-image{
-        height:100% !important;
+/* Desktop ke liye heights */
+@media(min-width: 993px){
+    .about-big-box {
+        width: 60%; /* Badi image ki width */
+        height: 420px; 
     }
-
+    .about-small-col {
+        width: 40%; /* Chhoti images ki width */
+    }
+    .about-small-box {
+        height: 200px; /* 200px + 200px + 20px gap = 420px */
+    }
 }
 
-@media(max-width:768px){
-
-    .about-image{
-        min-height:auto !important;
+/* Tablet ke liye */
+@media(max-width: 992px){
+    .about-big-box {
+        width: 55%;
+        height: 300px;
     }
-
+    .about-small-col {
+        width: 45%;
+    }
+    .about-small-box {
+        height: 140px;
+    }
 }
 
-@media(max-width:576px){
-
-    .about-image{
-        height:180px !important;
+/* Mobile (Chhoti screen) */
+@media(max-width: 576px){
+    .d-flex.gap-3 {
+        flex-direction: column; /* Mobile pe ek ke neeche ek */
     }
-
+    .about-big-box {
+        width: 100%;
+        height: 250px;
+    }
+    .about-small-col {
+        width: 100%;
+        flex-direction: row; /* Chhoti images side-by-side */
+    }
+    .about-small-box {
+        width: 50%;
+        height: 150px;
+    }
 }
 
 </style>

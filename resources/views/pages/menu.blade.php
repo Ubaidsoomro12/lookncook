@@ -94,6 +94,9 @@
                             $displayPrice = $allOptions[0]['price'];
                             $displayOldPrice = $allOptions[0]['old_price'];
                             $hasAnyDiscount = $displayOldPrice !== null;
+                            
+                            // Truncate description to 3 lines (approx 100 characters)
+                            $shortDescription = Str::limit($product->description, 100, '...');
                         @endphp
                         <div class="col-xl-4 col-md-6 food-item"
                              data-category="{{ $product->category ? Str::slug($product->category->name) : 'uncategorized' }}"
@@ -115,7 +118,9 @@
                                             <i class="fa-regular fa-eye"></i>
                                         </a>
                                     </div>
-                                    <p class="food-description">{{ $product->description }}</p>
+                                    
+                                    <!-- Description limited to 3 lines -->
+                                    <p class="food-description food-description-truncated">{{ $shortDescription }}</p>
 
                                     <!-- Middle wrapper forces this area to expand equally -->
                                     <div class="food-details-wrapper">
@@ -386,6 +391,7 @@
         font-size: 16px;
         transition: 0.3s ease;
         text-decoration: none;
+        flex-shrink: 0;
     }
 
     .view-details-eye-btn:hover {
@@ -395,12 +401,23 @@
         box-shadow: 0 4px 10px rgba(255, 45, 122, 0.2);
     }
 
+    /* ============ DESCRIPTION - TRUNCATED TO 3 LINES ============ */
     .food-description {
         color: #666;
         line-height: 1.5;
         font-size: 14px;
         margin-top: 8px;
         margin-bottom: 10px;
+    }
+
+    .food-description-truncated {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: 63px; /* 3 lines × 1.5 line-height × 14px font-size */
+        line-height: 1.5;
     }
 
     /* Pushes content below it to the absolute bottom of the container layout */

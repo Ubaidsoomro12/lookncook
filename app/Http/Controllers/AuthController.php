@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\OTP;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,7 +20,110 @@ class AuthController extends Controller
     }
 
     /**
-     * Phase 1: Validate Registration Data and Send OTP via Email
+     * Generate and send OTP using database
+     */
+    // app/Http/Controllers/AuthController.php - Update generateAndSendOTP method
+
+    private function generateAndSendOTP($email, $name, $type = 'registration')
+    {
+        $otp = rand(100000, 999999);
+
+        OTP::where('email', $email)
+            ->where('type', $type)
+            ->where('is_verified', false)
+            ->delete();
+
+        OTP::create([
+            'email' => $email,
+            'otp' => $otp,
+            'type' => $type,
+            'expires_at' => now()->addMinutes(10),
+            'attempts' => 0,
+            'is_verified' => false
+        ]);
+
+        // ✅ Send email with additional headers
+        Mail::send('emails.loginotp', [
+            'otp' => $otp,
+            'name' => $name,
+            'type' => $type
+        ], function ($message) use ($email) {
+            $message->to($email)
+                ->subject('🔐 Verify Your Account - Look n Cook')
+                ->from(env('MAIL_FROM_ADDRESS'), 'Look n Cook');
+
+            // Add extra headers to reduce spam flags
+            $headers = $message->getHeaders();
+            $headers->addTextHeader('X-Mailer', 'Look-n-Cook-Mailer/1.0');
+            $headers->addTextHeader('X-Priority', '3');
+            $headers->addTextHeader('X-MSMail-Priority', 'Normal');
+            $headers->addTextHeader('Importance', 'Normal');
+            $headers->addTextHeader('Precedence', 'bulk');
+            $headers->addTextHeader('List-Unsubscribe', '<mailto:' . env('MAIL_FROM_ADDRESS') . '>');
+            $headers->addTextHeader('Feedback-ID', 'OTP:lookncook:gmail');
+        });
+
+        return $otp;
+    }
+
+    /**
+     * Validate OTP from database
+     */
+    private function validateOTP($email, $otp, $type = 'registration')
+    {
+        // Find the OTP record
+        $otpRecord = OTP::where('email', $email)
+            ->where('type', $type)
+            ->where('is_verified', false)
+            ->latest()
+            ->first();
+
+        if (!$otpRecord) {
+            return [
+                'valid' => false,
+                'message' => 'No OTP found. Please request a new one.'
+            ];
+        }
+
+        // Check if expired
+        if ($otpRecord->isExpired()) {
+            $otpRecord->delete();
+            return [
+                'valid' => false,
+                'message' => 'OTP has expired. Please request a new one.'
+            ];
+        }
+
+        // Check max attempts
+        if ($otpRecord->maxAttemptsReached(3)) {
+            $otpRecord->delete();
+            return [
+                'valid' => false,
+                'message' => 'Too many failed attempts. Please request a new OTP.'
+            ];
+        }
+
+        // Check if OTP matches
+        if ($otpRecord->otp !== $otp) {
+            $otpRecord->incrementAttempts();
+            $remainingAttempts = 3 - $otpRecord->attempts;
+            return [
+                'valid' => false,
+                'message' => "Invalid OTP. {$remainingAttempts} attempts remaining."
+            ];
+        }
+
+        // Mark as verified
+        $otpRecord->markAsVerified();
+
+        return [
+            'valid' => true,
+            'message' => 'OTP verified successfully.'
+        ];
+    }
+
+    /**
+     * Phase 1: Validate Registration Data and Send OTP
      */
     public function registerOtp(Request $request)
     {
@@ -31,8 +135,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $otp = rand(100000, 999999);
-
+        // Store registration data in session
         session([
             'registration_data' => [
                 'name' => $request->name,
@@ -40,31 +143,21 @@ class AuthController extends Controller
                 'phone' => $request->phone,
                 'city' => $request->city,
                 'password' => Hash::make($request->password),
-            ],
-            'registration_otp' => $otp,
+            ]
         ]);
 
-        Mail::send([], [], function ($message) use ($request, $otp) {
-            $message->to($request->email)
-                ->subject('Verify Your Account - Look n Cook')
-                ->html('
-                    <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #f1f1f1; border-radius: 10px;">
-                        <h2 style="color: #ff2d7a; text-align: center;">Look n Cook</h2>
-                        <p>Hi there,</p>
-                        <p>Thank you for signing up with us. Please use the verification code below to complete your registration process:</p>
-                        <div style="text-align: center; margin: 30px 0;">
-                            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #111; background: #fff1f6; padding: 10px 25px; border-radius: 8px; border: 1px dashed #ff2d7a;">' . $otp . '</span>
-                        </div>
-                    </div>
-                ');
-        });
+        // Generate and send OTP using database
+        $this->generateAndSendOTP(
+            $request->email,
+            $request->name,
+            'registration'
+        );
 
-        return back()->with('otp_sent', true)->with('status', 'An OTP code has been dispatched to your email mailbox!');
+        return back()->with('otp_sent', true)->with('status', 'An OTP code has been sent to your email!');
     }
 
     /**
-     * Phase 2: Validate registration OTP code, write to DB, and log in.
-     * Newly registered accounts default to role_id = 2 (User) automatically via DB schema.
+     * Phase 2: Validate OTP and Create Account
      */
     public function register(Request $request)
     {
@@ -72,17 +165,20 @@ class AuthController extends Controller
             'otp' => 'required|string|size:6',
         ]);
 
-        $cachedOtp = session('registration_otp');
         $userData = session('registration_data');
 
-        if (!$cachedOtp || !$userData) {
-            return redirect()->route('login')->withErrors(['otp' => 'Your verification window expired. Please try registering again.']);
+        if (!$userData) {
+            return redirect()->route('login')->withErrors(['otp' => 'Registration session expired. Please try again.']);
         }
 
-        if ($request->otp != $cachedOtp) {
-            return back()->with('otp_sent', true)->withErrors(['otp' => 'The verification OTP you entered is invalid.']);
+        // Validate OTP using database
+        $validation = $this->validateOTP($userData['email'], $request->otp, 'registration');
+
+        if (!$validation['valid']) {
+            return back()->with('otp_sent', true)->withErrors(['otp' => $validation['message']]);
         }
 
+        // Create user
         $user = User::create([
             'role_id' => 2,
             'name' => $userData['name'],
@@ -92,15 +188,48 @@ class AuthController extends Controller
             'password' => $userData['password'],
         ]);
 
-        session()->forget(['registration_otp', 'registration_data']);
+        // Clear session
+        session()->forget('registration_data');
+
+        // Log the user in
         Auth::login($user);
 
-        // Standard user role redirects directly to the main front page index
-        return redirect()->to('/');
+        return redirect()->to('/')->with('status', 'Welcome to Look n Cook, ' . $user->name . '!');
     }
 
     /**
-     * PASSWORD RESET PHASE 1: Send Reset OTP Code via Email
+     * Resend OTP (New Feature!)
+     */
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $userData = session('registration_data');
+
+        if (!$userData || $userData['email'] !== $request->email) {
+            return back()->withErrors(['email' => 'Session expired. Please try registering again.']);
+        }
+
+        // Delete old OTPs
+        OTP::where('email', $request->email)
+            ->where('type', 'registration')
+            ->where('is_verified', false)
+            ->delete();
+
+        // Generate and send new OTP
+        $this->generateAndSendOTP(
+            $request->email,
+            $userData['name'],
+            'registration'
+        );
+
+        return back()->with('status', 'A new OTP has been sent to your email!');
+    }
+
+    /**
+     * PASSWORD RESET PHASE 1: Send Reset OTP
      */
     public function sendResetOtp(Request $request)
     {
@@ -110,34 +239,21 @@ class AuthController extends Controller
             'email.exists' => 'We cannot find an account with that email address.'
         ]);
 
-        $otp = rand(100000, 999999);
+        // Store email in session
+        session(['password_reset_email' => $request->email]);
 
-        session([
-            'password_reset_email' => $request->email,
-            'password_reset_otp' => $otp
-        ]);
+        // Generate and send OTP using database
+        $this->generateAndSendOTP(
+            $request->email,
+            'there',
+            'password_reset'
+        );
 
-        Mail::send([], [], function ($message) use ($request, $otp) {
-            $message->to($request->email)
-                ->subject('Reset Your Password - Look n Cook')
-                ->html('
-                    <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #f1f1f1; border-radius: 10px;">
-                        <h2 style="color: #ff2d7a; text-align: center;">Look n Cook</h2>
-                        <p>Hello,</p>
-                        <p>We received a request to reset your account password. Use the authorization OTP code below to set a new password:</p>
-                        <div style="text-align: center; margin: 30px 0;">
-                            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #111; background: #fff1f6; padding: 10px 25px; border-radius: 8px; border: 1px dashed #ff2d7a;">' . $otp . '</span>
-                        </div>
-                        <p style="color: #7d7d8e; font-size: 13px;">If you did not request a password change, you can safely ignore this email.</p>
-                    </div>
-                ');
-        });
-
-        return back()->with('forgot_otp_sent', true)->with('status', 'A password reset token has been delivered to your email!');
+        return back()->with('forgot_otp_sent', true)->with('status', 'A password reset OTP has been sent to your email!');
     }
 
     /**
-     * PASSWORD RESET PHASE 2: Verify OTP and save new password database-wide
+     * PASSWORD RESET PHASE 2: Verify OTP and Update Password
      */
     public function updatePassword(Request $request)
     {
@@ -146,31 +262,35 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $cachedOtp = session('password_reset_otp');
-        $targetEmail = session('password_reset_email');
+        $email = session('password_reset_email');
 
-        if (!$cachedOtp || !$targetEmail) {
-            return redirect()->route('login')->withErrors(['password' => 'Session expired. Please request a new password recovery link.']);
+        if (!$email) {
+            return redirect()->route('login')->withErrors(['password' => 'Password reset session expired. Please try again.']);
         }
 
-        if ($request->otp != $cachedOtp) {
-            return back()->with('forgot_otp_sent', true)->withErrors(['otp' => 'The reset OTP code entered is incorrect.']);
+        // Validate OTP using database
+        $validation = $this->validateOTP($email, $request->otp, 'password_reset');
+
+        if (!$validation['valid']) {
+            return back()->with('forgot_otp_sent', true)->withErrors(['otp' => $validation['message']]);
         }
 
-        $user = User::where('email', $targetEmail)->first();
+        // Update password
+        $user = User::where('email', $email)->first();
         if ($user) {
             $user->update([
                 'password' => Hash::make($request->password)
             ]);
         }
 
-        session()->forget(['password_reset_otp', 'password_reset_email']);
+        // Clear session
+        session()->forget('password_reset_email');
 
-        return redirect()->route('login')->with('status', 'Success! Your password has been changed. You can now log in.');
+        return redirect()->route('login')->with('status', 'Password updated successfully! You can now login.');
     }
 
     /**
-     * Authenticate session and split route users based on database role assignments
+     * Login User
      */
     public function login(Request $request)
     {
@@ -186,18 +306,15 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
-            // Role ID 1 is Admin -> Send them to the dedicated admin dashboard
             if ($user->role_id == 1) {
                 return redirect()->intended('/admin/dashboard');
             }
 
-            // Role ID 3 is Manager -> Send them to the manager dashboard
             if ($user->role_id == 3) {
                 return redirect()->intended('/pos/dashboard');
             }
 
-            // Default fallback: Role ID 2 is User -> Send straight to home page index
-            return redirect()->intended('/');
+            return redirect()->intended('/')->with('status', 'Welcome back, ' . $user->name . '!');
         }
 
         return back()->withErrors([
@@ -206,7 +323,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Terminate active sessions securely
+     * Logout User
      */
     public function logout(Request $request)
     {
@@ -215,7 +332,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Permanent Fix: Redirect directly to the login page route
-        return redirect()->route('login');
+        return redirect()->route('login')->with('status', 'Logged out successfully.');
     }
 }

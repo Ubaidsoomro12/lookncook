@@ -2,186 +2,363 @@
 @section('title', 'View | Orders')
 
 @section('content')
-<div class="max-w-7xl mx-auto">
-    <!-- Header Row -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Manage Orders</h1>
-            <p class="text-sm text-gray-500 mt-1">Manage all customer orders and payment statuses.</p>
-        </div>
-        <div>
-            <a href="{{ route('admin.payment-methods.index') }}" class="inline-flex items-center gap-2 bg-gradient-to-r from-[#ff2d7a] to-[#ff4b91] text-white font-medium px-5 py-2.5 rounded-xl shadow-md shadow-[#ff2d7a]/20 hover:opacity-90 transition-all">
-                <i class="fa-solid fa-credit-card"></i> Manage Payment Methods
-            </a>
-        </div>
+<style>
+  .ord-page * { box-sizing: border-box; }
+  .ord-full-width { max-width: 1280px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 1280px) { .ord-full-width { padding: 0; } }
+
+  .ord-header h1 { font-size: 24px !important; font-weight: 700 !important; color: #1f2937; margin: 0; }
+  .ord-header p { font-size: 14px; color: #6b7280; margin: 4px 0 0 0; }
+
+  .ord-add-btn {
+    background: linear-gradient(to right, #ff2d7a, #ff4b91);
+    color: #fff; font-weight: 500; font-size: 14px;
+    padding: 10px 20px; border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(255,45,122,0.25);
+    border: none; display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none; white-space: nowrap; transition: all .2s;
+  }
+  .ord-add-btn:hover { opacity: .9; color: #fff; text-decoration: none; }
+
+  .ord-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow: hidden; }
+
+  .ord-filter-bar { padding: 16px; border-bottom: 1px solid #f3f4f6; display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+
+  .ord-search-wrap { position: relative; width: 100%; max-width: 260px; }
+  .ord-search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 13px; }
+  .ord-search {
+    width: 100%; padding: 10px 16px 10px 36px; border-radius: 12px;
+    border: 1px solid #e5e7eb; font-size: 14px; outline: none; transition: all .2s;
+  }
+  .ord-search:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.15); }
+
+  .ord-select {
+    padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
+    font-size: 14px; background: #fff; outline: none; transition: all .2s;
+  }
+  .ord-select:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.15); }
+
+  .ord-table-responsive {
+    width: 100%;
+    overflow-x: scroll !important;
+    overflow-y: hidden;
+    border-radius: 0 0 16px 16px;
+  }
+  .ord-table-responsive::-webkit-scrollbar { height: 8px; }
+  .ord-table-responsive::-webkit-scrollbar-track {
+    background: linear-gradient(to right, #ff2d7a, #ff6fa5);
+    border-radius: 0 0 16px 16px;
+  }
+  .ord-table-responsive::-webkit-scrollbar-thumb { background: #111827; border-radius: 9999px; }
+  .ord-table-responsive::-webkit-scrollbar-thumb:hover { background: #000; }
+  .ord-table-responsive::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+  .ord-table-responsive { scrollbar-width: thin; scrollbar-color: #111827 #ff2d7a; }
+
+  .ord-page table.ord-table { width: 100%; min-width: 1180px; font-size: 14px; text-align: left; border-collapse: collapse; margin-bottom: 0; }
+  .ord-page .ord-table thead { background: #f9fafb; color: #6b7280; text-transform: uppercase; font-size: 11px; letter-spacing: .05em; }
+  .ord-page .ord-table thead th { padding: 12px 24px; font-weight: 600; white-space: nowrap; border-bottom: 1px solid #e5e7eb; }
+  .ord-page .ord-table tbody tr { border-top: 1px solid #f3f4f6; }
+  .ord-page .ord-table tbody tr:first-child { border-top: none; }
+  .ord-page .ord-table tbody td { padding: 12px 24px; vertical-align: middle; color: #374151; }
+
+  .ord-order-number { font-weight: 600; color: #1f2937; white-space: nowrap; }
+  .ord-customer-name { font-weight: 500; color: #1f2937; }
+  .ord-customer-email { font-size: 11px; color: #9ca3af; }
+  .ord-total { font-weight: 700; color: #ff2d7a; white-space: nowrap; }
+  .ord-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb; transition: opacity .2s; }
+  .ord-thumb:hover { opacity: .8; }
+  .ord-date-cell { color: #9ca3af; white-space: nowrap; font-size: 12px; }
+
+  .ord-badge { padding: 4px 10px; border-radius: 9999px; font-size: 11px; font-weight: 600; border: 1px solid; display: inline-block; white-space: nowrap; }
+  .ord-badge-green  { background:#ecfdf5; color:#16a34a; border-color:#bbf7d0; }
+  .ord-badge-amber  { background:#fffbeb; color:#d97706; border-color:#fde68a; }
+  .ord-badge-red    { background:#fef2f2; color:#dc2626; border-color:#fecaca; }
+  .ord-badge-blue   { background:#eff6ff; color:#2563eb; border-color:#bfdbfe; }
+  .ord-badge-gray   { background:#f3f4f6; color:#6b7280; border-color:#e5e7eb; }
+  .ord-badge-greendark { background:#f0fdf4; color:#15803d; border-color:#86efac; }
+
+  .ord-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #fbcfe8; }
+  .ord-avatar-fallback {
+    width: 28px; height: 28px; border-radius: 50%; background: #fdf2f8; border: 1px solid #fbcfe8;
+    display: flex; align-items: center; justify-content: center; color: #ff2d7a; font-size: 11px; font-weight: 700;
+  }
+  .ord-rider-name { font-size: 12px; font-weight: 500; color: #1f2937; margin: 0; }
+  .ord-rider-eta { font-size: 10px; color: #9ca3af; }
+  .ord-rider-unassigned { color: #d1d5db; font-size: 12px; }
+
+  .ord-actions-group { display: flex; justify-content: flex-end; gap: 8px; }
+  .ord-action-btn { width: 32px; height: 32px; border-radius: 8px; border: none; display: inline-flex; align-items: center; justify-content: center; transition: all .2s; }
+  .ord-action-assign  { background:#fdf2f8; color:#ff2d7a; }
+  .ord-action-assign:hover  { background:#fbcfe8; }
+  .ord-action-view    { background:#eef2ff; color:#4f46e5; }
+  .ord-action-view:hover    { background:#e0e7ff; }
+  .ord-action-approve { background:#ecfdf5; color:#059669; }
+  .ord-action-approve:hover { background:#d1fae5; }
+  .ord-action-delete  { background:#fef2f2; color:#dc2626; }
+  .ord-action-delete:hover  { background:#fee2e2; }
+
+  .ord-modal-content { border: none; border-radius: 16px; }
+  .ord-modal-icon-circle {
+    width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px auto;
+  }
+  .ord-icon-green { background:#ecfdf5; box-shadow: 0 0 0 8px rgba(209,250,229,.5); color:#10b981; }
+  .ord-icon-red   { background:#fef2f2; box-shadow: 0 0 0 8px rgba(254,226,226,.5); color:#ef4444; }
+  .ord-form-label { font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 6px; }
+  .ord-form-control, .ord-form-select {
+    width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
+    font-size: 14px; outline: none; transition: all .2s;
+  }
+  .ord-form-control:focus, .ord-form-select:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.15); }
+  .ord-submit-btn {
+    background: linear-gradient(to right, #ff2d7a, #ff4b91); color: #fff; font-weight: 500; border: none;
+    border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(255,45,122,0.2);
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s;
+  }
+  .ord-submit-btn:hover { opacity: .9; color: #fff; }
+  .ord-approve-btn {
+    background: linear-gradient(to right, #10b981, #059669); color: #fff; font-weight: 500; border: none;
+    border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(16,185,129,0.2);
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s;
+  }
+  .ord-approve-btn:hover { opacity: .9; color: #fff; }
+  .ord-danger-btn {
+    background: linear-gradient(to right, #ef4444, #dc2626); color: #fff; font-weight: 500; border: none;
+    border-radius: 12px; padding: 10px 20px; box-shadow: 0 4px 12px rgba(239,68,68,0.2);
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; transition: all .2s;
+  }
+  .ord-danger-btn:hover { opacity: .9; color: #fff; }
+  .ord-cancel-btn {
+    border: 1px solid #e5e7eb; color: #6b7280; font-weight: 500; background: #fff;
+    border-radius: 12px; padding: 10px 20px; transition: all .2s;
+  }
+  .ord-cancel-btn:hover { background: #f9fafb; }
+
+  .ord-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 480px) { .ord-detail-grid { grid-template-columns: 1fr; } }
+  .ord-detail-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #9ca3af; margin-bottom: 2px; }
+  .ord-detail-value { font-weight: 500; color: #1f2937; margin: 0; }
+  .ord-detail-sub { font-size: 12px; color: #6b7280; margin: 0; }
+
+  /* TOAST */
+  #toastContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 380px;
+    padding: 0 16px;
+  }
+  @media (min-width: 640px) { #toastContainer { padding: 0; } }
+  .toast-item {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    padding: 16px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transform: translateX(120%);
+    opacity: 0;
+    transition: all 0.3s ease-out;
+    border: 1px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
+  }
+  .toast-item.show { transform: translateX(0); opacity: 1; }
+  .toast-item.success { border-color: #86efac; }
+  .toast-item.error { border-color: #fca5a5; }
+  .toast-icon {
+    width: 36px; height: 36px; min-width: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; margin-top: 2px;
+  }
+  .toast-icon.success { background: #ecfdf5; }
+  .toast-icon.error { background: #fef2f2; }
+  .toast-icon i.success { color: #22c55e; }
+  .toast-icon i.error { color: #dc2626; }
+  .toast-content { flex: 1; }
+  .toast-content .toast-title { font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 2px; }
+  .toast-content .toast-message { font-size: 14px; color: #6b7280; margin-bottom: 0; }
+  .toast-close {
+    background: none; border: none; color: #d1d5db; cursor: pointer; padding: 4px; transition: color 0.2s; flex-shrink: 0;
+  }
+  .toast-close:hover { color: #6b7280; }
+  .toast-progress {
+    position: absolute; bottom: 0; left: 0; height: 3px; width: 100%;
+    background: linear-gradient(to right, #ff2d7a, #ff4b91);
+    transition: width 5s linear;
+  }
+  .toast-item.error .toast-progress { background: #dc2626; }
+</style>
+
+<div class="ord-page">
+  <div class="ord-full-width">
+
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+      <div class="ord-header">
+        <h1>Manage Orders</h1>
+        <p>Manage all customer orders and payment statuses.</p>
+      </div>
+      <a href="{{ route('admin.payment-methods.index') }}" class="ord-add-btn">
+        <i class="fa-solid fa-credit-card"></i> Manage Payment Methods
+      </a>
     </div>
 
-    <!-- Table + Filter Card -->
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-        <div class="p-4 border-b border-gray-100 flex flex-wrap items-center gap-3">
-            <div class="relative w-full sm:w-64">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                <input type="text" id="orderSearchInput" placeholder="Search Order #, Customer..." 
-                       class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff2d7a]/30 focus:border-[#ff2d7a] transition-all">
-            </div>
-            <select id="filterMethod" class="px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff2d7a]/30 focus:border-[#ff2d7a] transition-all bg-white">
-                <option value="">All Methods</option>
-                @foreach($paymentMethods as $method)
-                    <option value="{{ $method->id }}">{{ $method->name }}</option>
-                @endforeach
-            </select>
-            <select id="filterStatus" class="px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff2d7a]/30 focus:border-[#ff2d7a] transition-all bg-white">
-                <option value="">All Statuses</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="failed">Failed</option>
-                <option value="completed">Completed</option>
-            </select>
+    <div class="ord-card">
+      <div class="ord-filter-bar">
+        <div class="ord-search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="orderSearchInput" placeholder="Search Order #, Customer..." class="ord-search" autocomplete="off">
         </div>
+        <select id="filterMethod" class="ord-select">
+          <option value="">All Methods</option>
+          @foreach($paymentMethods as $method)
+            <option value="{{ $method->id }}">{{ $method->name }}</option>
+          @endforeach
+        </select>
+        <select id="filterStatus" class="ord-select">
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="failed">Failed</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-gray-50 text-gray-500 uppercase text-xs tracking-wider">
-                    <tr>
-                        <th class="px-6 py-3">Order #</th>
-                        <th class="px-6 py-3">Customer</th>
-                        <th class="px-6 py-3">Phone</th>
-                        <th class="px-6 py-3">Total</th>
-                        <th class="px-6 py-3">Payment Method</th>
-                        <th class="px-6 py-3">Payment Status</th>
-                        <th class="px-6 py-3">Screenshot</th>
-                        <th class="px-6 py-3">Rider Status</th>
-                        <th class="px-6 py-3">Rider</th>
-                        <th class="px-6 py-3">Date</th>
-                        <th class="px-6 py-3 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="ordersTableBody" class="divide-y divide-gray-100">
-                    @php
-                        $assignStatusColors = [
-                            'review'    => 'bg-amber-50 text-amber-600 border-amber-200',
-                            'preparing' => 'bg-blue-50 text-blue-600 border-blue-200',
-                            'completed' => 'bg-emerald-50 text-emerald-600 border-emerald-200',
-                            'delivered' => 'bg-green-50 text-green-700 border-green-300',
-                        ];
-                    @endphp
-                    @forelse($orders as $order)
-                        <tr data-row-id="{{ $order->id }}" data-method="{{ $order->payment_method_id }}" data-status="{{ $order->payment_status }}">
-                            <td class="px-6 py-3 font-medium text-gray-800">#{{ $order->order_number }}</td>
-                            <td class="px-6 py-3">
-                                <div class="font-medium text-gray-800">{{ $order->customer_name }}</div>
-                                <div class="text-xs text-gray-400">{{ $order->customer_email }}</div>
-                            </td>
-                            <td class="px-6 py-3 text-gray-600 text-sm">{{ $order->customer_phone ?? '—' }}</td>
-                            <td class="px-6 py-3 font-bold text-[#ff2d7a]">Rs. {{ number_format($order->total_amount, 2) }}</td>
-                            <td class="px-6 py-3 text-gray-500">{{ $order->paymentMethod?->name ?? '—' }}</td>
-                            <td class="px-6 py-3">
-                                @php
-                                    $badgeClass = match($order->payment_status) {
-                                        'approved' => 'bg-green-50 text-green-600 border-green-200',
-                                        'pending' => 'bg-amber-50 text-amber-600 border-amber-200',
-                                        'failed' => 'bg-red-50 text-red-600 border-red-200',
-                                        'completed' => 'bg-blue-50 text-blue-600 border-blue-200',
-                                        default => 'bg-gray-100 text-gray-500 border-gray-200'
-                                    };
-                                @endphp
-                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold border {{ $badgeClass }}">
-                                    {{ ucfirst($order->payment_status) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-3">
-                                @if($order->payment_screenshot)
-                                    <a href="{{ asset($order->payment_screenshot) }}" target="_blank">
-                                        <img src="{{ asset($order->payment_screenshot) }}" class="w-10 h-10 object-cover rounded-md border border-gray-200 hover:opacity-80 transition">
-                                    </a>
-                                @else
-                                    <span class="text-gray-300">—</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-3">
-                                <span class="px-2.5 py-1 rounded-full text-xs font-semibold border {{ $assignStatusColors[$order->status] ?? 'bg-gray-100 text-gray-500 border-gray-200' }}">
-                                    {{ ucfirst($order->status ?? 'review') }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-3 rider-cell">
-                                @if($order->rider)
-                                    <div class="flex items-center gap-2">
-                                        @if($order->rider->image_url)
-                                            <img src="{{ $order->rider->image_url }}" alt="{{ $order->rider->name }}" class="w-7 h-7 rounded-full object-cover border border-pink-100">
-                                        @else
-                                            <div class="w-7 h-7 rounded-full bg-pink-50 border border-pink-100 flex items-center justify-center text-[#ff2d7a] text-xs font-bold">
-                                                {{ strtoupper(substr($order->rider->name, 0, 1)) }}
-                                            </div>
-                                        @endif
-                                        <div>
-                                            <p class="text-xs font-medium text-gray-800">{{ $order->rider->name }}</p>
-                                            @if($order->estimated_time)
-                                                <span class="text-[10px] text-gray-500"><i class="fa-regular fa-clock"></i> {{ $order->estimated_time }}</span>
-                                            @endif
-                                        </div>
-                                    </div>
-                                @else
-                                    <span class="text-gray-300 text-xs">Unassigned</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-3 text-gray-400 whitespace-nowrap text-xs">{{ $order->created_at->format('d M Y, H:i') }}</td>
-                            <td class="px-6 py-3 text-right">
-                                <div class="flex justify-end gap-2">
-                                    <!-- Assign Rider Button — only for approved orders -->
-                                    @if($order->payment_status === 'approved')
-                                    <button type="button" class="assign-rider-btn w-8 h-8 flex items-center justify-center rounded-lg bg-pink-50 text-[#ff2d7a] hover:bg-pink-100 transition-all"
-                                            data-order-id="{{ $order->id }}"
-                                            data-order-number="{{ $order->order_number }}"
-                                            data-rider-id="{{ $order->rider_assigned }}"
-                                            data-estimated-time="{{ $order->estimated_time }}"
-                                            data-status="{{ $order->status ?? 'review' }}"
-                                            data-url="{{ route('admin.orders.assign', $order->id) }}"
-                                            title="Assign Rider">
-                                        <i class="fa-solid fa-motorcycle text-xs"></i>
-                                    </button>
-                                    @endif
+      <div class="ord-table-responsive">
+        <table class="ord-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Total</th>
+              <th>Payment Method</th>
+              <th>Payment Status</th>
+              <th>Screenshot</th>
+              <th>Rider Status</th>
+              <th>Rider</th>
+              <th>Date</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            @php
+              $assignStatusColors = [
+                  'review'    => 'ord-badge-amber',
+                  'preparing' => 'ord-badge-blue',
+                  'completed' => 'ord-badge-green',
+                  'delivered' => 'ord-badge-greendark',
+              ];
+            @endphp
+            @forelse($orders as $order)
+              <tr data-row-id="{{ $order->id }}" data-method="{{ $order->payment_method_id }}" data-status="{{ $order->payment_status }}">
+                <td class="ord-order-number">#{{ $order->order_number }}</td>
+                <td>
+                  <p class="ord-customer-name mb-0">{{ $order->customer_name }}</p>
+                  <p class="ord-customer-email mb-0">{{ $order->customer_email }}</p>
+                </td>
+                <td class="text-secondary">{{ $order->customer_phone ?? '—' }}</td>
+                <td class="ord-total">Rs. {{ number_format($order->total_amount, 2) }}</td>
+                <td class="text-secondary">{{ $order->paymentMethod?->name ?? '—' }}</td>
+                <td>
+                  @php
+                    $badgeClass = match($order->payment_status) {
+                        'approved' => 'ord-badge-green',
+                        'pending' => 'ord-badge-amber',
+                        'failed' => 'ord-badge-red',
+                        'completed' => 'ord-badge-blue',
+                        default => 'ord-badge-gray'
+                    };
+                  @endphp
+                  <span class="ord-badge payment-status-badge {{ $badgeClass }}">{{ ucfirst($order->payment_status) }}</span>
+                </td>
+                <td>
+                  @if($order->payment_screenshot)
+                    <a href="{{ asset($order->payment_screenshot) }}" target="_blank">
+                      <img src="{{ asset($order->payment_screenshot) }}" class="ord-thumb">
+                    </a>
+                  @else
+                    <span class="text-muted">—</span>
+                  @endif
+                </td>
+                <td>
+                  <span class="ord-badge rider-status-badge {{ $assignStatusColors[$order->status] ?? 'ord-badge-gray' }}">
+                    {{ ucfirst($order->status ?? 'review') }}
+                  </span>
+                </td>
+                <td class="rider-cell">
+                  @if($order->rider)
+                    <div class="d-flex align-items-center gap-2">
+                      @if($order->rider->image_url)
+                        <img src="{{ $order->rider->image_url }}" alt="{{ $order->rider->name }}" class="ord-avatar">
+                      @else
+                        <div class="ord-avatar-fallback">{{ strtoupper(substr($order->rider->name, 0, 1)) }}</div>
+                      @endif
+                      <div>
+                        <p class="ord-rider-name">{{ $order->rider->name }}</p>
+                        @if($order->estimated_time)
+                          <span class="ord-rider-eta"><i class="fa-regular fa-clock"></i> {{ $order->estimated_time }}</span>
+                        @endif
+                      </div>
+                    </div>
+                  @else
+                    <span class="ord-rider-unassigned">Unassigned</span>
+                  @endif
+                </td>
+                <td class="ord-date-cell">{{ $order->created_at->format('d M Y, H:i') }}</td>
+                <td class="text-end">
+                  <div class="ord-actions-group">
+                    @if($order->payment_status === 'approved')
+                    <button type="button" class="assign-rider-btn ord-action-btn ord-action-assign"
+                            data-order-id="{{ $order->id }}"
+                            data-order-number="{{ $order->order_number }}"
+                            data-rider-id="{{ $order->rider_assigned }}"
+                            data-estimated-time="{{ $order->estimated_time }}"
+                            data-status="{{ $order->status ?? 'review' }}"
+                            data-url="{{ route('admin.orders.assign', $order->id) }}"
+                            title="Assign Rider">
+                      <i class="fa-solid fa-motorcycle" style="font-size:11px;"></i>
+                    </button>
+                    @endif
 
-                                    <!-- View Button -->
-                                    <button type="button" class="view-order-btn w-8 h-8 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all"
-                                            data-url="{{ route('admin.payments.show', $order->id) }}" title="View Details">
-                                        <i class="fa-solid fa-eye text-xs"></i>
-                                    </button>
-                                    
-                                    <!-- Approve Button (Only show for Pending/Failed) -->
-                                    @if(in_array($order->payment_status, ['pending', 'failed']))
-                                    <button type="button" class="approve-order-btn w-8 h-8 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition-all"
-                                            data-url="{{ route('admin.payments.approve', $order->id) }}" title="Approve Payment">
-                                        <i class="fa-solid fa-check text-xs"></i>
-                                    </button>
-                                    @endif
+                    <button type="button" class="view-order-btn ord-action-btn ord-action-view"
+                            data-url="{{ route('admin.payments.show', $order->id) }}" title="View Details">
+                      <i class="fa-solid fa-eye" style="font-size:11px;"></i>
+                    </button>
 
-                                    <!-- Delete Button -->
-                                    <button type="button" class="delete-order-btn w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all"
-                                            data-id="{{ $order->id }}" data-name="Order #{{ $order->order_number }}" 
-                                            data-url="{{ route('admin.payments.destroy', $order->id) }}" title="Delete">
-                                        <i class="fa-solid fa-trash text-xs"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr id="emptyRow">
-                            <td colspan="11" class="px-6 py-10 text-center text-gray-400">
-                                <i class="fa-solid fa-receipt text-2xl mb-2 block"></i>
-                                No orders found.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                    @if(in_array($order->payment_status, ['pending', 'failed']))
+                    <button type="button" class="approve-order-btn ord-action-btn ord-action-approve"
+                            data-url="{{ route('admin.payments.approve', $order->id) }}" title="Approve Payment">
+                      <i class="fa-solid fa-check" style="font-size:11px;"></i>
+                    </button>
+                    @endif
 
-        @if($orders->hasPages())
-            <div class="px-6 py-4 border-t border-gray-100" id="paginationWrapper">
-                {{ $orders->links() }}
-            </div>
-        @endif
+                    <button type="button" class="delete-order-btn ord-action-btn ord-action-delete"
+                            data-id="{{ $order->id }}" data-name="Order #{{ $order->order_number }}"
+                            data-url="{{ route('admin.payments.destroy', $order->id) }}" title="Delete">
+                      <i class="fa-solid fa-trash" style="font-size:11px;"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            @empty
+              <tr id="emptyRow">
+                <td colspan="11" class="text-center text-secondary py-5">
+                  <i class="fa-solid fa-receipt d-block mb-2" style="font-size:24px;"></i>
+                  No orders found.
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- ======================= ORDER DETAILS MODAL ======================= -->

@@ -75,10 +75,14 @@
                         @enderror
 
 
+                        <!-- =========================================
+                             PROFESSION (Simple original select - 320px fix)
+                        ========================================== -->
                         <div class="form-floating mb-2">
                             <select name="profession"
-                                class="form-select contact-input @error('profession') is-invalid @enderror"
-                                id="floatingProfession">
+                                class="form-select contact-input profession-select @error('profession') is-invalid @enderror"
+                                id="floatingProfession"
+                                style="height: 58px;"> <!-- Height fix -->
 
                                 <option value="">Select your profession</option>
                                 <option value="Home Cook / Homemaker" {{ old('profession') == 'Home Cook / Homemaker' ? 'selected' : '' }}>Home Cook / Homemaker</option>
@@ -86,12 +90,9 @@
                                 <option value="Food Blogger / Content Creator" {{ old('profession') == 'Food Blogger / Content Creator' ? 'selected' : '' }}>Food Blogger / Content Creator</option>
                                 <option value="Restaurant Owner / Manager" {{ old('profession') == 'Restaurant Owner / Manager' ? 'selected' : '' }}>Restaurant Owner / Manager</option>
                                 <option value="Caterer / Event Planner" {{ old('profession') == 'Caterer / Event Planner' ? 'selected' : '' }}>Caterer / Event Planner</option>
-                                <option value="Working Professional / Corporate Employee" {{ old('profession') == 'Working Professional / Corporate Employee' ? 'selected' : '' }}>Working Professional /
-                                    Corporate Employee</option>
-                                <option value="Student" {{ old('profession') == 'Student' ? 'selected' : '' }}>Student
-                                </option>
-                                <option value="Other" {{ old('profession') == 'Other' ? 'selected' : '' }}>Other
-                                    Profession</option>
+                                <option value="Working Professional / Corporate Employee" {{ old('profession') == 'Working Professional / Corporate Employee' ? 'selected' : '' }}>Working Professional / Corporate Employee</option>
+                                <option value="Student" {{ old('profession') == 'Student' ? 'selected' : '' }}>Student</option>
+                                <option value="Other" {{ old('profession') == 'Other' ? 'selected' : '' }}>Other Profession</option>
 
                             </select>
 
@@ -268,13 +269,11 @@
             position: absolute;
             top: 50%;
             left: 4% !important;
-            /* Kept slight spacing from screen edge */
             right: auto !important;
             transform: translateY(-50%);
             z-index: 10;
             width: 100%;
             max-width: 480px;
-            /* Perfectly sized standard form box width */
         }
     }
 
@@ -307,6 +306,52 @@
             padding: 1.5rem 1.25rem;
         }
     }
+
+    /* =======================================================
+       320px ULTRA SMALL SCREEN FIX
+    ======================================================= */
+    @media(max-width: 320px) {
+        .contact-form-box {
+            padding: 0.5rem !important; /* Form box ko aur tight karo */
+            border-radius: 12px !important;
+        }
+
+        .contact-form-side {
+            padding: 0 !important;
+        }
+
+        .contact-title {
+            font-size: 20px !important;
+        }
+
+        .contact-page-section .text-muted.small {
+            font-size: 11px !important;
+        }
+
+        .form-floating {
+            margin-bottom: 0.4rem !important; /* Gap aur kam */
+        }
+
+        .contact-input,
+        .contact-textarea {
+            font-size: 12px !important;
+            height: 45px !important;
+        }
+
+        .contact-textarea {
+            height: 75px !important;
+        }
+
+        .profession-select {
+            height: 45px !important;
+            font-size: 12px !important;
+        }
+
+        .contact-submit-btn {
+            font-size: 12px !important;
+            padding: 8px !important;
+        }
+    }
 </style>
 
 <script>
@@ -317,11 +362,8 @@
         // Wait 5 seconds (5000 milliseconds), then hide them
         setTimeout(function () {
             errorMessages.forEach(function (msg) {
-                // Smoothly fade out
                 msg.style.transition = "opacity 0.5s ease";
                 msg.style.opacity = "0";
-
-                // Remove from layout after fade out completes
                 setTimeout(() => msg.style.display = "none", 500);
             });
         }, 5000);

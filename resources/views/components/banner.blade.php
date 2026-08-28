@@ -2,9 +2,9 @@
 
     <div class="banner-overlay"></div>
 
-    <img src="{{ asset('images/briyani.png') }}" class="floating-food food-1">
-    <img src="{{ asset('images/chinese.png') }}" class="floating-food food-2">
-    <img src="{{ asset('images/qorma.png') }}" class="floating-food food-3">
+    <img src="{{ asset('images/Combo.png') }}" class="floating-food food-1">
+    <img src="{{ asset('images/cheifcap.png') }}" class="floating-food food-2">
+    <img src="{{ asset('images/LNCLOGGO.png') }}" class="floating-food food-3">
 
     <div class="container position-relative z-3">
         <div class="text-center">
