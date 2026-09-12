@@ -7,17 +7,25 @@ use App\Models\Product;
 use App\Models\Gallery;
 use App\Models\About;
 use App\Models\Banner;
+use App\Models\Category;
 
 class PageController extends Controller
 {
     public function home()
     {
+        // Get banners
         $banners = Banner::where('status', true)
             ->orderBy('section')
             ->orderBy('sort_order')
             ->get();
 
-        return view('index', compact('banners'));
+        // Get all active categories for the slider
+        $categories = Category::where('status', 'active')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        // Pass both banners and categories to the view
+        return view('index', compact('banners', 'categories'));
     }
 
     public function menu()
@@ -54,13 +62,13 @@ class PageController extends Controller
         $about = About::first();
         if (!$about) {
             $about = (object) [
-                'title'          => 'Look N Cook Home Chef Catering Services',
-                'subtitle'       => 'More Than Just Food',
+                'title' => 'Look N Cook Home Chef Catering Services',
+                'subtitle' => 'More Than Just Food',
                 'subdescription' => 'Welcome to Look N Cook Home Chef. We bring delicious flavors, premium catering services, and unforgettable dining experiences.',
-                'description'    => 'Our chefs prepare fresh meals with passion and creativity, making every event memorable.',
-                'image1'         => 'about1.jpg',
-                'image2'         => 'about2.jpg',
-                'image3'         => 'about3.jpg'
+                'description' => 'Our chefs prepare fresh meals with passion and creativity, making every event memorable.',
+                'image1' => 'about1.jpg',
+                'image2' => 'about2.jpg',
+                'image3' => 'about3.jpg'
             ];
         }
         $banners = Banner::where('status', true)

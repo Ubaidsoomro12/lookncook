@@ -22,8 +22,6 @@ class AuthController extends Controller
     /**
      * Generate and send OTP using database
      */
-    // app/Http/Controllers/AuthController.php - Update generateAndSendOTP method
-
     private function generateAndSendOTP($email, $name, $type = 'registration')
     {
         $otp = rand(100000, 999999);
@@ -42,7 +40,6 @@ class AuthController extends Controller
             'is_verified' => false
         ]);
 
-        // ✅ Send email with additional headers
         Mail::send('emails.loginotp', [
             'otp' => $otp,
             'name' => $name,
@@ -52,7 +49,6 @@ class AuthController extends Controller
                 ->subject('🔐 Verify Your Account - Look n Cook')
                 ->from(env('MAIL_FROM_ADDRESS'), 'Look n Cook');
 
-            // Add extra headers to reduce spam flags
             $headers = $message->getHeaders();
             $headers->addTextHeader('X-Mailer', 'Look-n-Cook-Mailer/1.0');
             $headers->addTextHeader('X-Priority', '3');
@@ -71,7 +67,6 @@ class AuthController extends Controller
      */
     private function validateOTP($email, $otp, $type = 'registration')
     {
-        // Find the OTP record
         $otpRecord = OTP::where('email', $email)
             ->where('type', $type)
             ->where('is_verified', false)
@@ -85,7 +80,6 @@ class AuthController extends Controller
             ];
         }
 
-        // Check if expired
         if ($otpRecord->isExpired()) {
             $otpRecord->delete();
             return [
@@ -94,7 +88,6 @@ class AuthController extends Controller
             ];
         }
 
-        // Check max attempts
         if ($otpRecord->maxAttemptsReached(3)) {
             $otpRecord->delete();
             return [
@@ -103,7 +96,6 @@ class AuthController extends Controller
             ];
         }
 
-        // Check if OTP matches
         if ($otpRecord->otp !== $otp) {
             $otpRecord->incrementAttempts();
             $remainingAttempts = 3 - $otpRecord->attempts;
@@ -113,7 +105,6 @@ class AuthController extends Controller
             ];
         }
 
-        // Mark as verified
         $otpRecord->markAsVerified();
 
         return [
@@ -135,7 +126,6 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Store registration data in session
         session([
             'registration_data' => [
                 'name' => $request->name,
@@ -146,12 +136,7 @@ class AuthController extends Controller
             ]
         ]);
 
-        // Generate and send OTP using database
-        $this->generateAndSendOTP(
-            $request->email,
-            $request->name,
-            'registration'
-        );
+        $this->generateAndSendOTP($request->email, $request->name, 'registration');
 
         return back()->with('otp_sent', true)->with('status', 'An OTP code has been sent to your email!');
     }
@@ -171,14 +156,12 @@ class AuthController extends Controller
             return redirect()->route('login')->withErrors(['otp' => 'Registration session expired. Please try again.']);
         }
 
-        // Validate OTP using database
         $validation = $this->validateOTP($userData['email'], $request->otp, 'registration');
 
         if (!$validation['valid']) {
             return back()->with('otp_sent', true)->withErrors(['otp' => $validation['message']]);
         }
 
-        // Create user
         $user = User::create([
             'role_id' => 2,
             'name' => $userData['name'],
@@ -188,17 +171,15 @@ class AuthController extends Controller
             'password' => $userData['password'],
         ]);
 
-        // Clear session
         session()->forget('registration_data');
 
-        // Log the user in
         Auth::login($user);
 
         return redirect()->to('/')->with('status', 'Welcome to Look n Cook, ' . $user->name . '!');
     }
 
     /**
-     * Resend OTP (New Feature!)
+     * Resend OTP
      */
     public function resendOtp(Request $request)
     {
@@ -212,18 +193,12 @@ class AuthController extends Controller
             return back()->withErrors(['email' => 'Session expired. Please try registering again.']);
         }
 
-        // Delete old OTPs
         OTP::where('email', $request->email)
             ->where('type', 'registration')
             ->where('is_verified', false)
             ->delete();
 
-        // Generate and send new OTP
-        $this->generateAndSendOTP(
-            $request->email,
-            $userData['name'],
-            'registration'
-        );
+        $this->generateAndSendOTP($request->email, $userData['name'], 'registration');
 
         return back()->with('status', 'A new OTP has been sent to your email!');
     }
@@ -239,15 +214,9 @@ class AuthController extends Controller
             'email.exists' => 'We cannot find an account with that email address.'
         ]);
 
-        // Store email in session
         session(['password_reset_email' => $request->email]);
 
-        // Generate and send OTP using database
-        $this->generateAndSendOTP(
-            $request->email,
-            'there',
-            'password_reset'
-        );
+        $this->generateAndSendOTP($request->email, 'there', 'password_reset');
 
         return back()->with('forgot_otp_sent', true)->with('status', 'A password reset OTP has been sent to your email!');
     }
@@ -268,14 +237,12 @@ class AuthController extends Controller
             return redirect()->route('login')->withErrors(['password' => 'Password reset session expired. Please try again.']);
         }
 
-        // Validate OTP using database
         $validation = $this->validateOTP($email, $request->otp, 'password_reset');
 
         if (!$validation['valid']) {
             return back()->with('forgot_otp_sent', true)->withErrors(['otp' => $validation['message']]);
         }
 
-        // Update password
         $user = User::where('email', $email)->first();
         if ($user) {
             $user->update([
@@ -283,14 +250,13 @@ class AuthController extends Controller
             ]);
         }
 
-        // Clear session
         session()->forget('password_reset_email');
 
         return redirect()->route('login')->with('status', 'Password updated successfully! You can now login.');
     }
 
     /**
-     * Login User
+     * Login User – with redirects for admin, manager, and staff roles
      */
     public function login(Request $request)
     {
@@ -312,6 +278,11 @@ class AuthController extends Controller
 
             if ($user->role_id == 3) {
                 return redirect()->intended('/pos/dashboard');
+            }
+
+            // Staff roles (4-8) go to staff dashboard
+            if (in_array($user->role_id, [4, 5, 6, 7, 8])) {
+                return redirect()->intended('/staff/dashboard');
             }
 
             return redirect()->intended('/')->with('status', 'Welcome back, ' . $user->name . '!');

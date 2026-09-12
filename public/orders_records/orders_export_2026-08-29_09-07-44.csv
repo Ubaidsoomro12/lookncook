@@ -1,0 +1,7 @@
+﻿"Order #","Customer Name","Customer Email",Phone,"Total Amount (Rs)","Payment Method","Payment Status",Rider,"Rider Status","Delivery Address",City,"Transaction Ref",Date
+#ORD-0QRBFQFE,"Ubaid Soomro",ubaidsoomro505@gmail.com,03498955974,"2,800.00","Meezan Bank",Approved,"Ubaid Soomroo",Preparing,"Cityzen Colony Qasimabad Hyderabad sindh",Hyderabad,—,"29 Aug 2026, 07:21"
+#ORD-SMSGBS2W,"Ubaid Soomro",ubaidsoomro505@gmail.com,03273787622,350.00,"Cash On Delivery",Approved,"Ubaid Soomroo",Delivered,"Awal Square Wadhuwah Road Qasimabad Hyderabad",Hyderabad,—,"15 Aug 2026, 05:27"
+#ORD-RJYTQQNA,"Ubaid Soomro",ubaidsoomro505@gmail.com,03273787622,550.00,"Meezan Bank",Approved,Unassigned,Review,"Awal Square Wadhuwah Road Qasimabad Hyderabad",Hyderabad,—,"15 Aug 2026, 05:26"
+#ORD-BBTCZBZS,"Ubaid Soomro",ubaidsoomro505@gmail.com,03188893863,680.00,EasyPaisa,Approved,Unassigned,Review,"Awal Square Wadhuwah Road Qasimabad Hyderabad",Hyderabad,tx074863812,"15 Aug 2026, 05:22"
+
+TOTALS,,,,"4,380.00","Total Orders: 4",,,,,,,

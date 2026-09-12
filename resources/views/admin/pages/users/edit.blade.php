@@ -102,6 +102,11 @@
           <option value="1" {{ old('role_id', $user->role_id) == 1 ? 'selected' : '' }}>Admin</option>
           <option value="2" {{ old('role_id', $user->role_id) == 2 ? 'selected' : '' }}>User</option>
           <option value="3" {{ old('role_id', $user->role_id) == 3 ? 'selected' : '' }}>Manager</option>
+          <option value="4" {{ old('role_id', $user->role_id) == 4 ? 'selected' : '' }}>Waiter</option>
+          <option value="5" {{ old('role_id', $user->role_id) == 5 ? 'selected' : '' }}>Chef</option>
+          <option value="6" {{ old('role_id', $user->role_id) == 6 ? 'selected' : '' }}>Cashier</option>
+          <option value="7" {{ old('role_id', $user->role_id) == 7 ? 'selected' : '' }}>Cleaner</option>
+          <option value="8" {{ old('role_id', $user->role_id) == 8 ? 'selected' : '' }}>Delivery Rider</option>
         </select>
         @error('role_id')<p class="user-edit-error-text">{{ $message }}</p>@enderror
       </div>

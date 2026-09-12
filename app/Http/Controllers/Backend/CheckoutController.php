@@ -1,7 +1,7 @@
 <?php
 // FILE: app/Http/Controllers/Backend/CheckoutController.php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

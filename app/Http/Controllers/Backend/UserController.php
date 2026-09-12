@@ -39,7 +39,7 @@ class UserController extends Controller
             'email'    => 'required|email|max:255|unique:users,email',
             'phone'    => 'required|string|max:20',
             'city'     => 'nullable|string|max:100',
-            'role_id'  => 'required|in:1,2,3', // Admin, User, Manager
+            'role_id'  => 'required|in:1,2,3,4,5,6,7,8', // Updated: include staff roles
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -63,7 +63,7 @@ class UserController extends Controller
             'email'   => 'required|email|max:255|unique:users,email,' . $user->id,
             'phone'   => 'required|string|max:20',
             'city'    => 'nullable|string|max:100',
-            'role_id' => 'required|in:1,2,3',
+            'role_id' => 'required|in:1,2,3,4,5,6,7,8',
         ]);
 
         if ($request->filled('password')) {
@@ -79,7 +79,6 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        // Prevent deleting yourself (the admin)
         if ($user->id === auth()->id()) {
             return response()->json(['success' => false, 'message' => 'You cannot delete your own account.'], 422);
         }
