@@ -260,7 +260,7 @@
         .section-label { font-weight: 800; color: #ff2d7a; font-size: 13px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
         .section-divider { border-color: #e9ecef; margin: 30px 0; }
         .payment-label { font-weight: 600; margin-bottom: 8px; display: block; color: #343a40; font-size: 14px; }
-        .req { color: #dc3545; }
+        .req { color: #ff2d7a; }
         .payment-input, .payment-textarea { border-radius: 12px; border: 1.5px solid #ced4da; background: #fff; color: #212529; transition: 0.25s ease; }
         .form-control.payment-input, .form-select.payment-input { height: 56px; padding-left: 18px; }
         .payment-textarea { height: 130px; padding: 16px 18px; resize: none; }

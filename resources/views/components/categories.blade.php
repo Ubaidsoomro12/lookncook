@@ -30,7 +30,8 @@
             <div class="cuisine-hidden-area">
                 <div class="d-flex align-items-start justify-content-start cuisine-slider-track">
 
-                    <a href="{{ route('menu') }}?category=main&item=briyani"
+                    {{-- ===== STATIC KARACHI CATEGORY (HARDCODED) ===== --}}
+                    <a href="{{ route('menu') }}?category=karachi"
                         class="text-decoration-none text-dark cuisine-slider-link">
 
                         <div class="cuisine-item text-center">
@@ -44,121 +45,46 @@
                             </div>
 
                             <!-- TITLE -->
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1" style="color:#f955ad;">
+                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1" style="color:#111111;">
                                 Karachi
                             </h6>
 
                         </div>
                     </a>
 
-                    <a href="{{ route('menu') }}?category=main&item=briyani"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/briyani.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Biryani">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Biryani</h6>
-                        </div>
-                    </a>
+                    {{-- ===== DYNAMIC CATEGORIES FROM DATABASE ===== --}}
+                    @foreach($categories as $category)
+                        {{-- Skip if category name is Karachi (to avoid duplicate) --}}
+                        @if($category->name != 'Karachi')
+                        <a href="{{ route('menu') }}?category={{ $category->slug }}"
+                            class="text-decoration-none text-dark cuisine-slider-link">
 
-                    <a href="{{ route('menu') }}?category=bbq&item=malai-boti"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/bbq.jpg') }}" class="w-100 h-100 object-fit-cover" alt="BBQ">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">BBQ</h6>
-                        </div>
-                    </a>
+                            <div class="cuisine-item text-center">
 
-                    <a href="{{ route('menu') }}?category=dessert&item=special-kheer"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/desert.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Dessert">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Dessert</h6>
-                        </div>
-                    </a>
+                                <!-- CIRCLE ICON AREA -->
+                                <div class="cuisine-image d-flex align-items-center justify-content-center"
+                                    style="background:#f955ad;">
 
-                    <a href="{{ route('menu') }}?category=chinese&item=dynamite-chicken"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/chinese.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Chinese">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Chinese</h6>
-                        </div>
-                    </a>
+                                    @if($category->icon)
+                                        <i class="{{ $category->icon }} text-white" style="font-size: 50px;"></i>
+                                    @elseif($category->image)
+                                        <img src="{{ asset($category->image) }}" class="w-100 h-100 object-fit-cover"
+                                            alt="{{ $category->name }}">
+                                    @else
+                                        <i class="fa-solid fa-utensils text-white" style="font-size: 50px;"></i>
+                                    @endif
 
-                    <a href="{{ route('menu') }}?category=fastfood&item=pizza"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/pizza.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Pizza">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Pizza</h6>
-                        </div>
-                    </a>
+                                </div>
 
-                    <a href="{{ route('menu') }}?category=main&item=karahi"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/karahi.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Karahi">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Karahi</h6>
-                        </div>
-                    </a>
+                                <!-- TITLE -->
+                                <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1" style="color:#111111;">
+                                {{ $category->name }}
+                                </h6>
 
-                    <a href="{{ route('menu') }}?category=fastfood&item=burger"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/fastfood.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Fast Food">
                             </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Fast Food</h6>
-                        </div>
-                    </a>
-
-                    <a href="{{ route('menu') }}?category=main&item=beef"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/beef.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Beef">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Beef</h6>
-                        </div>
-                    </a>
-
-                    <a href="{{ route('menu') }}?category=main&item=roti"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/roti.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Roti">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Roti</h6>
-                        </div>
-                    </a>
-
-                    <a href="{{ route('menu') }}?category=main&item=chicken"
-                        class="text-decoration-none text-dark cuisine-slider-link">
-                        <div class="cuisine-item text-center">
-                            <div class="cuisine-image">
-                                <img src="{{ asset('images/chicken.jpg') }}" class="w-100 h-100 object-fit-cover"
-                                    alt="Chicken">
-                            </div>
-                            <h6 class="fw-semibold mt-3 mb-0 text-truncate px-1">Chicken</h6>
-                        </div>
-                    </a>
+                        </a>
+                        @endif
+                    @endforeach
 
                 </div>
             </div>
@@ -183,10 +109,8 @@
         width: 100%;
     }
 
-    /* Base Link Wrapper sizing */
     .cuisine-slider-link {
         width: 12.5%;
-        /* Default 8 items visible on large screens */
         flex-shrink: 0;
         display: block;
     }
@@ -197,7 +121,6 @@
         cursor: pointer;
     }
 
-    /* Image Wrapper staying structural */
     .cuisine-image {
         width: 120px;
         height: 120px;
@@ -221,9 +144,11 @@
 
     .cuisine-image img {
         transition: transform 0.4s ease;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
-    /* Internal Image zooms, main circle stays completely anchored */
     .cuisine-slider-link:hover .cuisine-image {
         box-shadow: 0 8px 24px rgba(255, 45, 122, 0.25);
         border-color: rgba(255, 45, 122, 0.1);
@@ -243,7 +168,6 @@
         color: #ff2d7a;
     }
 
-    /* Nav Arrows persistent properties across all devices */
     .cuisine-arrow {
         position: absolute;
         top: 50%;
@@ -278,7 +202,6 @@
         right: 0px;
     }
 
-    /* Dynamic Responsive Layout Rules */
     .cuisine-section-heading {
         font-size: 48px;
     }
@@ -287,16 +210,12 @@
         .cuisine-slider-link {
             width: 14.28%;
         }
-
-        /* 7 Items visible */
     }
 
     @media(max-width: 1200px) {
         .cuisine-slider-link {
             width: 16.66%;
         }
-
-        /* 6 Items visible */
         .cuisine-image {
             width: 110px;
             height: 110px;
@@ -307,8 +226,6 @@
         .cuisine-slider-link {
             width: 20%;
         }
-
-        /* 5 Items visible */
         .cuisine-section-heading {
             font-size: 38px;
         }
@@ -318,13 +235,10 @@
         .cuisine-slider-link {
             width: 25%;
         }
-
-        /* 4 Items visible */
         .cuisine-image {
             width: 95px;
             height: 95px;
         }
-
         .cuisine-arrow {
             font-size: 28px;
             width: 36px;
@@ -337,8 +251,6 @@
         .cuisine-slider-link {
             width: 33.33%;
         }
-
-        /* 3 Items visible */
         .cuisine-section-heading {
             font-size: 32px;
         }
@@ -348,8 +260,6 @@
         .cuisine-slider-link {
             width: 50%;
         }
-
-        /* 2 Items visible */
         .cuisine-image {
             width: 85px;
             height: 85px;
@@ -359,7 +269,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // Target wrappers to let multiple instances coexist perfectly without ID conflicts
         const wrappers = document.querySelectorAll('.cuisine-main-wrapper');
 
         wrappers.forEach(wrapper => {
@@ -396,7 +305,6 @@
                 const singleItemWidth = links[0].getBoundingClientRect().width;
                 slider.style.transform = `translateX(-${currentIndex * singleItemWidth}px)`;
 
-                // Handle arrow look states smoothly
                 leftArrow.style.opacity = currentIndex === 0 ? "0.3" : "1";
                 leftArrow.style.pointerEvents = currentIndex === 0 ? "none" : "auto";
 

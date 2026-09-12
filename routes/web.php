@@ -4,20 +4,24 @@ use App\Http\Controllers\front\ContactController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\front\PageController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Backend\CategoryController;
+use App\Http\Controllers\backend\CategoryController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\Backend\ProductController;
-use App\Http\Controllers\Backend\CheckoutController;
-use App\Http\Controllers\Backend\PaymentController;
+use App\Http\Controllers\backend\ProductController;
+use App\Http\Controllers\backend\CheckoutController;
+use App\Http\Controllers\backend\PaymentController;
 use App\Http\Controllers\backend\AboutController;
-use App\Http\Controllers\Backend\PaymentMethodController;
-use App\Http\Controllers\Backend\RiderController;
-use App\Http\Controllers\Backend\OrderAssignmentController;
-use App\Http\Controllers\Backend\UserController;
-use App\Http\Controllers\Backend\BannerController;
+use App\Http\Controllers\backend\PaymentMethodController;
+use App\Http\Controllers\backend\RiderController;
+use App\Http\Controllers\backend\OrderAssignmentController;
+use App\Http\Controllers\backend\UserController;
+use App\Http\Controllers\backend\BannerController;
 use App\Http\Controllers\pos\TableController;
-use App\Http\Controllers\Backend\WaiterController;
+use App\Http\Controllers\backend\staffController;
+use App\Http\Controllers\backend\BranchController;
+use App\Http\Controllers\front\ProfileController;
+use App\Http\Controllers\front\OrderController;
+use App\Http\Controllers\Staff\AttendanceController;
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
@@ -35,6 +39,8 @@ Route::controller(PageController::class)->group(function () {
 Route::post('/contact-submit', [ContactController::class, 'store'])->name('contacts.store');
 
 //-------------------------------------------------------------- auth routes --------------------------------
+
+
 Route::get('/login', [AuthController::class, 'showAuthForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/register/send-otp', [AuthController::class, 'registerOtp'])->name('register.otp');
@@ -67,6 +73,18 @@ Route::middleware(['auth'])->group(function () {
         return view('pos.pos_dashboard');
     })->name('pos.dashboard');
 
+    // =============================================================
+    // STAFF DASHBOARD ROUTE (NEW)
+    // =============================================================
+    Route::get('/staff/dashboard', [StaffController::class, 'dashboard'])->name('staff.dashboard');
+
+    // =============================================================
+    // STAFF ATTENDANCE ROUTES (NEW)
+    // =============================================================
+    Route::post('/staff/clock-in', [AttendanceController::class, 'clockIn'])->name('staff.clock-in');
+    Route::post('/staff/clock-out', [AttendanceController::class, 'clockOut'])->name('staff.clock-out');
+    Route::get('/staff/attendance', [AttendanceController::class, 'index'])->name('staff.attendance');
+
     Route::get('/payment', [CheckoutController::class, 'index'])->name('payment');
 
     /* Admin Panel */
@@ -92,17 +110,36 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{id}', 'show')->name('show');
         });
 
-        // ===== WAITER ROUTES =====
-        Route::prefix('waiter')->name('waiter.')->controller(WaiterController::class)->group(function () {
+        // ===== STAFF ROUTES (replaces waiter) =====
+        Route::prefix('staff')->name('staff.')->controller(StaffController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
+            Route::get('/search-users', 'searchUsers')->name('search-users'); // <-- new
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
             Route::get('/show/{id}', 'show')->name('show');
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::put('/update/{id}', 'update')->name('update');
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
-            
+
+            // =============================================================
+            // ADMIN STAFF ATTENDANCE MANAGEMENT ROUTES (NEW)
+            // =============================================================
+            Route::get('/attendance', 'attendance')->name('attendance');
+            Route::get('/attendance/{id}', 'attendanceDetail')->name('attendance.detail');
+            Route::post('/attendance/{id}/approve-reclock', 'approveReclock')->name('attendance.approve-reclock');
+        });
+
+        Route::prefix('branches')->name('branches.')->controller(BranchController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/search', 'search')->name('search');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::get('/{id}', 'show')->name('show');
+            Route::post('/{id}/status', 'updateStatus')->name('status');
         });
 
         // Banner Routes
@@ -170,10 +207,12 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
         });
 
-        // Payment management routes
+        // Add these routes inside the admin payment group
         Route::prefix('payments')->name('payments.')->controller(PaymentController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
+            Route::get('/stats', 'stats')->name('stats');
+            Route::post('/export', 'export')->name('export');
             Route::get('/{order}', 'show')->name('show');
             Route::post('/{order}/approve', 'approve')->name('approve');
             Route::delete('/{order}', 'destroy')->name('destroy');
@@ -192,7 +231,16 @@ Route::middleware(['auth'])->group(function () {
         // About Management
         Route::get('/about', [AboutController::class, 'index'])->name('about.index');
         Route::put('/about/{about}', [AboutController::class, 'update'])->name('about.update');
+
+
     });
+
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Order route - Simple aur working
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
 });
 
 // ============================================== PAYMENT & CHECKOUT ROUTES ==============================================

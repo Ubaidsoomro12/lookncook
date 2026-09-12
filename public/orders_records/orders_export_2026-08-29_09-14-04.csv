@@ -1,0 +1,4 @@
+﻿"Order #","Customer Name","Customer Email",Phone,"Total Amount (Rs)","Payment Method","Payment Status",Rider,"Rider Status","Delivery Address",City,"Transaction Ref",Date
+#ORD-SRWY6TUM,"Ubaid Soomro",ubaidsoomro505@gmail.com,03498955974,"2,400.00",JazzCash,Approved,"Ubaid Soomroo",Preparing,"Qasimabad hyderabad",Hyderabad,031252633363636333,"29 Aug 2026, 09:13"
+
+TOTALS,,,,"2,400.00","Total Orders: 1",,,,,,,

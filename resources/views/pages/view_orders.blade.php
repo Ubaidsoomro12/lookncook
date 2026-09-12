@@ -26,208 +26,92 @@
                 <div class="orders-list-container">
                     <div class="orders-list-header">
                         <h3><i class="fas fa-list-ul"></i> Orders List</h3>
-                        <span class="badge-count">3</span>
+                        <span class="badge-count">{{ $orders->count() }}</span>
                     </div>
                     <div class="orders-list-body">
-
-                        <!-- Order 1 -->
-                        <div class="order-item active">
-                            <div class="order-header">
-                                <span class="order-id">#ORD-1001</span>
-                                <span class="order-time">10 Aug 2025, 02:30 PM</span>
-                            </div>
-                            <div class="product-list">
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Chicken Biryani</span>
-                                    <span class="product-qty">× 2</span>
+                        @forelse($orders as $order)
+                            <!-- Order Item -->
+                            <div class="order-item {{ $loop->first ? 'active' : '' }}">
+                                <div class="order-header">
+                                    <span class="order-id">#{{ $order->order_number ?? 'ORD-'.$order->id }}</span>
+                                    <span class="order-time">{{ $order->created_at->format('d M Y, h:i A') }}</span>
                                 </div>
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Garlic Naan</span>
-                                    <span class="product-qty">× 1</span>
+                                <div class="product-list">
+                                    @foreach($order->items as $item)
+                                        <div class="product-item">
+                                            <span class="product-name"><i class="fas fa-utensils"></i> {{ $item->product->name ?? 'Product' }}</span>
+                                            <span class="product-qty">× {{ $item->quantity }}</span>
+                                        </div>
+                                    @endforeach
                                 </div>
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Cold Drink</span>
-                                    <span class="product-qty">× 3</span>
+                                <div class="address-row">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>{{ $order->address ?? 'No address provided' }}</span>
                                 </div>
-                            </div>
-                            <div class="address-row">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>House #12, Street 5, Gulshan-e-Iqbal, Karachi</span>
-                            </div>
-                            <div class="order-footer">
-                                <span class="total-amount">₨ 1,250.00</span>
-                                <span class="status-badge status-pending">Pending</span>
-                            </div>
-                        </div>
-
-                        <!-- Order 2 -->
-                        <div class="order-item">
-                            <div class="order-header">
-                                <span class="order-id">#ORD-1002</span>
-                                <span class="order-time">10 Aug 2025, 11:15 AM</span>
-                            </div>
-                            <div class="product-list">
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Chicken Karahi</span>
-                                    <span class="product-qty">× 1</span>
-                                </div>
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Roti</span>
-                                    <span class="product-qty">× 4</span>
-                                </div>
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Raita</span>
-                                    <span class="product-qty">× 1</span>
+                                <div class="order-footer">
+                                    <span class="total-amount">₨ {{ number_format($order->total_amount, 2) }}</span>
+                                    <span class="status-badge status-{{ $order->status }}">{{ ucfirst($order->status) }}</span>
                                 </div>
                             </div>
-                            <div class="address-row">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Flat #3, Block B, North Nazimabad, Karachi</span>
+                        @empty
+                            <div class="text-center py-5">
+                                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                <h5>No Orders Found</h5>
+                                <p class="text-muted">You haven't placed any orders yet.</p>
+                                <a href="{{ route('menu') }}" class="btn btn-primary mt-2">
+                                    <i class="fas fa-shopping-bag me-2"></i> Start Shopping
+                                </a>
                             </div>
-                            <div class="order-footer">
-                                <span class="total-amount">₨ 850.00</span>
-                                <span class="status-badge status-processing">Processing</span>
-                            </div>
-                        </div>
-
-                        <!-- Order 3 -->
-                        <div class="order-item">
-                            <div class="order-header">
-                                <span class="order-id">#ORD-1003</span>
-                                <span class="order-time">09 Aug 2025, 08:45 PM</span>
-                            </div>
-                            <div class="product-list">
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Chicken Tikka</span>
-                                    <span class="product-qty">× 3</span>
-                                </div>
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Fried Rice</span>
-                                    <span class="product-qty">× 2</span>
-                                </div>
-                                <div class="product-item">
-                                    <span class="product-name"><i class="fas fa-utensils"></i> Mint Chutney</span>
-                                    <span class="product-qty">× 1</span>
-                                </div>
-                            </div>
-                            <div class="address-row">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>House #45, Main Road, DHA Phase 6, Karachi</span>
-                            </div>
-                            <div class="order-footer">
-                                <span class="total-amount">₨ 2,100.00</span>
-                                <span class="status-badge status-delivered">Delivered</span>
-                            </div>
-                        </div>
-
+                        @endforelse
                     </div>
                 </div>
             </div>
 
             <!-- Bottom Section: 3 Carts -->
             <div class="bottom-section">
-
-                <!-- Cart 1 -->
-                <div class="order-cart active">
-                    <div class="cart-header">
-                        <span class="cart-title">
-                            <i class="fas fa-truck"></i>
-                            Order #1
-                        </span>
-                        <span class="cart-status status-pending">Pending</span>
-                    </div>
-                    <div class="cart-details">
-                        <div class="detail-row">
-                            <i class="fas fa-user"></i>
-                            <span class="label">Rider:</span>
-                            <span>Ahmed Khan</span>
+                @forelse($orders->take(3) as $order)
+                    <!-- Cart -->
+                    <div class="order-cart {{ $loop->first ? 'active' : '' }}">
+                        <div class="cart-header">
+                            <span class="cart-title">
+                                <i class="fas fa-truck"></i>
+                                Order #{{ $loop->iteration }}
+                            </span>
+                            <span class="cart-status status-{{ $order->status }}">{{ ucfirst($order->status) }}</span>
                         </div>
-                        <div class="detail-row">
-                            <i class="fas fa-motorcycle"></i>
-                            <span class="label">Vehicle No:</span>
-                            <span>ABC-123</span>
+                        <div class="cart-details">
+                            <div class="detail-row">
+                                <i class="fas fa-user"></i>
+                                <span class="label">Rider:</span>
+                                <span>{{ $order->rider_name ?? 'Not Assigned' }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <i class="fas fa-motorcycle"></i>
+                                <span class="label">Vehicle No:</span>
+                                <span>{{ $order->vehicle_no ?? 'N/A' }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <i class="fas fa-phone"></i>
+                                <span class="label">Contact:</span>
+                                <span>{{ $order->rider_contact ?? 'N/A' }}</span>
+                            </div>
                         </div>
-                        <div class="detail-row">
-                            <i class="fas fa-phone"></i>
-                            <span class="label">Contact:</span>
-                            <span>+92 300 1234567</span>
-                        </div>
-                    </div>
-                    <div class="cart-footer">
-                        <span class="cart-total">₨ 1,250.00</span>
-                        <button class="view-btn"><i class="fas fa-eye"></i> View</button>
-                    </div>
-                </div>
-
-                <!-- Cart 2 -->
-                <div class="order-cart">
-                    <div class="cart-header">
-                        <span class="cart-title">
-                            <i class="fas fa-truck"></i>
-                            Order #2
-                        </span>
-                        <span class="cart-status status-processing">Processing</span>
-                    </div>
-                    <div class="cart-details">
-                        <div class="detail-row">
-                            <i class="fas fa-user"></i>
-                            <span class="label">Rider:</span>
-                            <span>Saima Ali</span>
-                        </div>
-                        <div class="detail-row">
-                            <i class="fas fa-motorcycle"></i>
-                            <span class="label">Vehicle No:</span>
-                            <span>XYZ-789</span>
-                        </div>
-                        <div class="detail-row">
-                            <i class="fas fa-phone"></i>
-                            <span class="label">Contact:</span>
-                            <span>+92 321 9876543</span>
+                        <div class="cart-footer">
+                            <span class="cart-total">₨ {{ number_format($order->total_amount, 2) }}</span>
+                            <button class="view-btn"><i class="fas fa-eye"></i> View</button>
                         </div>
                     </div>
-                    <div class="cart-footer">
-                        <span class="cart-total">₨ 850.00</span>
-                        <button class="view-btn"><i class="fas fa-eye"></i> View</button>
+                @empty
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted">No orders to display</p>
                     </div>
-                </div>
-
-                <!-- Cart 3 -->
-                <div class="order-cart">
-                    <div class="cart-header">
-                        <span class="cart-title">
-                            <i class="fas fa-truck"></i>
-                            Order #3
-                        </span>
-                        <span class="cart-status status-delivered">Delivered</span>
-                    </div>
-                    <div class="cart-details">
-                        <div class="detail-row">
-                            <i class="fas fa-user"></i>
-                            <span class="label">Rider:</span>
-                            <span>Usman Malik</span>
-                        </div>
-                        <div class="detail-row">
-                            <i class="fas fa-motorcycle"></i>
-                            <span class="label">Vehicle No:</span>
-                            <span>DEF-456</span>
-                        </div>
-                        <div class="detail-row">
-                            <i class="fas fa-phone"></i>
-                            <span class="label">Contact:</span>
-                            <span>+92 333 4567890</span>
-                        </div>
-                    </div>
-                    <div class="cart-footer">
-                        <span class="cart-total">₨ 2,100.00</span>
-                        <button class="view-btn"><i class="fas fa-eye"></i> View</button>
-                    </div>
-                </div>
-
+                @endforelse
             </div>
         </div>
     </div>
 
     <style>
+        /* Your existing styles here */
         .orders-page {
             padding: 40px 0 60px;
             background: #f8f9fa;
@@ -438,6 +322,22 @@
             background: #f8d7da;
             color: #721c24;
         }
+        .status-paid {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .status-preparing {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-ready {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-on-the-way {
+            background: #cce5ff;
+            color: #004085;
+        }
 
         /* Bottom Carts */
         .bottom-section {
@@ -578,6 +478,24 @@
             background: #db2777;
         }
 
+        /* Empty State */
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .empty-state i {
+            color: #d1d5db;
+            margin-bottom: 20px;
+        }
+        .empty-state h4 {
+            color: #374151;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .top-section {
@@ -661,5 +579,4 @@
             });
         });
     </script>
-
 @endsection

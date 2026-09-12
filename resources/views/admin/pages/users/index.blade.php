@@ -63,6 +63,26 @@
     background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;
     border-radius: 9999px; padding: 4px 10px; font-size: 11px; font-weight: 600; display: inline-block;
   }
+  .user-role-waiter {
+    background: #fefce8; color: #a16207; border: 1px solid #fde68a;
+    border-radius: 9999px; padding: 4px 10px; font-size: 11px; font-weight: 600; display: inline-block;
+  }
+  .user-role-chef {
+    background: #f0fdf4; color: #15803d; border: 1px solid #86efac;
+    border-radius: 9999px; padding: 4px 10px; font-size: 11px; font-weight: 600; display: inline-block;
+  }
+  .user-role-cashier {
+    background: #fdf4ff; color: #a21caf; border: 1px solid #e9d5ff;
+    border-radius: 9999px; padding: 4px 10px; font-size: 11px; font-weight: 600; display: inline-block;
+  }
+  .user-role-cleaner {
+    background: #f0f9ff; color: #0369a1; border: 1px solid #b8d4fe;
+    border-radius: 9999px; padding: 4px 10px; font-size: 11px; font-weight: 600; display: inline-block;
+  }
+  .user-role-delivery {
+    background: #fef2f2; color: #b91c1c; border: 1px solid #fca5a5;
+    border-radius: 9999px; padding: 4px 10px; font-size: 11px; font-weight: 600; display: inline-block;
+  }
 
   .user-btn-edit {
     width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
@@ -212,8 +232,30 @@
                 <td class="text-secondary">{{ $user->phone }}</td>
                 <td class="text-secondary">{{ $user->city ?? '—' }}</td>
                 <td>
-                  @php $roleLabels = [1 => 'Admin', 2 => 'User', 3 => 'Manager']; @endphp
-                  <span class="@if($user->role_id == 1) user-role-admin @elseif($user->role_id == 3) user-role-manager @else user-role-user @endif">
+                  @php
+                    $roleLabels = [
+                      1 => 'Admin',
+                      2 => 'User',
+                      3 => 'Manager',
+                      4 => 'Waiter',
+                      5 => 'Chef',
+                      6 => 'Cashier',
+                      7 => 'Cleaner',
+                      8 => 'Delivery Rider'
+                    ];
+                    $roleClass = match($user->role_id) {
+                      1 => 'user-role-admin',
+                      2 => 'user-role-user',
+                      3 => 'user-role-manager',
+                      4 => 'user-role-waiter',
+                      5 => 'user-role-chef',
+                      6 => 'user-role-cashier',
+                      7 => 'user-role-cleaner',
+                      8 => 'user-role-delivery',
+                      default => 'user-role-user'
+                    };
+                  @endphp
+                  <span class="{{ $roleClass }}">
                     {{ $roleLabels[$user->role_id] ?? 'Unknown' }}
                   </span>
                 </td>
@@ -284,6 +326,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('userSearchInput');
     const searchUrl = "{{ route('admin.users.search') }}";
 
+    // Role labels mapping (used in search results)
+    const roleLabels = {
+        1: 'Admin',
+        2: 'User',
+        3: 'Manager',
+        4: 'Waiter',
+        5: 'Chef',
+        6: 'Cashier',
+        7: 'Cleaner',
+        8: 'Delivery Rider'
+    };
+    const roleClasses = {
+        1: 'user-role-admin',
+        2: 'user-role-user',
+        3: 'user-role-manager',
+        4: 'user-role-waiter',
+        5: 'user-role-chef',
+        6: 'user-role-cashier',
+        7: 'user-role-cleaner',
+        8: 'user-role-delivery'
+    };
+
     // ============================================================
     // TOAST NOTIFICATION SYSTEM
     // ============================================================
@@ -338,10 +402,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         tableBody.innerHTML = users.map(u => {
-            let roleClass = 'user-role-user';
-            let roleLabel = 'User';
-            if (u.role_id == 1) { roleClass = 'user-role-admin'; roleLabel = 'Admin'; }
-            else if (u.role_id == 3) { roleClass = 'user-role-manager'; roleLabel = 'Manager'; }
+            const roleLabel = roleLabels[u.role_id] || 'Unknown';
+            const roleClass = roleClasses[u.role_id] || 'user-role-user';
             return `
             <tr data-row-id="${u.id}">
                 <td class="text-secondary">${u.id}</td>

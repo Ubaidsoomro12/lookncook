@@ -21,9 +21,14 @@
             <img src="{{ asset('images/lock-logo.png') }}" alt="Logo" width="58" height="58"
                 class="img-fluid rounded-circle object-fit-cover shadow-sm">
             <div class="d-flex flex-column lh-1">
-                <span style="font-size:30px; font-weight:800; letter-spacing:2px; color:#ff2d7a; text-transform:uppercase; line-height:1;">LOOK N</span>
-                <span style="font-size:30px; font-weight:800; letter-spacing:2px; color:#111; text-transform:uppercase; line-height:1;">COOK</span>
-                <span style="font-size:10px; letter-spacing:4px; color:#888; margin-top:4px; text-transform:uppercase; font-weight:600;">Premium Catering</span>
+                <span
+                    style="font-size:30px; font-weight:800; letter-spacing:2px; color:#ff2d7a; text-transform:uppercase; line-height:1;">LOOK
+                    N</span>
+                <span
+                    style="font-size:30px; font-weight:800; letter-spacing:2px; color:#111; text-transform:uppercase; line-height:1;">COOK</span>
+                <span
+                    style="font-size:10px; letter-spacing:4px; color:#888; margin-top:4px; text-transform:uppercase; font-weight:600;">Premium
+                    Catering</span>
             </div>
         </a>
 
@@ -54,9 +59,9 @@
                             class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
                             style="background:#ff2d7a; font-size:10px; min-width:20px; height:20px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(255,45,122,0.35);">0</span>
                     </button>
-                    
+
                     <script>
-                        (function() {
+                        (function () {
                             try {
                                 const stored = localStorage.getItem('look_n_cook_cart');
                                 if (stored) {
@@ -65,7 +70,7 @@
                                     const el = document.getElementById('cartCount');
                                     if (el && count > 0) el.innerText = count;
                                 }
-                            } catch (e) {}
+                            } catch (e) { }
                         })();
                     </script>
                 </div>
@@ -99,15 +104,21 @@
                             backdrop-filter: blur(8px);
                             box-shadow: 0 6px 20px rgba(255, 45, 122, 0.12);
                         }
-                        .user-profile-dropdown:hover, .user-profile-dropdown:focus, .user-profile-dropdown.show {
+
+                        .user-profile-dropdown:hover,
+                        .user-profile-dropdown:focus,
+                        .user-profile-dropdown.show {
                             background: #ff2d7a !important;
                             color: #ffffff !important;
                             transform: translateY(-2px);
                             box-shadow: 0 10px 24px rgba(255, 45, 122, 0.25) !important;
                         }
-                        .user-profile-dropdown:hover i, .user-profile-dropdown.show i {
+
+                        .user-profile-dropdown:hover i,
+                        .user-profile-dropdown.show i {
                             color: #ffffff !important;
                         }
+
                         .custom-dropdown-menu {
                             border: none !important;
                             border-radius: 18px !important;
@@ -117,6 +128,7 @@
                             background: #ffffff;
                             overflow: hidden;
                         }
+
                         .custom-dropdown-menu .dropdown-item {
                             border-radius: 12px;
                             padding: 12px 14px;
@@ -125,14 +137,17 @@
                             display: flex;
                             align-items: center;
                         }
+
                         .custom-dropdown-menu .dropdown-item:hover {
                             background: rgba(255, 45, 122, 0.10);
                             color: #ff2d7a !important;
                             transform: translateX(4px);
                         }
+
                         .custom-dropdown-menu .dropdown-item:hover i {
                             color: #ff2d7a !important;
                         }
+
                         .logout-item:hover {
                             background: rgba(255, 45, 122, 0.10) !important;
                             color: #ff2d7a !important;
@@ -146,17 +161,45 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu" aria-labelledby="userMenuButton">
                             <li>
-                                <a class="dropdown-item text-danger logout-item" href="#">
+                                <a class="dropdown-item text-danger logout-item" href="{{ route('profile.index') }}">
                                     <i class="bi bi-person-circle me-2"></i>
                                     My Profile
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item text-danger logout-item" href="#">
+                                <a class="dropdown-item text-danger logout-item" href="{{ route('orders.index') }}">
                                     <i class="bi bi-bag-check me-2"></i>
-                                    My Order
+                                    My Orders
                                 </a>
                             </li>
+
+                            <!-- Admin Dashboard - Sirf Admin (role_id = 1) ko dikhega -->
+                            @if(Auth::user()->role_id == 1)
+                                <li>
+                                    <a class="dropdown-item text-danger logout-item" href="{{ route('admin.dashboard') }}">
+                                        <i class="bi bi-speedometer2 me-2"></i>
+                                        Admin Dashboard
+                                    </a>
+                                </li>
+                            @endif
+
+                            <!-- POS Dashboard - Sirf Manager (role_id = 3) ko dikhega -->
+                            @if(Auth::user()->role_id == 3)
+                                <li>
+                                    <a class="dropdown-item text-danger logout-item" href="{{ route('pos.dashboard') }}">
+                                        <i class="bi bi-speedometer2 me-2"></i>
+                                        POS Dashboard
+                                    </a>
+                                </li>
+                            @endif
+
+                            <!-- Divider - Sirf tab dikhega jab koi dashboard option ho -->
+                            @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                            @endif
+
                             <li>
                                 <a class="dropdown-item text-danger logout-item" href="#"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -178,8 +221,7 @@
 </nav>
 
 <!-- ====== CART SIDEBAR ====== -->
-<div id="cartSidebar"
-     style="
+<div id="cartSidebar" style="
         position:fixed;
         top:0;
         right:-420px;
@@ -195,8 +237,7 @@
      ">
     <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
         <h4 class="fw-bold mb-0">Your Cart</h4>
-        <button onclick="closeCart()" class="btn p-0 border-0 shadow-none"
-                style="font-size:32px; color:#ff2d7a;">
+        <button onclick="closeCart()" class="btn p-0 border-0 shadow-none" style="font-size:32px; color:#ff2d7a;">
             ×
         </button>
     </div>
@@ -215,15 +256,14 @@
             <h5 class="fw-bold" id="cartTotal">PKR 0</h5>
         </div>
         <a href="{{ route('cart') }}" class="text-decoration-none d-flex align-items-center justify-content-center"
-           style="height:52px; background:#ff2d7a; color:#fff; border-radius:14px; font-weight:600; transition:0.3s; box-shadow:0 10px 25px rgba(255,45,122,0.20);">
+            style="height:52px; background:#ff2d7a; color:#fff; border-radius:14px; font-weight:600; transition:0.3s; box-shadow:0 10px 25px rgba(255,45,122,0.20);">
             Proceed To Checkout
         </a>
     </div>
 </div>
 
 <!-- OVERLAY -->
-<div id="cartOverlay" onclick="closeCart()"
-     style="
+<div id="cartOverlay" onclick="closeCart()" style="
         position:fixed;
         inset:0;
         background:rgba(0,0,0,0.45);
@@ -233,8 +273,7 @@
 </div>
 
 <!-- ====== WISHLIST SIDEBAR ====== -->
-<div id="wishlistSidebar"
-     style="
+<div id="wishlistSidebar" style="
         position:fixed;
         top:0;
         right:-420px;
@@ -248,7 +287,8 @@
         display:flex;
         flex-direction:column;
      ">
-    <div style="padding:25px; border-bottom:1px solid rgba(255,45,122,0.08); display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);">
+    <div
+        style="padding:25px; border-bottom:1px solid rgba(255,45,122,0.08); display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);">
         <div>
             <h4 class="fw-bold mb-1" style="color:#111; letter-spacing: 0.3px;">Saved Pins ❤️</h4>
             <span style="color:#ff2d7a; font-size:13px; font-weight: 500;">Gallery Collection</span>
@@ -261,7 +301,8 @@
         <div id="emptyWishlistText" class="text-center mt-5 py-4">
             <div style="font-size:65px; filter: drop-shadow(0 10px 15px rgba(255,45,122,0.15));">💖</div>
             <h5 class="fw-bold mt-4" style="color:#111;">Your Collection is Empty</h5>
-            <p style="color:#888; font-size:14px; max-width: 220px; margin: 8px auto 0;">Save beautiful food images from our gallery layout!</p>
+            <p style="color:#888; font-size:14px; max-width: 220px; margin: 8px auto 0;">Save beautiful food images from
+                our gallery layout!</p>
         </div>
     </div>
     <div style="padding:20px; border-top:1px solid rgba(255,45,122,0.08); background:#ffffff;">
@@ -291,7 +332,7 @@
     /* ============================================
        TOGGLER - SIRF MOBILE PE DIKHEGA
        ============================================ */
-    
+
     /* Default: Toggler ko hide karein */
     .toggler-custom {
         display: none !important;
@@ -333,6 +374,7 @@
         .toggler-custom {
             padding: 6px 10px !important;
         }
+
         .toggler-custom .navbar-toggler-icon {
             width: 22px !important;
             height: 22px !important;
@@ -342,7 +384,7 @@
     /* ============================================
        EXISTING STYLES (Kuch change nahi)
     ============================================ */
-    
+
     .topbar {
         background: #000;
         color: #fff;
@@ -402,12 +444,17 @@
         transform: translateY(-2px);
     }
 
-    .cart-btn-custom:hover, .wishlist-btn-custom:hover {
+    .cart-btn-custom:hover,
+    .wishlist-btn-custom:hover {
         transform: translateY(-2px) scale(1.04);
         background: rgba(255, 45, 122, 0.18) !important;
         box-shadow: 0 10px 24px rgba(255, 45, 122, 0.20) !important;
     }
-    .cart-btn-custom:active, .wishlist-btn-custom:active { transform: scale(0.95); }
+
+    .cart-btn-custom:active,
+    .wishlist-btn-custom:active {
+        transform: scale(0.95);
+    }
 
     .cart-item-box {
         border: 1px solid rgba(0, 0, 0, 0.06);
@@ -420,7 +467,10 @@
         align-items: center;
         gap: 14px;
     }
-    .cart-item-box:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06); }
+
+    .cart-item-box:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+    }
 
     .cart-qty-control {
         display: flex;
@@ -430,6 +480,7 @@
         border-radius: 10px;
         padding: 2px 6px;
     }
+
     .cart-qty-control button {
         border: none;
         background: transparent;
@@ -445,7 +496,11 @@
         transition: 0.2s;
         cursor: pointer;
     }
-    .cart-qty-control button:hover { background: rgba(255,45,122,0.12); }
+
+    .cart-qty-control button:hover {
+        background: rgba(255, 45, 122, 0.12);
+    }
+
     .cart-qty-control span {
         min-width: 28px;
         text-align: center;
@@ -455,8 +510,14 @@
     }
 
     @media (max-width: 480px) {
-        #cartSidebar { width: 100%; right: -100%; }
-        .cart-item-box { flex-wrap: wrap; }
+        #cartSidebar {
+            width: 100%;
+            right: -100%;
+        }
+
+        .cart-item-box {
+            flex-wrap: wrap;
+        }
     }
 
     .add-cart-toast {
@@ -467,28 +528,90 @@
         max-width: calc(100% - 30px);
         background: #fff;
         border-radius: 18px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.18);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
         padding: 16px;
         display: flex;
         align-items: center;
         gap: 14px;
         z-index: 999999;
-        transition: right 0.4s cubic-bezier(.25,1,.5,1), opacity 0.4s ease;
+        transition: right 0.4s cubic-bezier(.25, 1, .5, 1), opacity 0.4s ease;
         opacity: 0;
         border-left: 5px solid #ff2d7a;
     }
-    .add-cart-toast.show { right: 20px; opacity: 1; }
-    .add-cart-toast .toast-check { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,45,122,0.12); color: #ff2d7a; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-    .add-cart-toast img { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
-    .add-cart-toast .toast-info { flex: 1; min-width: 0; }
-    .add-cart-toast .toast-title { font-weight: 700; color: #111; font-size: 14px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .add-cart-toast .toast-sub { font-size: 12px; color: #777; margin-bottom: 4px; }
-    .add-cart-toast .toast-cart-link { color: #ff2d7a; font-size: 12px; font-weight: 700; text-decoration: none; }
-    .add-cart-toast .toast-close { border: none; background: transparent; color: #aaa; font-size: 20px; cursor: pointer; line-height: 1; align-self: flex-start; }
-    
+
+    .add-cart-toast.show {
+        right: 20px;
+        opacity: 1;
+    }
+
+    .add-cart-toast .toast-check {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(255, 45, 122, 0.12);
+        color: #ff2d7a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+
+    .add-cart-toast img {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    .add-cart-toast .toast-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .add-cart-toast .toast-title {
+        font-weight: 700;
+        color: #111;
+        font-size: 14px;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .add-cart-toast .toast-sub {
+        font-size: 12px;
+        color: #777;
+        margin-bottom: 4px;
+    }
+
+    .add-cart-toast .toast-cart-link {
+        color: #ff2d7a;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .add-cart-toast .toast-close {
+        border: none;
+        background: transparent;
+        color: #aaa;
+        font-size: 20px;
+        cursor: pointer;
+        line-height: 1;
+        align-self: flex-start;
+    }
+
     @media (max-width: 480px) {
-        .add-cart-toast { width: calc(100% - 20px); right: -100%; }
-        .add-cart-toast.show { right: 10px; }
+        .add-cart-toast {
+            width: calc(100% - 20px);
+            right: -100%;
+        }
+
+        .add-cart-toast.show {
+            right: 10px;
+        }
     }
 </style>
 
