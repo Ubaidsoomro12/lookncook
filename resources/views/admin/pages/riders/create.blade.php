@@ -7,6 +7,7 @@
   .rider-form-back {
     width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
     border-radius: 12px; background: #fdf2f8; color: #ff2d7a; transition: all .2s;
+    flex-shrink: 0;
   }
   .rider-form-back:hover { background: #fce7f3; color: #ff2d7a; }
 
@@ -16,30 +17,45 @@
   }
   .rider-form-label { display: block; font-weight: 500; font-size: 14px; color: #374151; margin-bottom: 6px; }
   .rider-form-input {
-    width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
+    width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0;
+    padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
     font-size: 14px; transition: all .2s; outline: none;
   }
   .rider-form-input:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.2); }
   .rider-form-input-error { border-color: #fca5a5; }
   .rider-form-textarea {
-    width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
+    width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0;
+    padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
     font-size: 14px; transition: all .2s; outline: none; resize: vertical; min-height: 80px;
   }
   .rider-form-textarea:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.2); }
   .rider-form-select {
-    width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
+    width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0;
+    padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
     font-size: 14px; transition: all .2s; outline: none; background: #fff;
   }
   .rider-form-select:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.2); }
+
+  /* ✅ FIX: File input full-width, choose button text never cut */
   .rider-form-file {
-    font-size: 14px; padding: 6px 12px; border-radius: 12px; border: 1px solid #e5e7eb; width: 100%;
+    font-size: 14px; padding: 6px 12px; border-radius: 12px; border: 1px solid #e5e7eb;
+    width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0;
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .rider-form-file::-webkit-file-upload-button {
     background: #ff2d7a; color: #fff; border: none;
     padding: 8px 16px; border-radius: 12px; font-weight: 500; font-size: 14px;
     margin-right: 12px; cursor: pointer; transition: all .2s;
+    white-space: nowrap; flex-shrink: 0;
   }
   .rider-form-file::-webkit-file-upload-button:hover { background: #e01d65; }
+  /* Firefox file button */
+  .rider-form-file::file-selector-button {
+    background: #ff2d7a; color: #fff; border: none;
+    padding: 8px 16px; border-radius: 12px; font-weight: 500; font-size: 14px;
+    margin-right: 12px; cursor: pointer; transition: all .2s;
+  }
+
   .rider-form-hint { font-size: 12px; color: #9ca3af; margin-top: 4px; }
   .rider-form-error-text { color: #dc2626; font-size: 12px; margin-top: 4px; }
   .rider-form-error-box {
@@ -48,19 +64,34 @@
   }
   .rider-form-error-box ul { list-style: disc; padding-left: 20px; margin: 0; }
   .rider-form-error-box ul li { margin-bottom: 2px; }
+
   .rider-form-submit {
     background: linear-gradient(to right, #ff2d7a, #ff6fa5); color: #fff; font-weight: 500;
     padding: 10px 24px; border-radius: 12px; border: none;
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     box-shadow: 0 4px 12px rgba(255,45,122,0.2); transition: all .2s;
+    white-space: nowrap;
   }
   .rider-form-submit:hover { opacity: .9; color: #fff; }
   .rider-form-cancel {
     padding: 10px 24px; border-radius: 12px; border: 1px solid #e5e7eb;
     color: #6b7280; font-weight: 500; background: #fff; transition: all .2s;
+    display: inline-flex; align-items: center; justify-content: center;
+    white-space: nowrap;
   }
   .rider-form-cancel:hover { background: #f9fafb; color: #6b7280; }
 
+  /* ✅ FIX: File preview flex — never overflow on small screens */
+  .rider-form-photo-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .rider-form-photo-row > .rider-form-photo-fields {
+    flex: 1 1 200px;
+    min-width: 0;
+  }
   .rider-form-preview {
     width: 80px; height: 80px; border-radius: 50%; border: 2px solid #fbcfe8;
     background: #fdf2f8; display: flex; align-items: center; justify-content: center;
@@ -74,12 +105,27 @@
     font-size: 13px; font-weight: 600; color: #ff2d7a; text-transform: uppercase; letter-spacing: 0.05em;
   }
 
-  .tw-max-w-3xl { max-width: 768px; margin: 0 auto; }
+  .tw-max-w-3xl { max-width: 768px; margin: 0 auto; width: 100%; box-sizing: border-box; }
   .tw-space-y-5 > * + * { margin-top: 20px; }
   .tw-grid-cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 768px) { .tw-grid-cols-2 { grid-template-columns: 1fr; } }
 
-  .rider-form-check { width: 16px; height: 16px; border: 1px solid #e5e7eb; border-radius: 4px; accent-color: #ff2d7a; }
+  .rider-form-check { width: 16px; height: 16px; border: 1px solid #e5e7eb; border-radius: 4px; accent-color: #ff2d7a; flex-shrink: 0; }
+
+  /* ✅ FIX: Submit/Cancel buttons */
+  .rider-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 8px;
+  }
+  @media (max-width: 480px) {
+    .rider-form-actions { flex-direction: column; }
+    .rider-form-actions .rider-form-submit,
+    .rider-form-actions .rider-form-cancel {
+      width: 100%;
+    }
+  }
 </style>
 
 <div class="tw-max-w-3xl px-3 px-sm-4">
@@ -109,12 +155,12 @@
       <!-- Photo -->
       <div>
         <label class="rider-form-label">Rider Photo <span class="text-secondary" style="font-weight:400;">(optional)</span></label>
-        <div class="d-flex align-items-center gap-3">
+        <div class="rider-form-photo-row">
           <div class="rider-form-preview">
             <img id="imagePreviewImg" src="" alt="Preview">
             <i id="imagePreviewIcon" class="fa-solid fa-user"></i>
           </div>
-          <div class="flex-grow-1">
+          <div class="rider-form-photo-fields">
             <input type="file" name="image" id="imageInput" accept="image/png,image/jpeg,image/jpg,image/webp"
                    class="rider-form-file {{ $errors->has('image') ? 'rider-form-input-error' : '' }}">
             <p class="rider-form-hint">PNG, JPG or WEBP. Square photo looks best. Max 2MB.</p>
@@ -153,7 +199,7 @@
           <input type="text" name="city" value="{{ old('city') }}"
                  class="rider-form-input" placeholder="e.g. Karachi">
         </div>
-        <div style="grid-column: span 2;">
+        <div style="grid-column: 1 / -1;">
           <label class="rider-form-label">Address <span class="text-danger">*</span></label>
           <textarea name="address" required rows="2"
                     class="rider-form-textarea {{ $errors->has('address') ? 'rider-form-input-error' : '' }}"
@@ -207,7 +253,7 @@
           <input type="date" name="joining_date" value="{{ old('joining_date') }}"
                  class="rider-form-input">
         </div>
-        <div style="grid-column: span 2;">
+        <div style="grid-column: 1 / -1;">
           <label class="rider-form-label">Notes</label>
           <textarea name="notes" rows="3"
                     class="rider-form-textarea"
@@ -220,7 +266,8 @@
         <label for="is_active" class="rider-form-label m-0" style="font-weight:500;">Active</label>
       </div>
 
-      <div class="d-flex gap-3 pt-2">
+      <!-- ✅ FIXED BUTTONS -->
+      <div class="rider-form-actions">
         <button type="submit" class="rider-form-submit">
           <i class="fa-solid fa-check"></i> Save Rider
         </button>

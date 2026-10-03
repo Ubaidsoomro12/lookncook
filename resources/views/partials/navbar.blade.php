@@ -17,22 +17,16 @@
 <!-- Main Sticky Navbar Section -->
 <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-1" href="#">
-            <img src="{{ asset('images/lock-logo.png') }}" alt="Logo" width="58" height="58"
-                class="img-fluid rounded-circle object-fit-cover shadow-sm">
+        <a class="navbar-brand brand-wrap d-flex align-items-center gap-2" href="#">
+            <img src="{{ asset('images/lock-logo.png') }}" alt="Logo"
+                class="brand-logo img-fluid rounded-circle object-fit-cover shadow-sm">
             <div class="d-flex flex-column lh-1">
-                <span
-                    style="font-size:30px; font-weight:800; letter-spacing:2px; color:#ff2d7a; text-transform:uppercase; line-height:1;">LOOK
-                    N</span>
-                <span
-                    style="font-size:30px; font-weight:800; letter-spacing:2px; color:#111; text-transform:uppercase; line-height:1;">COOK</span>
-                <span
-                    style="font-size:10px; letter-spacing:4px; color:#888; margin-top:4px; text-transform:uppercase; font-weight:600;">Premium
-                    Catering</span>
+                <span class="brand-line brand-line-pink">LOOK N</span>
+                <span class="brand-line brand-line-dark">COOK</span>
+                <span class="brand-sub">Premium Catering</span>
             </div>
         </a>
 
-        <!-- ====== TOGGLER - SIRF SMALL SCREEN PE DIKHEGA ====== -->
         <button class="navbar-toggler toggler-custom border-0 shadow-none" type="button" data-bs-toggle="collapse"
             data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false"
             aria-label="Toggle navigation">
@@ -49,15 +43,13 @@
                 <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
             </ul>
 
-            <div class="d-flex align-items-center justify-content-center gap-3 mt-4 mt-lg-0">
+            <div class="nav-actions d-flex align-items-center justify-content-center mt-4 mt-lg-0">
                 <!-- Cart Trigger Button -->
                 <div class="position-relative">
-                    <button onclick="openCart()" class="border-0 position-relative cart-btn-custom" type="button"
-                        style="width:52px; height:52px; border-radius:50%; background:rgba(255,45,122,0.10); border:1px solid rgba(255,45,122,0.20); display:flex; align-items:center; justify-content:center; color:#ff2d7a; font-size:24px; transition:0.3s ease; backdrop-filter:blur(8px); box-shadow:0 6px 20px rgba(255,45,122,0.12);">
+                    <button onclick="openCart()" class="nav-icon-btn cart-btn-custom position-relative" type="button">
                         <span style="transform:translateY(-1px);">🛒</span>
                         <span id="cartCount"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-                            style="background:#ff2d7a; font-size:10px; min-width:20px; height:20px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(255,45,122,0.35);">0</span>
+                            class="nav-badge position-absolute top-0 start-100 translate-middle badge rounded-pill">0</span>
                     </button>
 
                     <script>
@@ -77,138 +69,49 @@
 
                 <!-- Wishlist Trigger Button -->
                 <div class="position-relative">
-                    <button onclick="openWishlist()" class="border-0 position-relative wishlist-btn-custom"
-                        type="button"
-                        style="width:52px; height:52px; border-radius:50%; background:rgba(255,45,122,0.10); border:1px solid rgba(255,45,122,0.20); display:flex; align-items:center; justify-content:center; color:#ff2d7a; font-size:24px; transition:0.3s ease; backdrop-filter:blur(8px); box-shadow:0 6px 20px rgba(255,45,122,0.12);">
-                        <span style="transform:translateY(0px);">❤️</span>
+                    <button onclick="openWishlist()" class="nav-icon-btn wishlist-btn-custom position-relative"
+                        type="button">
+                        <span>❤️</span>
                         <span id="wishlistCount"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-                            style="background:#ff2d7a; font-size:10px; min-width:20px; height:20px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(255,45,122,0.35);">0</span>
+                            class="nav-badge position-absolute top-0 start-100 translate-middle badge rounded-pill">0</span>
                     </button>
                 </div>
 
                 @auth
-                    <style>
-                        .user-profile-dropdown {
-                            height: 52px;
-                            padding: 0 18px;
-                            border-radius: 14px !important;
-                            background: rgba(255, 45, 122, 0.10) !important;
-                            border: 1px solid rgba(255, 45, 122, 0.20) !important;
-                            color: #ff2d7a !important;
-                            font-weight: 600;
-                            font-size: 15px;
-                            display: flex;
-                            align-items: center;
-                            transition: 0.3s ease;
-                            backdrop-filter: blur(8px);
-                            box-shadow: 0 6px 20px rgba(255, 45, 122, 0.12);
-                        }
-
-                        .user-profile-dropdown:hover,
-                        .user-profile-dropdown:focus,
-                        .user-profile-dropdown.show {
-                            background: #ff2d7a !important;
-                            color: #ffffff !important;
-                            transform: translateY(-2px);
-                            box-shadow: 0 10px 24px rgba(255, 45, 122, 0.25) !important;
-                        }
-
-                        .user-profile-dropdown:hover i,
-                        .user-profile-dropdown.show i {
-                            color: #ffffff !important;
-                        }
-
-                        .custom-dropdown-menu {
-                            border: none !important;
-                            border-radius: 18px !important;
-                            padding: 10px;
-                            min-width: 180px;
-                            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.10);
-                            background: #ffffff;
-                            overflow: hidden;
-                        }
-
-                        .custom-dropdown-menu .dropdown-item {
-                            border-radius: 12px;
-                            padding: 12px 14px;
-                            font-weight: 500;
-                            transition: 0.25s ease;
-                            display: flex;
-                            align-items: center;
-                        }
-
-                        .custom-dropdown-menu .dropdown-item:hover {
-                            background: rgba(255, 45, 122, 0.10);
-                            color: #ff2d7a !important;
-                            transform: translateX(4px);
-                        }
-
-                        .custom-dropdown-menu .dropdown-item:hover i {
-                            color: #ff2d7a !important;
-                        }
-
-                        .logout-item:hover {
-                            background: rgba(255, 45, 122, 0.10) !important;
-                            color: #ff2d7a !important;
-                        }
-                    </style>
-                    <div class="dropdown">
-                        <button class="btn user-profile-dropdown dropdown-toggle" type="button" id="userMenuButton"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle me-2 text-primary-color"></i>
-                            {{ Auth::user()->name }}
+                    <div class="custom-user-dropdown" id="customUserDropdown">
+                        <button type="button" class="btn user-profile-dropdown" id="userDropdownToggle">
+                            <i class="bi bi-person-circle me-2"></i>
+                            <span class="user-name-text">{{ Auth::user()->name }}</span>
+                            <i class="bi bi-chevron-down ms-2" style="font-size:12px;"></i>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end custom-dropdown-menu" aria-labelledby="userMenuButton">
-                            <li>
-                                <a class="dropdown-item text-danger logout-item" href="{{ route('profile.index') }}">
-                                    <i class="bi bi-person-circle me-2"></i>
-                                    My Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item text-danger logout-item" href="{{ route('orders.index') }}">
-                                    <i class="bi bi-bag-check me-2"></i>
-                                    My Orders
-                                </a>
-                            </li>
 
-                            <!-- Admin Dashboard - Sirf Admin (role_id = 1) ko dikhega -->
+                        <div class="custom-user-menu" id="userDropdownMenu">
+                            <a class="custom-menu-item" href="{{ route('profile.index') }}">
+                                <i class="bi bi-person-circle"></i><span>My Profile</span>
+                            </a>
+                            <a class="custom-menu-item" href="{{ route('orders.index') }}">
+                                <i class="bi bi-bag-check"></i><span>My Orders</span>
+                            </a>
                             @if(Auth::user()->role_id == 1)
-                                <li>
-                                    <a class="dropdown-item text-danger logout-item" href="{{ route('admin.dashboard') }}">
-                                        <i class="bi bi-speedometer2 me-2"></i>
-                                        Admin Dashboard
-                                    </a>
-                                </li>
-                            @endif
-
-                            <!-- POS Dashboard - Sirf Manager (role_id = 3) ko dikhega -->
-                            @if(Auth::user()->role_id == 3)
-                                <li>
-                                    <a class="dropdown-item text-danger logout-item" href="{{ route('pos.dashboard') }}">
-                                        <i class="bi bi-speedometer2 me-2"></i>
-                                        POS Dashboard
-                                    </a>
-                                </li>
-                            @endif
-
-                            <!-- Divider - Sirf tab dikhega jab koi dashboard option ho -->
-                            @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                            @endif
-
-                            <li>
-                                <a class="dropdown-item text-danger logout-item" href="#"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                    <i class="bi bi-box-arrow-right me-2"></i>
-                                    Logout
+                                <a class="custom-menu-item" href="{{ route('admin.dashboard') }}">
+                                    <i class="bi bi-speedometer2"></i><span>Admin Dashboard</span>
                                 </a>
-                            </li>
-                        </ul>
+                            @endif
+                            @if(Auth::user()->role_id == 3)
+                                <a class="custom-menu-item" href="{{ route('pos.dashboard') }}">
+                                    <i class="bi bi-speedometer2"></i><span>POS Dashboard</span>
+                                </a>
+                            @endif
+                            @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
+                                <div class="custom-menu-divider"></div>
+                            @endif
+                            <a class="custom-menu-item custom-menu-logout" href="#"
+                               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+                            </a>
+                        </div>
                     </div>
+
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
                         @csrf
                     </form>
@@ -221,27 +124,11 @@
 </nav>
 
 <!-- ====== CART SIDEBAR ====== -->
-<div id="cartSidebar" style="
-        position:fixed;
-        top:0;
-        right:-420px;
-        width:400px;
-        max-width:100%;
-        height:100vh;
-        background:#fff;
-        z-index:999999;
-        transition:0.4s cubic-bezier(.25,1,.5,1);
-        box-shadow:-10px 0 40px rgba(0,0,0,0.12);
-        display:flex;
-        flex-direction:column;
-     ">
+<div id="cartSidebar" style="position:fixed; top:0; right:-420px; width:400px; max-width:100%; height:100vh; background:#fff; z-index:999999; transition:0.4s cubic-bezier(.25,1,.5,1); box-shadow:-10px 0 40px rgba(0,0,0,0.12); display:flex; flex-direction:column;">
     <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
         <h4 class="fw-bold mb-0">Your Cart</h4>
-        <button onclick="closeCart()" class="btn p-0 border-0 shadow-none" style="font-size:32px; color:#ff2d7a;">
-            ×
-        </button>
+        <button onclick="closeCart()" class="btn p-0 border-0 shadow-none" style="font-size:32px; color:#ff2d7a;">×</button>
     </div>
-
     <div id="cartItems" class="flex-grow-1 overflow-auto p-4">
         <div class="text-center text-secondary mt-5" id="emptyCartText">
             <div style="font-size:70px; opacity:0.2;">🛒</div>
@@ -249,7 +136,6 @@
             <p style="color:#777; font-size:14px;">Add delicious food items now.</p>
         </div>
     </div>
-
     <div class="border-top p-4">
         <div class="d-flex justify-content-between mb-3">
             <h5 class="fw-bold">Total</h5>
@@ -263,60 +149,31 @@
 </div>
 
 <!-- OVERLAY -->
-<div id="cartOverlay" onclick="closeCart()" style="
-        position:fixed;
-        inset:0;
-        background:rgba(0,0,0,0.45);
-        z-index:999998;
-        display:none;
-     ">
-</div>
+<div id="cartOverlay" onclick="closeCart()" style="position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:999998; display:none;"></div>
 
 <!-- ====== WISHLIST SIDEBAR ====== -->
-<div id="wishlistSidebar" style="
-        position:fixed;
-        top:0;
-        right:-420px;
-        width:400px;
-        max-width:100%;
-        height:100vh;
-        background:linear-gradient(185deg, #fffdfd 0%, #fff5f8 100%);
-        z-index:999999;
-        transition:0.38s cubic-bezier(0.25, 1, 0.5, 1);
-        box-shadow:-15px 0 40px rgba(255,45,122,0.08);
-        display:flex;
-        flex-direction:column;
-     ">
-    <div
-        style="padding:25px; border-bottom:1px solid rgba(255,45,122,0.08); display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);">
+<div id="wishlistSidebar" style="position:fixed; top:0; right:-420px; width:400px; max-width:100%; height:100vh; background:linear-gradient(185deg, #fffdfd 0%, #fff5f8 100%); z-index:999999; transition:0.38s cubic-bezier(0.25, 1, 0.5, 1); box-shadow:-15px 0 40px rgba(255,45,122,0.08); display:flex; flex-direction:column;">
+    <div style="padding:25px; border-bottom:1px solid rgba(255,45,122,0.08); display:flex; justify-content:space-between; align-items:center; background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);">
         <div>
             <h4 class="fw-bold mb-1" style="color:#111; letter-spacing: 0.3px;">Saved Pins ❤️</h4>
             <span style="color:#ff2d7a; font-size:13px; font-weight: 500;">Gallery Collection</span>
         </div>
-        <button onclick="closeWishlist()" class="border-0 bg-transparent"
-            style="font-size:28px; color:#ff2d7a; line-height:1; transition: 0.2s;"
-            onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">×</button>
+        <button onclick="closeWishlist()" class="border-0 bg-transparent" style="font-size:28px; color:#ff2d7a; line-height:1; transition: 0.2s;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">×</button>
     </div>
     <div id="wishlistItems" style="flex:1; overflow-y:auto; padding:20px;">
         <div id="emptyWishlistText" class="text-center mt-5 py-4">
             <div style="font-size:65px; filter: drop-shadow(0 10px 15px rgba(255,45,122,0.15));">💖</div>
             <h5 class="fw-bold mt-4" style="color:#111;">Your Collection is Empty</h5>
-            <p style="color:#888; font-size:14px; max-width: 220px; margin: 8px auto 0;">Save beautiful food images from
-                our gallery layout!</p>
+            <p style="color:#888; font-size:14px; max-width: 220px; margin: 8px auto 0;">Save beautiful food images from our gallery layout!</p>
         </div>
     </div>
     <div style="padding:20px; border-top:1px solid rgba(255,45,122,0.08); background:#ffffff;">
-        <button onclick="downloadAllImages()"
-            class="border-0 w-100 d-flex align-items-center justify-content-center gap-2"
-            style="height:52px; background:linear-gradient(135deg, #111111 0%, #333333 100%); color:#fff; border-radius:14px; font-weight:600; transition:0.3s; box-shadow:0 8px 22px rgba(0,0,0,0.15);"
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 12px 26px rgba(0,0,0,0.25)';"
-            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 22px rgba(0,0,0,0.15)';">
+        <button onclick="downloadAllImages()" class="border-0 w-100 d-flex align-items-center justify-content-center gap-2" style="height:52px; background:linear-gradient(135deg, #111111 0%, #333333 100%); color:#fff; border-radius:14px; font-weight:600; transition:0.3s; box-shadow:0 8px 22px rgba(0,0,0,0.15);">
             <span>📥</span> Download All to Device
         </button>
     </div>
 </div>
 
-<!-- Add To Cart Toast Notification -->
 <div id="addToCartToast" class="add-cart-toast">
     <div class="toast-check"><i class="fa-solid fa-check"></i></div>
     <img id="toastItemImage" src="" alt="">
@@ -330,15 +187,12 @@
 
 <style>
     /* ============================================
-       TOGGLER - SIRF MOBILE PE DIKHEGA
+       TOGGLER — only on mobile / tablet (< 992px)
        ============================================ */
-
-    /* Default: Toggler ko hide karein */
     .toggler-custom {
         display: none !important;
     }
 
-    /* Sirf mobile screens (under 992px) pe show */
     @media (max-width: 991.98px) {
         .toggler-custom {
             display: flex !important;
@@ -369,41 +223,80 @@
         }
     }
 
-    /* Extra small screens pe thoda chhota */
     @media (max-width: 575.98px) {
-        .toggler-custom {
-            padding: 6px 10px !important;
-        }
-
-        .toggler-custom .navbar-toggler-icon {
-            width: 22px !important;
-            height: 22px !important;
-        }
+        .toggler-custom { padding: 6px 10px !important; }
+        .toggler-custom .navbar-toggler-icon { width: 22px !important; height: 22px !important; }
     }
 
     /* ============================================
-       EXISTING STYLES (Kuch change nahi)
-    ============================================ */
-
+       TOPBAR + NAVBAR BASE
+       ============================================ */
     .topbar {
         background: #000;
         color: #fff;
         font-size: 13px;
         padding: 8px 0;
+        position: relative;
+        z-index: 1;
     }
 
     .custom-navbar {
         background: #fff;
-        padding: 16px 0;
+        padding: 14px 0;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
-        z-index: 999;
+        z-index: 1050 !important;
         transition: 0.3s;
+        overflow: visible !important;
     }
 
+    .custom-navbar .container,
+    .custom-navbar .navbar-collapse,
+    .custom-navbar .navbar-nav {
+        overflow: visible !important;
+    }
+
+    /* ---------- BRAND (class based so it can shrink responsively) ---------- */
+    .brand-wrap {
+        flex-shrink: 0;
+        margin-right: 1rem;
+    }
+
+    .brand-logo {
+        width: 58px;
+        height: 58px;
+        flex-shrink: 0;
+    }
+
+    .brand-line {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .brand-line-pink { color: #ff2d7a; }
+    .brand-line-dark { color: #111; }
+
+    .brand-sub {
+        font-size: 10px;
+        letter-spacing: 4px;
+        color: #888;
+        margin-top: 4px;
+        text-transform: uppercase;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    /* ---------- NAV LINKS ---------- */
     .navbar-nav .nav-link {
         color: #111 !important;
         font-weight: 600;
         margin: 0 12px;
+        padding-left: 0;
+        padding-right: 0;
+        white-space: nowrap;
         transition: 0.3s;
         position: relative;
     }
@@ -427,6 +320,40 @@
         width: 100%;
     }
 
+    /* ---------- RIGHT SIDE ACTIONS ---------- */
+    .nav-actions {
+        gap: 16px;
+        flex-shrink: 0;
+    }
+
+    .nav-icon-btn {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: rgba(255, 45, 122, 0.10);
+        border: 1px solid rgba(255, 45, 122, 0.20);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ff2d7a;
+        font-size: 24px;
+        padding: 0;
+        transition: 0.3s ease;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 6px 20px rgba(255, 45, 122, 0.12);
+    }
+
+    .nav-badge {
+        background: #ff2d7a;
+        font-size: 10px;
+        min-width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(255, 45, 122, 0.35);
+    }
+
     .login-btn {
         background: #ff2d7a;
         color: #fff;
@@ -436,6 +363,7 @@
         font-weight: 600;
         transition: 0.3s;
         display: inline-block;
+        white-space: nowrap;
     }
 
     .login-btn:hover {
@@ -456,6 +384,179 @@
         transform: scale(0.95);
     }
 
+    /* ============================================
+       ✅ FIX: Laptop / small desktop (992px – 1199px)
+       Everything is scaled down so it fits in one row
+       ============================================ */
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+        .custom-navbar { padding: 10px 0; }
+
+        .brand-wrap { margin-right: 0.5rem; gap: 6px !important; }
+        .brand-logo { width: 46px; height: 46px; }
+        .brand-line { font-size: 21px; letter-spacing: 1px; }
+        .brand-sub { font-size: 8px; letter-spacing: 2.5px; margin-top: 3px; }
+
+        .navbar-nav .nav-link { margin: 0 7px; font-size: 14px; }
+
+        .nav-actions { gap: 8px; }
+        .nav-icon-btn { width: 40px; height: 40px; font-size: 18px; }
+        .nav-badge { font-size: 9px; min-width: 17px; height: 17px; }
+
+        .user-profile-dropdown {
+            height: 40px !important;
+            padding: 0 10px !important;
+            font-size: 13px !important;
+            border-radius: 12px !important;
+            max-width: 130px !important;
+        }
+        .user-profile-dropdown .user-name-text { max-width: 55px !important; }
+        .user-profile-dropdown .bi-person-circle { margin-right: 4px !important; }
+        .user-profile-dropdown .bi-chevron-down { margin-left: 4px !important; }
+
+        .login-btn { padding: 8px 16px; font-size: 14px; }
+    }
+
+    /* Slightly tighter on normal desktops (1200px – 1399px) */
+    @media (min-width: 1200px) and (max-width: 1399.98px) {
+        .brand-line { font-size: 26px; }
+        .navbar-nav .nav-link { margin: 0 9px; }
+        .nav-actions { gap: 12px; }
+    }
+
+    /* Mobile / tablet collapsed menu: keep things centered and neat */
+    @media (max-width: 991.98px) {
+        .navbar-nav .nav-link { margin: 0; padding: 10px 0; text-align: center; }
+        .navbar-nav .nav-link::after { display: none; }
+        .nav-actions { gap: 14px; flex-wrap: wrap; }
+    }
+
+    /* Small phones */
+    @media (max-width: 575.98px) {
+        .brand-logo { width: 44px; height: 44px; }
+        .brand-line { font-size: 20px; letter-spacing: 1px; }
+        .brand-sub { font-size: 7px; letter-spacing: 2px; }
+        .brand-wrap { margin-right: 0.25rem; gap: 6px !important; }
+    }
+
+    @media (max-width: 359.98px) {
+        .brand-line { font-size: 17px; }
+        .brand-sub { display: none; }
+    }
+
+    /* ============================================
+       ✅ CUSTOM USER DROPDOWN
+       ============================================ */
+    .custom-user-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .user-profile-dropdown {
+        height: 52px;
+        padding: 0 16px;
+        border-radius: 14px !important;
+        background: rgba(255, 45, 122, 0.10) !important;
+        border: 1px solid rgba(255, 45, 122, 0.20) !important;
+        color: #ff2d7a !important;
+        font-weight: 600;
+        font-size: 15px;
+        display: inline-flex;
+        align-items: center;
+        transition: 0.3s ease;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 6px 20px rgba(255, 45, 122, 0.12);
+        white-space: nowrap;
+        max-width: 200px;
+    }
+
+    .user-profile-dropdown .user-name-text {
+        display: inline-block;
+        max-width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .user-profile-dropdown:hover,
+    .custom-user-dropdown.open .user-profile-dropdown {
+        background: #ff2d7a !important;
+        color: #ffffff !important;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(255, 45, 122, 0.25) !important;
+    }
+
+    .user-profile-dropdown:hover i,
+    .custom-user-dropdown.open .user-profile-dropdown i {
+        color: #ffffff !important;
+    }
+
+    /* Dropdown — JS sets position dynamically below the button */
+    .custom-user-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        min-width: 220px;
+        max-width: 260px;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 10px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+        z-index: 99999;
+        border: none;
+        overflow: visible;
+    }
+
+    .custom-user-dropdown.open .custom-user-menu {
+        display: block;
+    }
+
+    .custom-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #374151;
+        font-weight: 500;
+        font-size: 14px;
+        text-decoration: none;
+        transition: 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .custom-menu-item i {
+        color: #9ca3af;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .custom-menu-item:hover {
+        background: rgba(255, 45, 122, 0.10);
+        color: #ff2d7a;
+        transform: translateX(4px);
+    }
+
+    .custom-menu-item:hover i { color: #ff2d7a; }
+
+    .custom-menu-logout { color: #dc2626; }
+    .custom-menu-logout i { color: #dc2626; }
+    .custom-menu-logout:hover {
+        background: rgba(220, 38, 38, 0.08);
+        color: #dc2626;
+    }
+    .custom-menu-logout:hover i { color: #dc2626; }
+
+    .custom-menu-divider {
+        height: 1px;
+        background: #f3f4f6;
+        margin: 6px 4px;
+    }
+
+    /* ============================================
+       CART ITEM STYLING
+       ============================================ */
     .cart-item-box {
         border: 1px solid rgba(0, 0, 0, 0.06);
         border-radius: 18px;
@@ -467,10 +568,7 @@
         align-items: center;
         gap: 14px;
     }
-
-    .cart-item-box:hover {
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-    }
+    .cart-item-box:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06); }
 
     .cart-qty-control {
         display: flex;
@@ -480,7 +578,6 @@
         border-radius: 10px;
         padding: 2px 6px;
     }
-
     .cart-qty-control button {
         border: none;
         background: transparent;
@@ -496,11 +593,7 @@
         transition: 0.2s;
         cursor: pointer;
     }
-
-    .cart-qty-control button:hover {
-        background: rgba(255, 45, 122, 0.12);
-    }
-
+    .cart-qty-control button:hover { background: rgba(255, 45, 122, 0.12); }
     .cart-qty-control span {
         min-width: 28px;
         text-align: center;
@@ -510,14 +603,8 @@
     }
 
     @media (max-width: 480px) {
-        #cartSidebar {
-            width: 100%;
-            right: -100%;
-        }
-
-        .cart-item-box {
-            flex-wrap: wrap;
-        }
+        #cartSidebar { width: 100%; right: -100%; }
+        .cart-item-box { flex-wrap: wrap; }
     }
 
     .add-cart-toast {
@@ -538,12 +625,7 @@
         opacity: 0;
         border-left: 5px solid #ff2d7a;
     }
-
-    .add-cart-toast.show {
-        right: 20px;
-        opacity: 1;
-    }
-
+    .add-cart-toast.show { right: 20px; opacity: 1; }
     .add-cart-toast .toast-check {
         width: 42px;
         height: 42px;
@@ -556,20 +638,8 @@
         font-size: 18px;
         flex-shrink: 0;
     }
-
-    .add-cart-toast img {
-        width: 50px;
-        height: 50px;
-        border-radius: 12px;
-        object-fit: cover;
-        flex-shrink: 0;
-    }
-
-    .add-cart-toast .toast-info {
-        flex: 1;
-        min-width: 0;
-    }
-
+    .add-cart-toast img { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
+    .add-cart-toast .toast-info { flex: 1; min-width: 0; }
     .add-cart-toast .toast-title {
         font-weight: 700;
         color: #111;
@@ -579,20 +649,8 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
-    .add-cart-toast .toast-sub {
-        font-size: 12px;
-        color: #777;
-        margin-bottom: 4px;
-    }
-
-    .add-cart-toast .toast-cart-link {
-        color: #ff2d7a;
-        font-size: 12px;
-        font-weight: 700;
-        text-decoration: none;
-    }
-
+    .add-cart-toast .toast-sub { font-size: 12px; color: #777; margin-bottom: 4px; }
+    .add-cart-toast .toast-cart-link { color: #ff2d7a; font-size: 12px; font-weight: 700; text-decoration: none; }
     .add-cart-toast .toast-close {
         border: none;
         background: transparent;
@@ -604,14 +662,8 @@
     }
 
     @media (max-width: 480px) {
-        .add-cart-toast {
-            width: calc(100% - 20px);
-            right: -100%;
-        }
-
-        .add-cart-toast.show {
-            right: 10px;
-        }
+        .add-cart-toast { width: calc(100% - 20px); right: -100%; }
+        .add-cart-toast.show { right: 10px; }
     }
 </style>
 
@@ -628,14 +680,12 @@
         updateWishlistUI();
     });
 
-    // ----- CART SYNC & PERSISTENCE -----
+    // ----- CART SYNC -----
     function syncCartFromStorage() {
         const stored = localStorage.getItem("look_n_cook_cart");
         if (stored) {
             try { cart = JSON.parse(stored); } catch (e) { cart = []; }
-        } else {
-            cart = [];
-        }
+        } else { cart = []; }
     }
 
     function saveCartToStorage() {
@@ -643,17 +693,14 @@
         window.dispatchEvent(new Event('cartUpdated'));
     }
 
-    // ----- CART UI UPDATE -----
     function updateCartUI() {
         syncCartFromStorage();
-
         const container = document.getElementById('cartItems');
         const countEl = document.getElementById('cartCount');
         const totalEl = document.getElementById('cartTotal');
         const emptyMsg = document.getElementById('emptyCartText');
 
         if (!container) return;
-
         const emptyClone = emptyMsg ? emptyMsg.cloneNode(true) : null;
         container.innerHTML = '';
 
@@ -664,8 +711,7 @@
             return;
         }
 
-        let total = 0;
-        let totalCount = 0;
+        let total = 0, totalCount = 0;
 
         cart.forEach((item, index) => {
             const qty = item.quantity || 1;
@@ -695,24 +741,15 @@
         if (totalEl) totalEl.innerText = total.toLocaleString();
     }
 
-    // ----- CART ACTIONS -----
     function addToCart(name, price, image, quantity = 1) {
         syncCartFromStorage();
-
         const key = name.trim();
         const existingIndex = cart.findIndex(item => item.name.trim() === key);
-
         if (existingIndex !== -1) {
             cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + quantity;
         } else {
-            cart.push({
-                name: key,
-                price: parseInt(price),
-                image: image,
-                quantity: quantity
-            });
+            cart.push({ name: key, price: parseInt(price), image: image, quantity: quantity });
         }
-
         saveCartToStorage();
         updateCartUI();
         showAddToCartToast(key, image, price, quantity);
@@ -721,14 +758,8 @@
     function changeCartQty(index, delta) {
         syncCartFromStorage();
         if (!cart[index]) return;
-
         const newQty = (cart[index].quantity || 1) + delta;
-        if (newQty <= 0) {
-            cart.splice(index, 1);
-        } else {
-            cart[index].quantity = newQty;
-        }
-
+        if (newQty <= 0) { cart.splice(index, 1); } else { cart[index].quantity = newQty; }
         saveCartToStorage();
         updateCartUI();
     }
@@ -740,71 +771,54 @@
         updateCartUI();
     }
 
-    // ----- CART SIDEBAR TOGGLES -----
     function openCart() {
         closeWishlist();
         document.getElementById('cartSidebar').style.right = '0';
         document.getElementById('cartOverlay').style.display = 'block';
         updateCartUI();
     }
-
     function closeCart() {
         document.getElementById('cartSidebar').style.right = '-420px';
         document.getElementById('cartOverlay').style.display = 'none';
     }
-
     function openWishlist() {
         closeCart();
         document.getElementById('wishlistSidebar').style.right = '0';
         updateWishlistUI();
     }
-
     function closeWishlist() {
         document.getElementById('wishlistSidebar').style.right = '-420px';
     }
 
-    // ----- TOAST -----
     function showAddToCartToast(name, image, price, quantity = 1) {
         const toast = document.getElementById('addToCartToast');
         if (!toast) return;
-
         document.getElementById('toastItemImage').src = image;
         document.getElementById('toastItemName').textContent = name;
         document.getElementById('toastItemSub').textContent = `Qty: ${quantity} • PKR ${parseInt(price)}`;
-
         toast.classList.add('show');
         if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
+        toastTimer = setTimeout(() => { toast.classList.remove('show'); }, 3000);
     }
-
     function hideAddToCartToast() {
         const toast = document.getElementById('addToCartToast');
         if (toast) toast.classList.remove('show');
         if (toastTimer) clearTimeout(toastTimer);
     }
 
-    // ----- WISHLIST -----
     function syncWishlistFromStorage() {
         const stored = localStorage.getItem("look_n_cook_wishlist");
         if (stored) {
             try { wishlist = JSON.parse(stored); } catch (e) { wishlist = []; }
-        } else {
-            wishlist = [];
-        }
+        } else { wishlist = []; }
     }
-
-    function saveWishlistToStorage() {
-        localStorage.setItem("look_n_cook_wishlist", JSON.stringify(wishlist));
-    }
+    function saveWishlistToStorage() { localStorage.setItem("look_n_cook_wishlist", JSON.stringify(wishlist)); }
 
     function updateWishlistUI() {
         syncWishlistFromStorage();
         const container = document.getElementById('wishlistItems');
         const countEl = document.getElementById('wishlistCount');
         const emptyMsg = document.getElementById('emptyWishlistText');
-
         if (!container) return;
         const emptyClone = emptyMsg ? emptyMsg.cloneNode(true) : null;
         container.innerHTML = '';
@@ -814,7 +828,6 @@
             if (countEl) countEl.innerText = '0';
             return;
         }
-
         wishlist.forEach((item, index) => {
             container.innerHTML += `
                 <div class="wishlist-item-box d-flex align-items-center justify-content-between gap-3">
@@ -834,7 +847,6 @@
         });
         if (countEl) countEl.innerText = wishlist.length;
     }
-
     function addToWishlist(name, price, image) {
         syncWishlistFromStorage();
         if (wishlist.some(item => item.image === image)) return;
@@ -842,14 +854,12 @@
         saveWishlistToStorage();
         updateWishlistUI();
     }
-
     function removeWishlistItem(index) {
         syncWishlistFromStorage();
         wishlist.splice(index, 1);
         saveWishlistToStorage();
         updateWishlistUI();
     }
-
     function triggerSingleDownload(imagePath, filename) {
         const a = document.createElement('a');
         a.href = imagePath;
@@ -858,11 +868,75 @@
         a.click();
         document.body.removeChild(a);
     }
-
     function downloadAllImages() {
         if (wishlist.length === 0) { alert("Your saved collection is empty!"); return; }
         wishlist.forEach((item, idx) => {
             setTimeout(() => triggerSingleDownload(item.image, item.name), idx * 250);
         });
     }
+
+    // ============================================================
+    // ✅ CUSTOM DROPDOWN — fixed positioning calculated from button
+    //    Always opens below the button and inside the viewport
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdown = document.getElementById('customUserDropdown');
+        const toggle = document.getElementById('userDropdownToggle');
+        const menu = document.getElementById('userDropdownMenu');
+
+        if (!dropdown || !toggle || !menu) return;
+
+        function positionMenu() {
+            const rect = toggle.getBoundingClientRect();
+            const menuWidth = 240; // fallback width
+            const viewportWidth = window.innerWidth;
+            const gap = 10;
+
+            // Position below button
+            menu.style.top = (rect.bottom + gap) + 'px';
+
+            // Right align menu to button's right edge, but clamp inside viewport
+            let rightEdge = viewportWidth - rect.right;
+            if (rightEdge < 10) rightEdge = 10; // min 10px from right
+            menu.style.right = rightEdge + 'px';
+            menu.style.left = 'auto';
+
+            // Safety: if menu would overflow left, adjust
+            const menuLeft = viewportWidth - rightEdge - menuWidth;
+            if (menuLeft < 10) {
+                menu.style.right = '10px';
+            }
+        }
+
+        toggle.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const isOpen = dropdown.classList.contains('open');
+            if (isOpen) {
+                dropdown.classList.remove('open');
+            } else {
+                positionMenu();
+                dropdown.classList.add('open');
+            }
+        });
+
+        menu.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+
+        document.addEventListener('click', function (e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+
+        // Reposition on resize/scroll
+        window.addEventListener('resize', function () {
+            if (dropdown.classList.contains('open')) positionMenu();
+        });
+        window.addEventListener('scroll', function () {
+            if (dropdown.classList.contains('open')) positionMenu();
+        }, true);
+    });
 </script>

@@ -1,10 +1,50 @@
 @extends('admin.layouts.master')
 @section('title', 'Staff Management')
 @section('content')
+<style>
+    /* ✅ FIX: Header row (heading + Add Staff button) */
+    .staff-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+    .staff-header h1 {
+        margin: 0;
+        word-break: break-word;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+    .staff-header .staff-add-btn {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    /* ✅ Chhoti screens pe button heading ke neeche full-width */
+    @media (max-width: 480px) {
+        .staff-header {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .staff-header h1 {
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        .staff-header .staff-add-btn {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+</style>
+
 <div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- ✅ FIXED HEADER -->
+    <div class="staff-header">
         <h1 class="h2">Staff Management</h1>
-        <a href="{{ route('admin.staff.create') }}" class="btn btn-primary rounded-pill px-4">
+        <a href="{{ route('admin.staff.create') }}" class="btn btn-primary rounded-pill px-4 staff-add-btn">
             <i class="fa-solid fa-plus me-1"></i> Add Staff
         </a>
     </div>
@@ -26,7 +66,7 @@
                     <tr>
                         <th>#</th><th>Image</th><th>Employee ID</th><th>Name</th>
                         <th>User (Email)</th><th>Role</th><th>Designation</th><th>Branch</th>
-                        <th>Shift Start</th><th>Shift End</th> <!-- NEW -->
+                        <th>Shift Start</th><th>Shift End</th>
                         <th>Phone</th><th>Salary</th><th>Status</th><th class="text-end">Actions</th>
                     </tr>
                 </thead>
@@ -53,8 +93,8 @@
                         <td>{{ $roleName }}</td>
                         <td>{{ $s->designation ?? '—' }}</td>
                         <td>{{ $s->branch ?? '—' }}</td>
-                        <td>{{ $s->shift_start_time ?? '—' }}</td>   <!-- NEW -->
-                        <td>{{ $s->shift_end_time ?? '—' }}</td>     <!-- NEW -->
+                        <td>{{ $s->shift_start_time ?? '—' }}</td>
+                        <td>{{ $s->shift_end_time ?? '—' }}</td>
                         <td>{{ $s->phone }}</td>
                         <td>Rs. {{ number_format($s->salary, 0) }}</td>
                         <td>
@@ -79,7 +119,7 @@
             </table>
         </div>
         <div class="card-footer bg-white">
-            {{ $staff->links() }}
+            {{ $staff->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>

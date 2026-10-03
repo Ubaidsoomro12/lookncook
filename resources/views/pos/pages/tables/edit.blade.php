@@ -4,19 +4,33 @@
 
 @section('content')
 
+<style>
+    /* ✅ Fix Save/Cancel buttons on tiny screens */
+    @@media (max-width: 480px){
+        .form-actions{
+            flex-direction: column;
+            width: 100%;
+        }
+        .form-actions .btn{
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
     <div>
         <h4 class="fw-bold mb-1">Edit Table #{{ $table->table_number }}</h4>
         <p class="text-muted small m-0">Update table details</p>
     </div>
-    <a href="{{ route('admin.tables.index') }}" class="btn btn-outline-secondary">
+    <a href="{{ route('pos.tables.index') }}" class="btn btn-outline-secondary">
         <i class="fa-solid fa-arrow-left me-2"></i>Back to Tables
     </a>
 </div>
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-4">
-        <form action="{{ route('admin.tables.update', $table->id) }}" method="POST">
+        <form action="{{ route('pos.tables.update', $table->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -46,7 +60,7 @@
                 <div class="col-md-4">
                     <label class="form-label fw-semibold">Capacity <span class="text-danger">*</span></label>
                     <select name="capacity" class="form-select @error('capacity') is-invalid @enderror" required>
-                        @for($i = 1; $i <= 20; $i++)
+                        @for($i = 1; $i <= 12; $i++)
                             <option value="{{ $i }}" {{ old('capacity', $table->capacity) == $i ? 'selected' : '' }}>
                                 {{ $i }} {{ $i == 1 ? 'Person' : 'People' }}
                             </option>
@@ -133,14 +147,14 @@
                 </div>
             </div>
 
-            <div class="mt-4 d-flex gap-2">
+            <div class="mt-4 d-flex gap-2 form-actions">
                 <button type="submit" class="btn btn-danger px-4">
                     <i class="fa-solid fa-save me-2"></i>Update Table
                 </button>
-                <a href="{{ route('admin.tables.index') }}" class="btn btn-outline-secondary">Cancel</a>
+                <a href="{{ route('pos.tables.index') }}" class="btn btn-outline-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
 
-@endsection 
+@endsection

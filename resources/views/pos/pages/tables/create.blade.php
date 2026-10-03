@@ -3,6 +3,21 @@
 @section('title', 'Add New Table')
 
 @section('content')
+
+<style>
+    /* ✅ Fix Save/Cancel buttons on tiny screens */
+    @@media (max-width: 480px){
+        .form-actions{
+            flex-direction: column;
+            width: 100%;
+        }
+        .form-actions .btn{
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+
 <div class="container-fluid px-4">
     <!-- ========================================== -->
     <!-- PAGE HEADER -->
@@ -12,7 +27,7 @@
             <h4 class="fw-bold mb-1">Add New Table</h4>
             <p class="text-muted small m-0">Create a new restaurant table</p>
         </div>
-        <a href="{{ route('admin.tables.index') }}" class="btn btn-outline-secondary">
+        <a href="{{ route('pos.tables.index') }}" class="btn btn-outline-secondary">
             <i class="fa-solid fa-arrow-left me-2"></i>Back to Tables
         </a>
     </div>
@@ -22,7 +37,7 @@
     <!-- ========================================== -->
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4">
-            <form action="{{ route('admin.tables.store') }}" method="POST">
+            <form action="{{ route('pos.tables.store') }}" method="POST">
                 @csrf
 
                 <!-- ================================ -->
@@ -77,7 +92,7 @@
                                     class="form-select @error('capacity') is-invalid @enderror" 
                                     required>
                                 <option value="">Select Capacity</option>
-                                @for($i = 1; $i <= 20; $i++)
+                                @for($i = 1; $i <= 12; $i++)
                                     <option value="{{ $i }}" {{ old('capacity') == $i ? 'selected' : '' }}>
                                         {{ $i }} {{ $i == 1 ? 'Person' : 'People' }}
                                     </option>
@@ -97,8 +112,6 @@
                                 <option value="lounge" {{ old('table_type') == 'lounge' ? 'selected' : '' }}>🛋️ Lounge</option>
                                 <option value="private" {{ old('table_type') == 'private' ? 'selected' : '' }}>🔒 Private</option>
                                 <option value="booth" {{ old('table_type') == 'booth' ? 'selected' : '' }}>🪑 Booth</option>
-                                <!-- <option value="outdoor" {{ old('table_type') == 'outdoor' ? 'selected' : '' }}>🌿 Outdoor</option>
-                                <option value="indoor" {{ old('table_type') == 'indoor' ? 'selected' : '' }}>🏠 Indoor</option> -->
                             </select>
                         </div>
 
@@ -106,7 +119,6 @@
                         <div class="mb-3">
                             <label class="form-label fw-semibold">Zone</label>
                             <select name="zone" class="form-select">
-                                <!-- <option value="dining" {{ old('zone') == 'dining' ? 'selected' : '' }}>🍽️ Dining</option> -->
                                 <option value="male area" {{ old('zone') == 'male area' ? 'selected' : '' }}>👨 Male Area</option>
                                 <option value="family area" {{ old('zone') == 'family area' ? 'selected' : '' }}>👨‍👩‍👧‍👦 Family Area</option>
                                 <option value="indoor" {{ old('zone') == 'indoor' ? 'selected' : '' }}>🏠 Indoor</option>
@@ -205,7 +217,7 @@
                             <label class="form-label fw-semibold">Description</label>
                             <textarea name="description" 
                                       class="form-control" 
-                                      rows="4" 
+                                      rows="3" 
                                       placeholder="Any notes about this table...">{{ old('description') }}</textarea>
                         </div>
                     </div>
@@ -214,11 +226,11 @@
                 <!-- ================================ -->
                 <!-- FORM ACTIONS -->
                 <!-- ================================ -->
-                <div class="mt-4 pt-3 border-top d-flex gap-2">
+                <div class="mt-4 pt-3 border-top d-flex gap-2 form-actions">
                     <button type="submit" class="btn btn-danger px-5">
                         <i class="fa-solid fa-save me-2"></i>Save Table
                     </button>
-                    <a href="{{ route('admin.tables.index') }}" class="btn btn-outline-secondary px-4">
+                    <a href="{{ route('pos.tables.index') }}" class="btn btn-outline-secondary px-4">
                         <i class="fa-solid fa-times me-2"></i>Cancel
                     </a>
                 </div>

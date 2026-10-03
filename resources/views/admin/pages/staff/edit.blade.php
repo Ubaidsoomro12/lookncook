@@ -1,6 +1,75 @@
 @extends('admin.layouts.master')
 @section('title', 'Edit Staff')
 @section('content')
+<style>
+    /* ✅ Fix 1: Action buttons alignment */
+    .staff-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+    }
+    .staff-form-actions .btn {
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    @media (max-width: 480px) {
+        .staff-form-actions {
+            flex-direction: column;
+        }
+        .staff-form-actions .btn {
+            width: 100%;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+    }
+
+    /* ✅ Fix 2: Blue alert box — proper alignment of icon, name, email */
+    .staff-linked-alert {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
+        word-break: break-word;
+    }
+    .staff-linked-alert .staff-linked-icon {
+        flex-shrink: 0;
+        margin-top: 3px;
+        font-size: 16px;
+    }
+    .staff-linked-alert .staff-linked-body {
+        flex: 1;
+        min-width: 0;   /* very important for text-wrap inside flex */
+    }
+    .staff-linked-alert .staff-linked-body .name {
+        font-weight: 700;
+        color: #0c4a6e;
+        word-break: break-word;
+    }
+    .staff-linked-alert .staff-linked-body .email {
+        color: #0c4a6e;
+        word-break: break-all;
+    }
+    .staff-linked-alert .staff-linked-hint {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #6b7280;
+    }
+    @media (max-width: 576px) {
+        .staff-linked-alert {
+            align-items: flex-start;
+        }
+        .staff-linked-alert .staff-linked-hint {
+            margin-left: 0;
+            margin-top: 6px;
+        }
+    }
+</style>
+
 <div class="container py-4" style="max-width:900px;">
     <div class="d-flex align-items-center gap-3 mb-4">
         <a href="{{ route('admin.staff.index') }}" class="btn btn-light rounded-circle"><i class="fa-solid fa-arrow-left"></i></a>
@@ -24,13 +93,19 @@
                 <!-- Hidden user_id (cannot be changed here) -->
                 <input type="hidden" name="user_id" value="{{ $staff->user_id }}">
 
-                <div class="alert alert-info d-flex align-items-center">
-                    <i class="fa-solid fa-user me-2"></i>
-                    <span>
-                        Staff linked to user: <strong>{{ $staff->user->name ?? 'Unknown' }}</strong>
-                        ({{ $staff->user->email ?? '' }})
-                    </span>
-                    <span class="ms-3 text-muted small">(To change user, create a new staff record)</span>
+                <!-- ✅ FIXED ALERT: proper alignment for icon + name + email + hint -->
+                <div class="alert alert-info staff-linked-alert">
+                    <i class="fa-solid fa-user staff-linked-icon"></i>
+                    <div class="staff-linked-body">
+                        <div>
+                            Staff linked to user:
+                            <span class="name">{{ $staff->user->name ?? 'Unknown' }}</span>
+                            @if($staff->user && $staff->user->email)
+                                <span class="email">({{ $staff->user->email }})</span>
+                            @endif
+                        </div>
+                        <span class="staff-linked-hint">To change user, create a new staff record.</span>
+                    </div>
                 </div>
 
                 <div class="row g-4">
@@ -230,10 +305,12 @@
                         @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- Submit -->
+                    <!-- ✅ FIXED Submit Buttons -->
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill">Update Staff</button>
-                        <a href="{{ route('admin.staff.index') }}" class="btn btn-outline-secondary btn-lg px-5 rounded-pill">Cancel</a>
+                        <div class="staff-form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">Update Staff</button>
+                            <a href="{{ route('admin.staff.index') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-5">Cancel</a>
+                        </div>
                     </div>
                 </div>
             </form>

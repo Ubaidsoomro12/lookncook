@@ -140,20 +140,17 @@
         margin-left: 4px;
     }
 
+    /* ✅ Review text — design bilkul waise hi rakha hai */
     .review-text {
         max-width: 220px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        color: #cbd5e1; /* ✅ Visible light gray */
+        color: #cbd5e1;
         font-size: 13px;
         margin: 0;
         cursor: pointer;
         transition: color 0.2s ease;
-    }
-
-    .review-text:hover {
-        color: #ffffff; /* ✅ White on hover */
     }
 
     .review-image {
@@ -504,7 +501,7 @@
                             </div>
                         </td>
                         <td>
-                            <p class="review-text" title="{{ $review->message }}" data-fulltext="{{ $review->message }}">
+                            <p class="review-text" title="{{ $review->message }}">
                                 {{ Str::limit($review->message, 50) }}
                             </p>
                         </td>
@@ -689,19 +686,7 @@
         });
     }
 
-    // ============================================
-    // READ MORE - Show full review on click
-    // ============================================
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.review-text').forEach(function(el) {
-            el.addEventListener('click', function() {
-                const fullText = this.getAttribute('data-fulltext');
-                if (fullText && fullText.length > 50) {
-                    alert(fullText);
-                }
-            });
-        });
-    });
+    // ✅ Click pe koi popup nahi aayega — alert wala code bilkul hata diya gaya hai
 </script>
 
 @endsection

@@ -10,7 +10,7 @@
             <p class="text-muted small m-0">Manage all restaurant tables from here</p>
         </div>
         <div>
-            <a href="{{ route('admin.tables.create') }}" class="btn px-4"
+            <a href="{{ route('pos.tables.create') }}" class="btn px-4"
                 style="background-color: #ff2d7a; border-color: #ff2d7a; color: #fff;">
                 <i class="fa-solid fa-plus me-2"></i>Add New Table
             </a>
@@ -20,7 +20,7 @@
     {{-- Search Bar --}}
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body py-3">
-            <form action="{{ route('admin.tables.index') }}" method="GET" class="row g-3 align-items-center">
+            <form action="{{ route('pos.tables.index') }}" method="GET" class="row g-3 align-items-center">
                 <div class="col-md-5">
                     <div class="input-group">
                         <span class="input-group-text bg-white border-end-0">
@@ -139,13 +139,13 @@
                                 </td>
                                 <td>
                                     <div class="d-flex gap-2 justify-content-center">
-                                        <a href="{{ route('admin.tables.edit', $table->id) }}"
+                                        <a href="{{ route('pos.tables.edit', $table->id) }}"
                                             class="btn btn-sm btn-outline-primary" title="Edit">
                                             <i class="fa-solid fa-pen"></i>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-danger delete-table-btn"
                                             data-id="{{ $table->id }}"
-                                            data-url="{{ route('admin.tables.destroy', $table->id) }}"
+                                            data-url="{{ route('pos.tables.destroy', $table->id) }}"
                                             data-name="{{ $table->table_number }}" title="Delete">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>

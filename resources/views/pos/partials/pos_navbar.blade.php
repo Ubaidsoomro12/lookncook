@@ -3,7 +3,7 @@
     <div class="pos-header-inner">
         <div class="pos-header-left">
             <!-- Hamburger Menu button visible on smaller viewports -->
-            <button id="mobileMenuBtn" class="pos-mobile-btn">
+            <button id="mobileMenuBtn" class="pos-mobile-btn" type="button" aria-label="Toggle sidebar">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <span class="pos-header-title">System Dashboard Workspace Profile</span>
@@ -67,6 +67,7 @@
         background: transparent;
         border: none;
         display: block;
+        cursor: pointer;
     }
     .pos-mobile-btn:hover {
         background: #f3f4f6;
@@ -207,7 +208,6 @@
                 profileMenu.classList.toggle('show');
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', function(e) {
                 if (!profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
                     profileMenu.classList.remove('show');
@@ -215,13 +215,58 @@
             });
         }
 
-        // Mobile Menu Button (for sidebar toggle if needed)
-        const mobileBtn = document.getElementById('mobileMenuBtn');
+        // ✅ FIXED: Sidebar toggle
+        const mobileBtn  = document.getElementById('mobileMenuBtn');
+        const sidebar    = document.getElementById('adminSidebar');
+        const overlay    = document.getElementById('sidebarOverlay');
+        const closeBtn   = document.getElementById('closeMobileSidebarBtn');
+
+        function openSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.add('open');
+            if (overlay) overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            if (!sidebar) return;
+            sidebar.classList.remove('open');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Expose globally so the overlay's inline onclick works
+        window.openSidebar  = openSidebar;
+        window.closeSidebar = closeSidebar;
+
         if (mobileBtn) {
-            mobileBtn.addEventListener('click', function() {
-                // Add your sidebar toggle logic here
-                // Example: document.getElementById('sidebar').classList.toggle('show');
+            mobileBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (sidebar && sidebar.classList.contains('open')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
             });
         }
+
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeSidebar();
+            });
+        }
+
+        // Close sidebar on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeSidebar();
+        });
+
+        // Auto-close sidebar on window resize if it hits desktop size
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 1024) {
+                closeSidebar();
+            }
+        });
     });
 </script>

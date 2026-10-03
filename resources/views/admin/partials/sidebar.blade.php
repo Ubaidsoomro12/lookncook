@@ -53,26 +53,30 @@
 
             <div style="display:flex; flex-direction:column; gap:4px;">
                 <a href="{{ route('admin.banners.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-images" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.banners*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-images"
+                        style="font-size:14px; {{ request()->routeIs('admin.banners*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Banner Management</span>
                 </a>
 
                 <a href="{{ route('admin.products.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-utensils" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.products*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-utensils"
+                        style="font-size:14px; {{ request()->routeIs('admin.products*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Product Management</span>
                 </a>
 
                 <a href="{{ route('admin.payment-methods.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-credit-card" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.payment-methods*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-credit-card"
+                        style="font-size:14px; {{ request()->routeIs('admin.payment-methods*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Payment Methods</span>
                 </a>
 
                 <a href="{{ route('admin.payments.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.payments.*') ? 'background:#1f2937; color:#fff;' : 'color:#9ca3af;' }}">
-                    <i class="fa-solid fa-shopping-bag" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.payments*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-shopping-bag"
+                        style="font-size:14px; {{ request()->routeIs('admin.payments*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Order Management</span>
                 </a>
 
@@ -83,58 +87,68 @@
                     <span>Reviews Management</span>
                 </a>
 
-                <a href="#"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-user-shield" style="font-size:14px;"></i>
-                    <span>Branches Management</span>
-                </a>
+                
 
                 <a href="{{ route('admin.users.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-users-gear" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.users*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-users-gear"
+                        style="font-size:14px; {{ request()->routeIs('admin.users*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Users Management</span>
                 </a>
 
                 <a href="{{ route('admin.staff.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-users" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.staff.*') && !request()->routeIs('admin.staff.attendance') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-users"
+                        style="font-size:14px; {{ request()->routeIs('admin.staff.*') && !request()->routeIs('admin.staff.attendance') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Staff Management</span>
                 </a>
 
                 <a href="{{ route('admin.staff.attendance') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-calendar-check" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.staff.attendance*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-calendar-check"
+                        style="font-size:14px; {{ request()->routeIs('admin.staff.attendance*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Staff Attendance</span>
                 </a>
 
+                <a href="{{ route('admin.leaves.index') }}"
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.leaves*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-user-shield"
+                        style="font-size:14px; {{ request()->routeIs('admin.leaves*') ? 'color:#ff2d7a;' : '' }}"></i>
+                    <span>leaves Management</span>
+                </a>
 
                 <a href="{{ route('admin.branches.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-user-shield" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.branches*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-user-shield"
+                        style="font-size:14px; {{ request()->routeIs('admin.branches*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Branches Management</span>
                 </a>
 
                 <a href="{{ route('admin.categories.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.categories.*') ? 'background:#1f2937; color:#fff;' : 'color:#9ca3af;' }}">
-                    <i class="fa-solid fa-folder-tree" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.categories.*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-folder-tree"
+                        style="font-size:14px; {{ request()->routeIs('admin.categories.*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Categories Management</span>
                 </a>
 
                 <a href="{{ route('admin.gallery.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-images" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.gallery*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-images"
+                        style="font-size:14px; {{ request()->routeIs('admin.gallery*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Gallery Management</span>
                 </a>
 
                 <a href="{{ route('admin.riders.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-motorcycle" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.riders*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-motorcycle"
+                        style="font-size:14px; {{ request()->routeIs('admin.riders*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>Riders Management</span>
                 </a>
 
                 <a href="{{ route('admin.about.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-circle-info" style="font-size:14px;"></i>
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.about*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-circle-info"
+                        style="font-size:14px; {{ request()->routeIs('admin.about*') ? 'color:#ff2d7a;' : '' }}"></i>
                     <span>About Us</span>
                 </a>
             </div>

@@ -1,10 +1,13 @@
+<!-- SweetAlert2 (for stylish popups) -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- Chart.js for Sales and Order charts display -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     // Responsive Mobile Sidebar Toggle Functions
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const closeMobileSidebarBtn = document.getElementById('closeMobileSidebarBtn'); // FIXED: New inner element link
+    const closeMobileSidebarBtn = document.getElementById('closeMobileSidebarBtn');
     const sidebarElement = document.getElementById('adminSidebar');
     const burgerIcon = document.getElementById('burgerIcon');
     const closeIcon = document.getElementById('closeIcon');
@@ -12,7 +15,7 @@
     // Helper function to handle classes sync smoothly
     function toggleSidebarState() {
         sidebarElement.classList.toggle('-translate-x-full');
-        
+
         if (sidebarElement.classList.contains('-translate-x-full')) {
             // Sidebar is now closed
             if (burgerIcon) { burgerIcon.classList.remove('hidden'); burgerIcon.classList.add('block'); }
@@ -29,7 +32,7 @@
         mobileMenuBtn.addEventListener('click', toggleSidebarState);
     }
 
-    // FIXED: Trigger toggle on sidebar inner cross button click
+    // Trigger toggle on sidebar inner cross button click
     if (closeMobileSidebarBtn) {
         closeMobileSidebarBtn.addEventListener('click', toggleSidebarState);
     }

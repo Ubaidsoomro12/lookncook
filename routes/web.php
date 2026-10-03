@@ -22,6 +22,8 @@ use App\Http\Controllers\backend\BranchController;
 use App\Http\Controllers\front\ProfileController;
 use App\Http\Controllers\front\OrderController;
 use App\Http\Controllers\Staff\AttendanceController;
+use App\Http\Controllers\Staff\LeaveController;
+use App\Http\Controllers\pos\PosOrderController;
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
@@ -39,8 +41,6 @@ Route::controller(PageController::class)->group(function () {
 Route::post('/contact-submit', [ContactController::class, 'store'])->name('contacts.store');
 
 //-------------------------------------------------------------- auth routes --------------------------------
-
-
 Route::get('/login', [AuthController::class, 'showAuthForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 Route::post('/register/send-otp', [AuthController::class, 'registerOtp'])->name('register.otp');
@@ -51,7 +51,6 @@ Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('resend.o
 Route::post('/forgot-password/send', [AuthController::class, 'sendResetOtp'])->name('password.forgot.send');
 Route::post('/forgot-password/verify', [AuthController::class, 'updatePassword'])->name('password.forgot.submit');
 
-// Review routes (frontend)
 Route::post('/review/submit', [ReviewController::class, 'submit'])->name('review.submit');
 
 //-------------------------------------------------------------- protected routes ---------------------------
@@ -73,17 +72,18 @@ Route::middleware(['auth'])->group(function () {
         return view('pos.pos_dashboard');
     })->name('pos.dashboard');
 
-    // =============================================================
-    // STAFF DASHBOARD ROUTE (NEW)
-    // =============================================================
     Route::get('/staff/dashboard', [StaffController::class, 'dashboard'])->name('staff.dashboard');
-
-    // =============================================================
-    // STAFF ATTENDANCE ROUTES (NEW)
-    // =============================================================
     Route::post('/staff/clock-in', [AttendanceController::class, 'clockIn'])->name('staff.clock-in');
     Route::post('/staff/clock-out', [AttendanceController::class, 'clockOut'])->name('staff.clock-out');
     Route::get('/staff/attendance', [AttendanceController::class, 'index'])->name('staff.attendance');
+
+    Route::prefix('staff/manage-leave')->name('staff.manage_leave.')->controller(LeaveController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/edit/{id}', 'edit')->name('edit');
+        Route::put('/update/{id}', 'update')->name('update');
+    });
 
     Route::get('/payment', [CheckoutController::class, 'index'])->name('payment');
 
@@ -97,34 +97,16 @@ Route::middleware(['auth'])->group(function () {
             return view('admin.dashboard');
         })->name('dashboard');
 
-        // ===== TABLES ROUTES =====
-        Route::prefix('tables')->name('tables.')->controller(TableController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
-            Route::get('/create', 'create')->name('create');
-            Route::post('/store', 'store')->name('store');
-            Route::get('/search', 'search')->name('search');
-            Route::get('/{id}/edit', 'edit')->name('edit');
-            Route::put('/{id}', 'update')->name('update');
-            Route::delete('/{id}', 'destroy')->name('destroy');
-            Route::post('/{id}/status', 'updateStatus')->name('status');
-            Route::get('/{id}', 'show')->name('show');
-        });
-
-        // ===== STAFF ROUTES (replaces waiter) =====
         Route::prefix('staff')->name('staff.')->controller(StaffController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
-            Route::get('/search-users', 'searchUsers')->name('search-users'); // <-- new
+            Route::get('/search-users', 'searchUsers')->name('search-users');
             Route::get('/create', 'create')->name('create');
             Route::post('/store', 'store')->name('store');
             Route::get('/show/{id}', 'show')->name('show');
             Route::get('/edit/{id}', 'edit')->name('edit');
             Route::put('/update/{id}', 'update')->name('update');
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
-
-            // =============================================================
-            // ADMIN STAFF ATTENDANCE MANAGEMENT ROUTES (NEW)
-            // =============================================================
             Route::get('/attendance', 'attendance')->name('attendance');
             Route::get('/attendance/{id}', 'attendanceDetail')->name('attendance.detail');
             Route::post('/attendance/{id}/approve-reclock', 'approveReclock')->name('attendance.approve-reclock');
@@ -142,11 +124,9 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/{id}/status', 'updateStatus')->name('status');
         });
 
-        // Banner Routes
-        Route::resource('banners', BannerController::class);
         Route::get('banners/search', [BannerController::class, 'search'])->name('banners.search');
+        Route::resource('banners', BannerController::class);
 
-        // User Management Routes
         Route::prefix('users')->name('users.')->controller(UserController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
@@ -157,12 +137,10 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{user}', 'destroy')->name('destroy');
         });
 
-        // Order rider-assignment routes
         Route::prefix('orders')->name('orders.')->controller(OrderAssignmentController::class)->group(function () {
             Route::post('/{order}/assign', 'assign')->name('assign');
         });
 
-        // Rider management routes
         Route::prefix('riders')->name('riders.')->controller(RiderController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
@@ -174,7 +152,6 @@ Route::middleware(['auth'])->group(function () {
             Route::patch('/toggle-status/{id}', 'toggleStatus')->name('toggle-status');
         });
 
-        // Category management routes
         Route::prefix('categories')->name('categories.')->controller(CategoryController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
@@ -185,7 +162,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
         });
 
-        // Product management routes
         Route::prefix('products')->name('products.')->controller(ProductController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
@@ -196,7 +172,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
         });
 
-        // Payment methods routes
         Route::prefix('payment-methods')->name('payment-methods.')->controller(PaymentMethodController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
@@ -207,7 +182,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{id}', 'destroy')->name('destroy');
         });
 
-        // Add these routes inside the admin payment group
         Route::prefix('payments')->name('payments.')->controller(PaymentController::class)->group(function () {
             Route::get('/', 'index')->name('index');
             Route::get('/search', 'search')->name('search');
@@ -218,34 +192,73 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/{order}', 'destroy')->name('destroy');
         });
 
-        // Reviews Management Routes
+        Route::prefix('leaves')->name('leaves.')->controller(LeaveController::class)->group(function () {
+            Route::get('/', 'adminIndex')->name('index');
+            Route::post('/{id}/approve', 'approve')->name('approve');
+            Route::post('/{id}/reject', 'reject')->name('reject');
+            Route::post('/assign', 'assignLeave')->name('assign');
+        });
+
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
         Route::post('/reviews/{id}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
         Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
-        // Gallery Management
         Route::get('/manage-gallery', [GalleryController::class, 'index'])->name('gallery.index');
         Route::put('/manage-gallery/{id}', [GalleryController::class, 'update'])->name('gallery.update');
 
-        // About Management
         Route::get('/about', [AboutController::class, 'index'])->name('about.index');
         Route::put('/about/{about}', [AboutController::class, 'update'])->name('about.update');
-
-
     });
+
+    // =============================================================
+    // ✅ POS TABLES ROUTES — /pos/tables
+    // =============================================================
+    Route::prefix('pos/tables')->name('pos.tables.')->controller(TableController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/search', 'search')->name('search');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+        Route::post('/{id}/status', 'updateStatus')->name('status');
+        Route::get('/{id}', 'show')->name('show');
+    });
+
+    // =============================================================
+    // POS ORDERS ROUTES
+    // =============================================================
+    Route::prefix('pos/orders')->name('pos.orders.')->controller(PosOrderController::class)->group(function () {
+
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::get('/{id}', 'show')->name('show');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+        Route::post('/{id}/items', 'addItem')->name('items.add');
+        Route::put('/{id}/items/{itemId}', 'updateItem')->name('items.update');
+        Route::delete('/{id}/items/{itemId}', 'removeItem')->name('items.remove');
+        Route::post('/{id}/charges', 'applyCharges')->name('charges');
+
+        // 🧾 Print Receipt (opens new window with 2 receipts)
+        Route::get('/{id}/print-receipt', 'printReceipt')->name('print.receipt');
+
+        // 🧾 Receipt PDF Data (base64 JSON — bypasses IDM)
+        Route::get('/{id}/receipt-data', 'receiptData')->name('receipt.data');
+    });
+
+    Route::get('pos/ajax/foods/{categoryId}', [PosOrderController::class, 'foodsByCategory'])
+        ->name('pos.foods.by-category');
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-
-    // Order route - Simple aur working
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-
 });
 
-// ============================================== PAYMENT & CHECKOUT ROUTES ==============================================
+// PAYMENT & CHECKOUT ROUTES
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
-
-// Generic order confirmation page
 Route::get('/order/confirmation/{order}', [CheckoutController::class, 'orderSuccess'])->name('order.success');

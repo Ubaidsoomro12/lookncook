@@ -104,7 +104,7 @@ class TableController extends Controller
             'is_active' => $request->has('is_active') ? true : false,
         ]);
 
-        return redirect()->route('admin.tables.index')
+        return redirect()->route('pos.tables.index')
             ->with('success', 'Table created successfully!');
     }
 
@@ -176,7 +176,7 @@ class TableController extends Controller
             'is_active' => $request->has('is_active') ? true : false,
         ]);
 
-        return redirect()->route('admin.tables.index')
+        return redirect()->route('pos.tables.index')
             ->with('success', 'Table updated successfully!');
     }
 
@@ -186,7 +186,6 @@ class TableController extends Controller
     public function destroy($id)
     {
         try {
-            // Find the table
             $table = PosTable::find($id);
             
             if (!$table) {
@@ -196,7 +195,6 @@ class TableController extends Controller
                 ], 404);
             }
 
-            // Delete the table
             $table->delete();
 
             return response()->json([

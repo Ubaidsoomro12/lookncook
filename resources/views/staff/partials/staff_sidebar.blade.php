@@ -36,6 +36,12 @@
             </a>
         </li>
 
+        <!-- manage leave -->
+        <li class="nav-item">
+            <a href="{{ route('staff.manage_leave.index') }}" class="nav-link">
+                <i class="fa-solid fa-message"></i> Leave
+            </a>
+        </li>
         <!-- Payroll -->
         <li class="nav-item">
             <a href="#" class="nav-link">

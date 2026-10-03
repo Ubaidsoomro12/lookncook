@@ -1,4 +1,5 @@
 @extends('admin.layouts.master')
+@section('title', 'Create Branch')
 
 @section('content')
 <div class="container">

@@ -17,11 +17,13 @@
   .user-edit-input {
     width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
     font-size: 14px; transition: all .2s; outline: none;
+    max-width: 100%; box-sizing: border-box;
   }
   .user-edit-input:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.2); }
   .user-edit-select {
     width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
     font-size: 14px; transition: all .2s; outline: none; background: #fff;
+    max-width: 100%; box-sizing: border-box;
   }
   .user-edit-select:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.2); }
   .user-edit-error-text { color: #dc2626; font-size: 12px; margin-top: 4px; }
@@ -31,21 +33,47 @@
   }
   .user-edit-error-box ul { list-style: disc; padding-left: 20px; margin: 0; }
   .user-edit-error-box ul li { margin-bottom: 2px; }
+
   .user-edit-submit {
     background: linear-gradient(to right, #ff2d7a, #ff4b91); color: #fff; font-weight: 500;
     padding: 10px 24px; border-radius: 12px; border: none;
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     box-shadow: 0 4px 12px rgba(255,45,122,0.2); transition: all .2s;
+    white-space: nowrap;
   }
   .user-edit-submit:hover { opacity: .9; color: #fff; }
+
   .user-edit-cancel {
     padding: 10px 24px; border-radius: 12px; border: 1px solid #e5e7eb;
     color: #6b7280; font-weight: 500; background: #fff; transition: all .2s;
+    display: inline-flex; align-items: center; justify-content: center;
+    white-space: nowrap;
   }
   .user-edit-cancel:hover { background: #f9fafb; color: #6b7280; }
 
   .tw-max-w-2xl { max-width: 672px; margin: 0 auto; }
   .tw-grid-cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  /* ✅ FIX: Buttons ko grid ke bahar nikaal kar full-width flex banaya */
+  .user-edit-actions {
+    grid-column: 1 / -1;   /* poori width le lo */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 8px;
+  }
+
+  /* ✅ Chhoti screens par buttons stack ho jayein */
+  @media (max-width: 480px) {
+    .user-edit-actions {
+      flex-direction: column;
+    }
+    .user-edit-actions .user-edit-submit,
+    .user-edit-actions .user-edit-cancel {
+      width: 100%;
+    }
+  }
+
   @media (max-width: 768px) { .tw-grid-cols-2 { grid-template-columns: 1fr; } }
 </style>
 
@@ -117,12 +145,13 @@
         @error('password')<p class="user-edit-error-text">{{ $message }}</p>@enderror
       </div>
 
-      <div style="grid-column: span 2;">
+      <div style="grid-column: 1 / -1;">
         <label class="user-edit-label">Confirm Password</label>
         <input type="password" name="password_confirmation" placeholder="Confirm new password" class="user-edit-input">
       </div>
 
-      <div style="grid-column: span 2;" class="d-flex gap-3 pt-2">
+      <!-- ✅ FIXED BUTTONS — grid ke bahar, proper flex row -->
+      <div class="user-edit-actions">
         <button type="submit" class="user-edit-submit">
           <i class="fa-solid fa-check"></i> Update User
         </button>

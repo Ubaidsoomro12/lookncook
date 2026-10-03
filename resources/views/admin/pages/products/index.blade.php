@@ -184,6 +184,22 @@
   .toast-item.error .toast-progress { background: #dc2626; }
 
   .prod-truncate { max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* ============================================================
+     ✅ FIX: Bootstrap 5 pagination — force inline layout so the
+     default Tailwind chevron SVG icons don't render as giant
+     block images. This is what was causing the huge blue arrows.
+     ============================================================ */
+  #paginationWrapper svg {
+    width: 1rem !important;
+    height: 1rem !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+  }
+  #paginationWrapper .pagination {
+    margin-bottom: 0;
+    flex-wrap: wrap;
+  }
 </style>
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -308,7 +324,8 @@
 
       @if($products->hasPages())
         <div class="p-3 p-md-4" style="border-top:1px solid #f3f4f6;" id="paginationWrapper">
-          {{ $products->links() }}
+          {{-- ✅ Use Bootstrap 5 pagination view — this is the fix --}}
+          {{ $products->links('pagination::bootstrap-5') }}
         </div>
       @endif
     </div>
