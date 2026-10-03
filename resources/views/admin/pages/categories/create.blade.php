@@ -40,6 +40,8 @@
     font-size: 14px;
     transition: all 0.2s;
     outline: none;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .cat-form-input:focus {
     border-color: #ff2d7a;
@@ -58,6 +60,8 @@
     outline: none;
     resize: vertical;
     min-height: 100px;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .cat-form-textarea:focus {
     border-color: #ff2d7a;
@@ -72,6 +76,8 @@
     transition: all 0.2s;
     outline: none;
     background: #fff;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .cat-form-select:focus {
     border-color: #ff2d7a;
@@ -83,6 +89,8 @@
     border-radius: 12px;
     border: 1px solid #e5e7eb;
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .cat-form-file::-webkit-file-upload-button {
     background: rgba(255,45,122,0.1);
@@ -132,9 +140,11 @@
     border: none;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     box-shadow: 0 4px 12px rgba(255,45,122,0.2);
     transition: all 0.2s;
+    white-space: nowrap;
   }
   .cat-form-submit:hover {
     opacity: 0.9;
@@ -148,10 +158,31 @@
     font-weight: 500;
     background: #fff;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
   }
   .cat-form-cancel:hover {
     background: #f9fafb;
     color: #6b7280;
+  }
+
+  /* ✅ FIX: Form action buttons */
+  .cat-form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 8px;
+  }
+  @media (max-width: 480px) {
+    .cat-form-actions {
+      flex-direction: column;
+    }
+    .cat-form-actions .cat-form-submit,
+    .cat-form-actions .cat-form-cancel {
+      width: 100%;
+    }
   }
 </style>
 
@@ -212,7 +243,8 @@
         @error('status')<p class="cat-form-error-text">{{ $message }}</p>@enderror
       </div>
 
-      <div class="d-flex gap-3 pt-2">
+      <!-- ✅ FIXED BUTTONS -->
+      <div class="cat-form-actions">
         <button type="submit" class="cat-form-submit">
           <i class="fa-solid fa-check"></i> Save Category
         </button>

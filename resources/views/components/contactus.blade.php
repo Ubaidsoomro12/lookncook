@@ -1,3 +1,4 @@
+
 <section class="contact-page-section py-5">
     <div class="container py-lg-4">
         <div
@@ -76,29 +77,38 @@
 
 
                         <!-- =========================================
-                             PROFESSION (Simple original select - 320px fix)
+                             PROFESSION (Custom Dropdown - fixes iPhone
+                             native <select> popup overflowing the screen)
                         ========================================== -->
-                        <div class="form-floating mb-2">
-                            <select name="profession"
-                                class="form-select contact-input profession-select @error('profession') is-invalid @enderror"
-                                id="floatingProfession"
-                                style="height: 58px;"> <!-- Height fix -->
+                        <div class="mb-2 profession-dropdown-wrapper" id="professionWrapper">
 
-                                <option value="">Select your profession</option>
-                                <option value="Home Cook / Homemaker" {{ old('profession') == 'Home Cook / Homemaker' ? 'selected' : '' }}>Home Cook / Homemaker</option>
-                                <option value="Professional Chef" {{ old('profession') == 'Professional Chef' ? 'selected' : '' }}>Professional Chef / Baker</option>
-                                <option value="Food Blogger / Content Creator" {{ old('profession') == 'Food Blogger / Content Creator' ? 'selected' : '' }}>Food Blogger / Content Creator</option>
-                                <option value="Restaurant Owner / Manager" {{ old('profession') == 'Restaurant Owner / Manager' ? 'selected' : '' }}>Restaurant Owner / Manager</option>
-                                <option value="Caterer / Event Planner" {{ old('profession') == 'Caterer / Event Planner' ? 'selected' : '' }}>Caterer / Event Planner</option>
-                                <option value="Working Professional / Corporate Employee" {{ old('profession') == 'Working Professional / Corporate Employee' ? 'selected' : '' }}>Working Professional / Corporate Employee</option>
-                                <option value="Student" {{ old('profession') == 'Student' ? 'selected' : '' }}>Student</option>
-                                <option value="Other" {{ old('profession') == 'Other' ? 'selected' : '' }}>Other Profession</option>
+                            <!-- Real value that actually gets submitted to the server,
+                                 name stays "profession" so nothing on the backend changes -->
+                            <input type="hidden" name="profession" id="professionValue"
+                                value="{{ old('profession') }}">
 
-                            </select>
+                            <div class="form-control contact-input profession-select @error('profession') is-invalid @enderror"
+                                id="professionDisplay" tabindex="0" role="button" aria-haspopup="listbox"
+                                aria-expanded="false">
+                                <i class="bi bi-briefcase me-2"></i>
+                                <span id="professionText">
+                                    {{ old('profession') ? old('profession') : 'Select your profession' }}
+                                </span>
+                                <i class="bi bi-chevron-down profession-caret"></i>
+                            </div>
 
-                            <label for="floatingProfession">
-                                <i class="bi bi-briefcase me-2"></i>Profession
-                            </label>
+                            <ul class="profession-options-list" id="professionOptionsList" role="listbox">
+                                <li data-value="">Select your profession</li>
+                                <li data-value="Home Cook / Homemaker">Home Cook / Homemaker</li>
+                                <li data-value="Professional Chef">Professional Chef / Baker</li>
+                                <li data-value="Food Blogger / Content Creator">Food Blogger / Content Creator</li>
+                                <li data-value="Restaurant Owner / Manager">Restaurant Owner / Manager</li>
+                                <li data-value="Caterer / Event Planner">Caterer / Event Planner</li>
+                                <li data-value="Working Professional / Corporate Employee">Working Professional / Corporate Employee</li>
+                                <li data-value="Student">Student</li>
+                                <li data-value="Other">Other Profession</li>
+                            </ul>
+
                         </div>
 
                         @error('profession')
@@ -205,6 +215,93 @@
         border-color: #ff2d7a !important;
         background-color: #fff !important;
         box-shadow: 0 0 0 4px rgba(255, 45, 122, 0.15) !important;
+    }
+
+    /* =======================================================
+       CUSTOM PROFESSION DROPDOWN
+       Replaces the native OS <select> popup (which auto-widens
+       itself to fit the longest option text and overflows the
+       screen on iPhone) with a fully CSS-controlled list that
+       can never be wider than its own container.
+    ======================================================= */
+    .profession-dropdown-wrapper {
+        position: relative;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .profession-select {
+        display: flex;
+        align-items: center;
+        height: 58px;
+        cursor: pointer;
+        user-select: none;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .profession-select #professionText {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: #333;
+    }
+
+    .profession-caret {
+        transition: transform 0.2s ease;
+        color: #ff2d7a;
+        flex-shrink: 0;
+    }
+
+    .profession-dropdown-wrapper.open .profession-caret {
+        transform: rotate(180deg);
+    }
+
+    .profession-dropdown-wrapper.open .profession-select {
+        border-color: #ff2d7a !important;
+        background-color: #fff !important;
+        box-shadow: 0 0 0 4px rgba(255, 45, 122, 0.15) !important;
+    }
+
+    .profession-options-list {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 6px 0;
+        list-style: none;
+        background: #ffffff;
+        border: 1.5px solid #eaeaea;
+        border-radius: 12px;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        max-height: 240px;
+        overflow-y: auto;
+        z-index: 50;
+    }
+
+    .profession-dropdown-wrapper.open .profession-options-list {
+        display: block;
+    }
+
+    .profession-options-list li {
+        padding: 10px 16px;
+        font-size: 14px;
+        color: #333;
+        white-space: normal;   /* allow long option text to wrap instead of stretching the box */
+        word-break: break-word;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+    }
+
+    .profession-options-list li:hover,
+    .profession-options-list li.active {
+        background-color: rgba(255, 45, 122, 0.08);
+        color: #ff2d7a;
     }
 
     /* Modern Gradient Submit Button */
@@ -347,6 +444,11 @@
             font-size: 12px !important;
         }
 
+        .profession-options-list li {
+            font-size: 12px !important;
+            padding: 8px 12px !important;
+        }
+
         .contact-submit-btn {
             font-size: 12px !important;
             padding: 8px !important;
@@ -367,5 +469,81 @@
                 setTimeout(() => msg.style.display = "none", 500);
             });
         }, 5000);
+    });
+
+    // =========================================================
+    // Custom Profession Dropdown logic
+    // (opens/closes the list, sets the hidden input that actually
+    // gets submitted with the form, and keeps everything inside
+    // its own container so it can never overflow the screen)
+    // =========================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        const wrapper   = document.getElementById('professionWrapper');
+        const display   = document.getElementById('professionDisplay');
+        const list      = document.getElementById('professionOptionsList');
+        const hiddenVal = document.getElementById('professionValue');
+        const textSpan  = document.getElementById('professionText');
+
+        if (!wrapper || !display || !list || !hiddenVal || !textSpan) return;
+
+        function openList() {
+            wrapper.classList.add('open');
+            display.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeList() {
+            wrapper.classList.remove('open');
+            display.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleList() {
+            wrapper.classList.contains('open') ? closeList() : openList();
+        }
+
+        display.addEventListener('click', function (e) {
+            e.stopPropagation();
+            toggleList();
+        });
+
+        display.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleList();
+            } else if (e.key === 'Escape') {
+                closeList();
+            }
+        });
+
+        list.querySelectorAll('li').forEach(function (item) {
+            item.addEventListener('click', function () {
+                const value = item.getAttribute('data-value');
+                const label = item.textContent;
+
+                hiddenVal.value = value;
+                textSpan.textContent = label;
+
+                list.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                item.classList.add('active');
+
+                closeList();
+            });
+        });
+
+        // Close the dropdown if user taps/clicks anywhere outside it
+        document.addEventListener('click', function (e) {
+            if (!wrapper.contains(e.target)) {
+                closeList();
+            }
+        });
+
+        // Pre-mark the correct option as active if old('profession') was set (validation reload)
+        const currentVal = hiddenVal.value;
+        if (currentVal) {
+            list.querySelectorAll('li').forEach(function (item) {
+                if (item.getAttribute('data-value') === currentVal) {
+                    item.classList.add('active');
+                }
+            });
+        }
     });
 </script>

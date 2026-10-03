@@ -7,6 +7,7 @@
   .rider-edit-back {
     width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
     border-radius: 12px; background: #fdf2f8; color: #ff2d7a; transition: all .2s;
+    flex-shrink: 0;
   }
   .rider-edit-back:hover { background: #fce7f3; color: #ff2d7a; }
 
@@ -16,30 +17,44 @@
   }
   .rider-edit-label { display: block; font-weight: 500; font-size: 14px; color: #374151; margin-bottom: 6px; }
   .rider-edit-input {
-    width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
+    width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0;
+    padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
     font-size: 14px; transition: all .2s; outline: none;
   }
   .rider-edit-input:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.2); }
   .rider-edit-input-error { border-color: #fca5a5; }
   .rider-edit-textarea {
-    width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
+    width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0;
+    padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
     font-size: 14px; transition: all .2s; outline: none; resize: vertical; min-height: 80px;
   }
   .rider-edit-textarea:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.2); }
   .rider-edit-select {
-    width: 100%; padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
+    width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0;
+    padding: 10px 16px; border-radius: 12px; border: 1px solid #e5e7eb;
     font-size: 14px; transition: all .2s; outline: none; background: #fff;
   }
   .rider-edit-select:focus { border-color: #ff2d7a; box-shadow: 0 0 0 3px rgba(255,45,122,0.2); }
+
+  /* ✅ FIX: File input full-width */
   .rider-edit-file {
-    font-size: 14px; padding: 6px 12px; border-radius: 12px; border: 1px solid #e5e7eb; width: 100%;
+    font-size: 14px; padding: 6px 12px; border-radius: 12px; border: 1px solid #e5e7eb;
+    width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0;
+    display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .rider-edit-file::-webkit-file-upload-button {
     background: #ff2d7a; color: #fff; border: none;
     padding: 8px 16px; border-radius: 12px; font-weight: 500; font-size: 14px;
     margin-right: 12px; cursor: pointer; transition: all .2s;
+    white-space: nowrap; flex-shrink: 0;
   }
   .rider-edit-file::-webkit-file-upload-button:hover { background: #e01d65; }
+  .rider-edit-file::file-selector-button {
+    background: #ff2d7a; color: #fff; border: none;
+    padding: 8px 16px; border-radius: 12px; font-weight: 500; font-size: 14px;
+    margin-right: 12px; cursor: pointer; transition: all .2s;
+  }
+
   .rider-edit-hint { font-size: 12px; color: #9ca3af; margin-top: 4px; }
   .rider-edit-error-text { color: #dc2626; font-size: 12px; margin-top: 4px; }
   .rider-edit-error-box {
@@ -48,19 +63,34 @@
   }
   .rider-edit-error-box ul { list-style: disc; padding-left: 20px; margin: 0; }
   .rider-edit-error-box ul li { margin-bottom: 2px; }
+
   .rider-edit-submit {
     background: linear-gradient(to right, #ff2d7a, #ff6fa5); color: #fff; font-weight: 500;
     padding: 10px 24px; border-radius: 12px; border: none;
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     box-shadow: 0 4px 12px rgba(255,45,122,0.2); transition: all .2s;
+    white-space: nowrap;
   }
   .rider-edit-submit:hover { opacity: .9; color: #fff; }
   .rider-edit-cancel {
     padding: 10px 24px; border-radius: 12px; border: 1px solid #e5e7eb;
     color: #6b7280; font-weight: 500; background: #fff; transition: all .2s;
+    display: inline-flex; align-items: center; justify-content: center;
+    white-space: nowrap;
   }
   .rider-edit-cancel:hover { background: #f9fafb; color: #6b7280; }
 
+  /* ✅ FIX: Photo row flex */
+  .rider-edit-photo-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .rider-edit-photo-row > .rider-edit-photo-fields {
+    flex: 1 1 200px;
+    min-width: 0;
+  }
   .rider-edit-preview {
     width: 80px; height: 80px; border-radius: 50%; border: 2px solid #fbcfe8;
     background: #fdf2f8; display: flex; align-items: center; justify-content: center;
@@ -73,12 +103,27 @@
   .rider-edit-section-title {
     font-size: 13px; font-weight: 600; color: #ff2d7a; text-transform: uppercase; letter-spacing: 0.05em;
   }
-  .rider-edit-check { width: 16px; height: 16px; border: 1px solid #e5e7eb; border-radius: 4px; accent-color: #ff2d7a; }
+  .rider-edit-check { width: 16px; height: 16px; border: 1px solid #e5e7eb; border-radius: 4px; accent-color: #ff2d7a; flex-shrink: 0; }
 
-  .tw-max-w-3xl { max-width: 768px; margin: 0 auto; }
+  .tw-max-w-3xl { max-width: 768px; margin: 0 auto; width: 100%; box-sizing: border-box; }
   .tw-space-y-5 > * + * { margin-top: 20px; }
   .tw-grid-cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   @media (max-width: 768px) { .tw-grid-cols-2 { grid-template-columns: 1fr; } }
+
+  /* ✅ FIX: Submit/Cancel buttons */
+  .rider-edit-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 8px;
+  }
+  @media (max-width: 480px) {
+    .rider-edit-actions { flex-direction: column; }
+    .rider-edit-actions .rider-edit-submit,
+    .rider-edit-actions .rider-edit-cancel {
+      width: 100%;
+    }
+  }
 </style>
 
 <div class="tw-max-w-3xl px-3 px-sm-4">
@@ -109,7 +154,7 @@
       <!-- Photo -->
       <div>
         <label class="rider-edit-label">Rider Photo <span class="text-secondary" style="font-weight:400;">(optional)</span></label>
-        <div class="d-flex align-items-center gap-3">
+        <div class="rider-edit-photo-row">
           <div class="rider-edit-preview">
             @if($rider->image)
               <img id="imagePreviewImg" src="{{ asset($rider->image) }}" alt="{{ $rider->name }}">
@@ -119,7 +164,7 @@
               <i id="imagePreviewIcon" class="fa-solid fa-user" style="display:block;"></i>
             @endif
           </div>
-          <div class="flex-grow-1">
+          <div class="rider-edit-photo-fields">
             <input type="file" name="image" id="imageInput" accept="image/png,image/jpeg,image/jpg,image/webp"
                    class="rider-edit-file {{ $errors->has('image') ? 'rider-edit-input-error' : '' }}">
             <p class="rider-edit-hint">
@@ -127,9 +172,9 @@
               @if($rider->image) Uploading a new file will replace the current photo. @endif
             </p>
             @if($rider->image)
-              <div class="form-check mt-2">
+              <div class="form-check mt-2 d-flex align-items-center gap-2">
                 <input type="checkbox" name="remove_image" value="1" class="rider-edit-check" id="removeImage">
-                <label for="removeImage" class="text-danger small" style="font-size:12px; margin-left:4px;">Remove current photo</label>
+                <label for="removeImage" class="text-danger small m-0" style="font-size:12px;">Remove current photo</label>
               </div>
             @endif
           </div>
@@ -164,7 +209,7 @@
           <input type="text" name="city" value="{{ old('city', $rider->city) }}"
                  class="rider-edit-input">
         </div>
-        <div style="grid-column: span 2;">
+        <div style="grid-column: 1 / -1;">
           <label class="rider-edit-label">Address <span class="text-danger">*</span></label>
           <textarea name="address" required rows="2"
                     class="rider-edit-textarea {{ $errors->has('address') ? 'rider-edit-input-error' : '' }}">{{ old('address', $rider->address) }}</textarea>
@@ -217,7 +262,7 @@
           <input type="date" name="joining_date" value="{{ old('joining_date', $rider->joining_date?->format('Y-m-d')) }}"
                  class="rider-edit-input">
         </div>
-        <div style="grid-column: span 2;">
+        <div style="grid-column: 1 / -1;">
           <label class="rider-edit-label">Notes</label>
           <textarea name="notes" rows="3"
                     class="rider-edit-textarea">{{ old('notes', $rider->notes) }}</textarea>
@@ -229,7 +274,8 @@
         <label for="is_active" class="rider-edit-label m-0" style="font-weight:500;">Active</label>
       </div>
 
-      <div class="d-flex gap-3 pt-2">
+      <!-- ✅ FIXED BUTTONS -->
+      <div class="rider-edit-actions">
         <button type="submit" class="rider-edit-submit">
           <i class="fa-solid fa-check"></i> Update Rider
         </button>

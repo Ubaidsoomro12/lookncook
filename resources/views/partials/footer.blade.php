@@ -80,7 +80,7 @@
 ========================================= -->
 
                 <div class="mb-4">
-                    <span style="
+                    <span class="footer-contact-title" style="
         color: #777;
         font-size: 13px;
         letter-spacing: 2px;
@@ -91,7 +91,7 @@
                         Call Us
                     </span>
                     <h5 class="mb-0">
-                        <a href="tel:03222360017" class="d-flex align-items-center gap-2 text-decoration-none" style="
+                        <a href="tel:03222360017" class="footer-contact-link d-flex align-items-center gap-2 text-decoration-none" style="
             color: #e5e5e5;
             font-weight: 500;
             transition: color 0.3s ease;
@@ -106,7 +106,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <span style="
+                    <span class="footer-contact-title" style="
         color: #777;
         font-size: 13px;
         letter-spacing: 2px;
@@ -118,7 +118,7 @@
                     </span>
                     <h5 class="mb-0">
                         <a href="https://mail.google.com/mail/?view=cm&fs=1&to=lookncook569@gmail.com" target="_blank"
-                            class="d-flex align-items-center gap-2 text-decoration-none" style="
+                            class="footer-contact-link d-flex align-items-center gap-2 text-decoration-none" style="
             color: #e5e5e5;
             font-weight: 500;
             transition: color 0.3s ease;
@@ -134,7 +134,7 @@
 
                 <!-- ADDRESS SECTION -->
                 <div>
-                    <span style="
+                    <span class="footer-contact-title" style="
         color: #777;
         font-size: 13px;
         letter-spacing: 2px;
@@ -144,7 +144,7 @@
     ">
                         Address
                     </span>
-                    <h5 class="mb-0 d-flex align-items-start gap-2" style="
+                    <h5 class="footer-contact-link mb-0 d-flex align-items-start gap-2" style="
         color: #e5e5e5;
         font-weight: 500;
         line-height: 1.6;
@@ -154,7 +154,7 @@
                             style="color: #ff2d7a; font-size: 1.35rem; display: inline-flex; align-items: center; margin-top: 3px;">
                             <i class="fa-solid fa-location-dot"></i>
                         </span>
-                        <p style="font-size: 17px;">
+                        <p class="footer-address-text" style="font-size: 17px;">
                             Latefy Housing Society
                             Gulistan E Johar Near
                             Johar Moor, Karachi,
@@ -561,5 +561,29 @@
     .footer-link:hover span i {
         transform: translateX(4px);
         /* Hover karne par arrow soft side par push hoga */
+    }
+
+    /* =========================================
+       ✅ FIXED: 991px & BELOW ONLY — center
+       Call Us / Email / Address titles and
+       their values so they align with the
+       centered "Need Help" heading.
+       (Previously was 767px which left the
+       768px tablet range broken.)
+    ========================================= */
+    @media(max-width:991px) {
+
+        .footer-contact-title {
+            text-align: center !important;
+        }
+
+        .footer-contact-link {
+            justify-content: center !important;
+        }
+
+        .footer-address-text {
+            text-align: center !important;
+        }
+
     }
 </style>

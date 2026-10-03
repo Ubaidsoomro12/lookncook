@@ -1,6 +1,33 @@
 @extends('admin.layouts.master')
 @section('title', 'Add Staff')
 @section('content')
+<style>
+    /* ✅ Fix: action buttons alignment */
+    .staff-form-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+    }
+    .staff-form-actions .btn {
+        white-space: nowrap;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    @media (max-width: 480px) {
+        .staff-form-actions {
+            flex-direction: column;
+        }
+        .staff-form-actions .btn {
+            width: 100%;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+        }
+    }
+</style>
+
 <div class="container py-4" style="max-width:900px;">
     <div class="d-flex align-items-center gap-3 mb-4">
         <a href="{{ route('admin.staff.index') }}" class="btn btn-light rounded-circle"><i class="fa-solid fa-arrow-left"></i></a>
@@ -232,10 +259,12 @@
                         @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- Submit -->
+                    <!-- ✅ FIXED Submit Buttons -->
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill">Save Staff</button>
-                        <a href="{{ route('admin.staff.index') }}" class="btn btn-outline-secondary btn-lg px-5 rounded-pill">Cancel</a>
+                        <div class="staff-form-actions">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">Save Staff</button>
+                            <a href="{{ route('admin.staff.index') }}" class="btn btn-outline-secondary btn-lg rounded-pill px-5">Cancel</a>
+                        </div>
                     </div>
                 </div>
             </form>

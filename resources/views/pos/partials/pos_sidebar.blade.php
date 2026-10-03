@@ -9,12 +9,16 @@
 
         <!-- Brand Logo -->
         <div style="padding:0 24px; margin-bottom:32px; display:flex; align-items:center; gap:12px; position:relative;">
-            <div style="width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 4px 12px rgba(255,45,122,0.2); flex-shrink:0; overflow:hidden; background:#fff;">
-                <img src="{{ asset('images/lock-logo.png') }}" alt="Look n Cook" style="width:100%; height:100%; object-fit:cover;">
+            <div
+                style="width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid #fff; box-shadow:0 4px 12px rgba(255,45,122,0.2); flex-shrink:0; overflow:hidden; background:#fff;">
+                <img src="{{ asset('images/lock-logo.png') }}" alt="Look n Cook"
+                    style="width:100%; height:100%; object-fit:cover;">
             </div>
             <div>
                 <h1 style="color:#fff; font-weight:700; font-size:18px; letter-spacing:0.025em;">Look n Cook</h1>
-                <p style="font-size:11px; color:#ff2d7a; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;">POS System</p>
+                <p
+                    style="font-size:11px; color:#ff2d7a; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;">
+                    POS System</p>
             </div>
             <button id="closeMobileSidebarBtn"
                 style="display:block; position:absolute; right:8px; top:50%; transform:translateY(-50%); color:#9ca3af; background:#1f2937; border:1px solid #374151; border-radius:8px; padding:6px; transition:all 0.2s; cursor:pointer;">
@@ -24,22 +28,27 @@
 
         <!-- Navigation -->
         <div style="padding:0 16px;">
-            <p style="font-size:11px; font-weight:700; color:#4b5563; text-transform:uppercase; letter-spacing:0.05em; padding:0 8px; margin-bottom:8px;">Main</p>
+            <p
+                style="font-size:11px; font-weight:700; color:#4b5563; text-transform:uppercase; letter-spacing:0.05em; padding:0 8px; margin-bottom:8px;">
+                Main</p>
 
             <!-- POS Dashboard -->
             <a href="{{ route('pos.dashboard') }}"
-                style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; margin-bottom:24px; {{ request()->routeIs('pos.*') ? 'background:linear-gradient(to right, #ff2d7a, #ff4b91); color:#fff; box-shadow:0 4px 12px rgba(255,45,122,0.2);' : 'color:#9ca3af;' }}">
+                style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; margin-bottom:24px; {{ request()->routeIs('pos.dashboard') ? 'background:linear-gradient(to right, #ff2d7a, #ff4b91); color:#fff; box-shadow:0 4px 12px rgba(255,45,122,0.2);' : 'color:#9ca3af;' }}">
                 <i class="fa-solid fa-chart-pie" style="font-size:18px;"></i>
                 <span>POS Dashboard</span>
             </a>
 
-            <p style="font-size:11px; font-weight:700; color:#4b5563; text-transform:uppercase; letter-spacing:0.05em; padding:0 8px; margin-bottom:8px;">POS Operations</p>
+            <p
+                style="font-size:11px; font-weight:700; color:#4b5563; text-transform:uppercase; letter-spacing:0.05em; padding:0 8px; margin-bottom:8px;">
+                POS Operations</p>
 
             <div style="display:flex; flex-direction:column; gap:4px;">
-                <a href="#"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
-                    <i class="fa-solid fa-shopping-cart" style="font-size:14px;"></i>
-                    <span>New Order</span>
+
+                <a href="{{ route('pos.orders.index') }}"
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; text-decoration:none; {{ request()->routeIs('pos.orders.*') ? 'background:linear-gradient(to right,#ff2d7a,#ff4b91);color:#fff;' : 'color:#9ca3af;' }}">
+                    <i class="fa-solid fa-receipt" style="font-size:14px;"></i>
+                    <span>Orders</span>
                 </a>
                 <a href="#"
                     style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
@@ -56,18 +65,21 @@
                     <i class="fa-solid fa-users" style="font-size:14px;"></i>
                     <span>Customers</span>
                 </a>
-                <!-- TABLES LINK -->
-                <a href="{{ route('admin.tables.index') }}"
-                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.tables.*') ? 'background:linear-gradient(to right, #ff2d7a, #ff4b91); color:#fff; box-shadow:0 4px 12px rgba(255,45,122,0.2);' : 'color:#9ca3af;' }}">
+                <!-- ✅ TABLES LINK — now uses pos.tables.* -->
+                <a href="{{ route('pos.tables.index') }}"
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('pos.tables.*') ? 'background:linear-gradient(to right, #ff2d7a, #ff4b91); color:#fff; box-shadow:0 4px 12px rgba(255,45,122,0.2);' : 'color:#9ca3af;' }}">
                     <i class="fa-solid fa-table-cells" style="font-size:14px;"></i>
                     <span>Tables</span>
-                    @if(request()->routeIs('admin.tables.*'))
-                        <span style="margin-left:auto; font-size:11px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:9999px;">Active</span>
+                    @if(request()->routeIs('pos.tables.*'))
+                        <span
+                            style="margin-left:auto; font-size:11px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:9999px;">Active</span>
                     @endif
                 </a>
             </div>
 
-            <p style="font-size:11px; font-weight:700; color:#4b5563; text-transform:uppercase; letter-spacing:0.05em; padding:0 8px; margin-top:16px; margin-bottom:8px;">Reports</p>
+            <p
+                style="font-size:11px; font-weight:700; color:#4b5563; text-transform:uppercase; letter-spacing:0.05em; padding:0 8px; margin-top:16px; margin-bottom:8px;">
+                Reports</p>
 
             <div style="display:flex; flex-direction:column; gap:4px;">
                 <a href="#"
@@ -85,7 +97,8 @@
     </div>
 
     <!-- Footer -->
-    <div style="padding:16px; border-top:1px solid #1f2937; text-align:center; font-size:11px; color:#4b5563; font-weight:500; letter-spacing:0.025em;">
+    <div
+        style="padding:16px; border-top:1px solid #1f2937; text-align:center; font-size:11px; color:#4b5563; font-weight:500; letter-spacing:0.025em;">
         &copy; 2026 Look n Cook POS
     </div>
 </aside>
@@ -96,9 +109,11 @@
         #adminSidebar {
             transform: translateX(0) !important;
         }
+
         #closeMobileSidebarBtn {
             display: none !important;
         }
+
         #sidebarOverlay {
             display: none !important;
         }
@@ -109,6 +124,7 @@
         #adminSidebar {
             transform: translateX(-100%);
         }
+
         #adminSidebar.open {
             transform: translateX(0) !important;
         }
@@ -121,13 +137,15 @@
     }
 
     /* Custom scrollbar for sidebar */
-    #adminSidebar > div:first-child::-webkit-scrollbar {
+    #adminSidebar>div:first-child::-webkit-scrollbar {
         width: 4px;
     }
-    #adminSidebar > div:first-child::-webkit-scrollbar-track {
+
+    #adminSidebar>div:first-child::-webkit-scrollbar-track {
         background: #111217;
     }
-    #adminSidebar > div:first-child::-webkit-scrollbar-thumb {
+
+    #adminSidebar>div:first-child::-webkit-scrollbar-thumb {
         background: #ff2d7a;
         border-radius: 2px;
     }
@@ -136,10 +154,11 @@
     #sidebarOverlay {
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0, 0, 0, 0.5);
         z-index: 39;
         display: none;
     }
+
     #sidebarOverlay.active {
         display: block;
     }
