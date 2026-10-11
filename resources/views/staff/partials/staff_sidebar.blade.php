@@ -13,7 +13,7 @@
     <div class="sidebar-brand">
         <i class="fa-solid fa-utensils"></i> Look n Cook
     </div>
-    
+
     <ul class="nav flex-column sidebar-nav mt-3">
         <!-- Dashboard -->
         <li class="nav-item">
@@ -36,16 +36,24 @@
             </a>
         </li>
 
-        <!-- manage leave -->
+        <!-- Manage Leave -->
         <li class="nav-item">
-            <a href="{{ route('staff.manage_leave.index') }}" class="nav-link">
+            <a href="{{ route('staff.manage_leave.index') }}" class="nav-link {{ request()->routeIs('staff.manage_leave.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-message"></i> Leave
             </a>
         </li>
-        <!-- Payroll -->
+
+        <!-- ⭐ Payroll -->
         <li class="nav-item">
-            <a href="#" class="nav-link">
+            <a href="{{ route('staff.payroll.index') }}" class="nav-link {{ request()->routeIs('staff.payroll.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-file-invoice"></i> Payroll
+            </a>
+        </li>
+
+        <!-- ⭐ My Allowances -->
+        <li class="nav-item">
+            <a href="{{ route('staff.allowences.index') }}" class="nav-link {{ request()->routeIs('staff.allowences.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-wallet"></i> My Allowances
             </a>
         </li>
 

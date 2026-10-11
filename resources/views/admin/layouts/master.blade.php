@@ -11,7 +11,7 @@
 
     <!-- Layout Base Panel Content Dynamic Insertion -->
     <div id="mainContent" style="padding-left:0; min-height:100vh; display:flex; flex-direction:column; transition:padding-left 0.3s ease-in-out;">
-        
+
         <!-- Top Navbar Row Component -->
         @include('admin.partials.navbar')
 
@@ -21,6 +21,10 @@
         </main>
 
     </div>
+
+    {{-- ⭐ PAGE-LEVEL SCRIPTS (from @section('scripts') and @push('scripts')) --}}
+    @yield('scripts')
+    @stack('scripts')
 
     <!-- Scripts Context Scripts Component Include -->
     @include('admin.partials.script')

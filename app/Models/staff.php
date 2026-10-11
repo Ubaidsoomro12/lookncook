@@ -17,7 +17,8 @@ class Staff extends Model
         'cv_image', 'appointment_letter_image', 'address',
         'emergency_contact_name', 'emergency_contact_number', 'blood_group',
         'hire_date', 'salary', 'salary_type', 'hourly_rate',
-        'bank_account_no', 'bank_name', 'employee_type',
+        'payment_method_id', 'payment_details',
+        'employee_type',
         'department', 'designation', 'branch', 'work_shift',
         'shift_start_time', 'shift_end_time',
         'reporting_manager_id', 'status'
@@ -30,7 +31,10 @@ class Staff extends Model
         'hourly_rate' => 'decimal:2',
         'shift_start_time' => 'datetime:H:i',
         'shift_end_time' => 'datetime:H:i',
+        'payment_details' => 'array',   // ⭐ JSON <-> array
     ];
+
+    /* ---------- Relations ---------- */
 
     public function user()
     {
@@ -57,6 +61,13 @@ class Staff extends Model
         return $this->hasOne(Attendance::class)
                     ->where('date', now()->toDateString());
     }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PayrollPaymentMethod::class, 'payment_method_id');
+    }
+
+    /* ---------- Accessors ---------- */
 
     public function getImageUrlAttribute()
     {

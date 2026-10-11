@@ -116,7 +116,12 @@ class StaffController extends Controller
     {
         $branches = Branch::all();
         $managers = Staff::where('status', 'Active')->get();
-        return view('admin.pages.staff.create', compact('branches', 'managers'));
+        $paymentMethods = \App\Models\PayrollPaymentMethod::active()
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.pages.staff.create', compact('branches', 'managers', 'paymentMethods'));
     }
 
     private function validateShiftTimes($data)
@@ -177,8 +182,8 @@ class StaffController extends Controller
             'salary' => 'required|numeric|min:0',
             'salary_type' => 'required|in:Fixed,Hourly,Commission',
             'hourly_rate' => 'nullable|numeric|min:0',
-            'bank_account_no' => 'nullable|string|max:50',
-            'bank_name' => 'nullable|string|max:100',
+            'payment_method_id' => 'nullable|exists:payroll_payment_methods,id',
+            'payment_details' => 'nullable|array',
             'employee_type' => 'required|in:Full-time,Part-time,Contract',
             'department' => 'nullable|in:Kitchen,Front of House,Delivery,Management',
             'designation' => 'nullable|string|max:50',
@@ -201,6 +206,11 @@ class StaffController extends Controller
 
         $data = $request->all();
 
+        // Cast empty array to null so DB gets NULL, not empty JSON
+        if (empty($data['payment_details'])) {
+            $data['payment_details'] = null;
+        }
+
         foreach (['image', 'cnic_front_image', 'cnic_back_image', 'cv_image', 'appointment_letter_image'] as $field) {
             if ($request->hasFile($field)) {
                 $data[$field] = $this->storeImage($request->file($field), $field);
@@ -218,7 +228,12 @@ class StaffController extends Controller
         $staff = Staff::findOrFail($id);
         $branches = Branch::all();
         $managers = Staff::where('id', '!=', $id)->where('status', 'Active')->get();
-        return view('admin.pages.staff.edit', compact('staff', 'branches', 'managers'));
+        $paymentMethods = \App\Models\PayrollPaymentMethod::active()
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.pages.staff.edit', compact('staff', 'branches', 'managers', 'paymentMethods'));
     }
 
     public function update(Request $request, $id)
@@ -247,8 +262,8 @@ class StaffController extends Controller
             'salary' => 'required|numeric|min:0',
             'salary_type' => 'required|in:Fixed,Hourly,Commission',
             'hourly_rate' => 'nullable|numeric|min:0',
-            'bank_account_no' => 'nullable|string|max:50',
-            'bank_name' => 'nullable|string|max:100',
+            'payment_method_id' => 'nullable|exists:payroll_payment_methods,id',
+            'payment_details' => 'nullable|array',
             'employee_type' => 'required|in:Full-time,Part-time,Contract',
             'department' => 'nullable|in:Kitchen,Front of House,Delivery,Management',
             'designation' => 'nullable|string|max:50',
@@ -270,6 +285,11 @@ class StaffController extends Controller
         }
 
         $data = $request->except(['_token', '_method']);
+
+        // Cast empty array to null so DB gets NULL, not empty JSON
+        if (empty($data['payment_details'])) {
+            $data['payment_details'] = null;
+        }
 
         foreach (['image', 'cnic_front_image', 'cnic_back_image', 'cv_image', 'appointment_letter_image'] as $field) {
             if ($request->hasFile($field)) {

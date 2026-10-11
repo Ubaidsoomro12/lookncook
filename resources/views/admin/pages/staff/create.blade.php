@@ -1,8 +1,9 @@
 @extends('admin.layouts.master')
+
 @section('title', 'Add Staff')
+
 @section('content')
 <style>
-    /* ✅ Fix: action buttons alignment */
     .staff-form-actions {
         display: flex;
         flex-wrap: wrap;
@@ -17,9 +18,7 @@
         gap: 8px;
     }
     @media (max-width: 480px) {
-        .staff-form-actions {
-            flex-direction: column;
-        }
+        .staff-form-actions { flex-direction: column; }
         .staff-form-actions .btn {
             width: 100%;
             padding-left: 16px !important;
@@ -48,10 +47,7 @@
                 @csrf
                 <div class="row g-4">
 
-                    <!-- User Selection (AJAX Search) -->
-                    <div class="col-12">
-                        <h5 class="border-bottom pb-2">User Account</h5>
-                    </div>
+                    <div class="col-12"><h5 class="border-bottom pb-2">User Account</h5></div>
                     <div class="col-md-12">
                         <label class="form-label">Select User <span class="text-danger">*</span></label>
                         <div class="input-group">
@@ -71,7 +67,6 @@
                         @error('user_id')<div class="text-danger small mt-1">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- Basic Information -->
                     <div class="col-12 mt-3"><h5 class="border-bottom pb-2">Basic Information</h5></div>
                     <div class="col-md-6">
                         <label class="form-label">Employee ID <span class="text-muted">(optional)</span></label>
@@ -111,7 +106,6 @@
                         <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth') }}">
                     </div>
 
-                    <!-- Emergency Contact -->
                     <div class="col-12 mt-2"><h5 class="border-bottom pb-2">Emergency Contact</h5></div>
                     <div class="col-md-6">
                         <label class="form-label">Contact Name</label>
@@ -131,7 +125,6 @@
                         </select>
                     </div>
 
-                    <!-- Images -->
                     <div class="col-12 mt-2"><h5 class="border-bottom pb-2">Images & Documents</h5></div>
                     @foreach(['image'=>'Profile Image','cnic_front_image'=>'CNIC Front','cnic_back_image'=>'CNIC Back','cv_image'=>'CV/Resume','appointment_letter_image'=>'Appointment Letter'] as $field=>$label)
                         <div class="col-md-6">
@@ -142,14 +135,12 @@
                         </div>
                     @endforeach
 
-                    <!-- Address -->
                     <div class="col-12">
                         <label class="form-label">Address</label>
                         <textarea name="address" class="form-control @error('address') is-invalid @enderror" rows="2">{{ old('address') }}</textarea>
                         @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- Employment -->
                     <div class="col-12 mt-2"><h5 class="border-bottom pb-2">Employment Details</h5></div>
                     <div class="col-md-6">
                         <label class="form-label">Employee Type <span class="text-danger">*</span></label>
@@ -193,8 +184,6 @@
                             <option value="Night" {{ old('work_shift')=='Night'?'selected':'' }}>Night</option>
                         </select>
                     </div>
-
-                    <!-- ===== NEW SHIFT TIME FIELDS ===== -->
                     <div class="col-md-6">
                         <label class="form-label">Shift Start Time <span class="text-muted">(optional)</span></label>
                         <input type="time" name="shift_start_time" class="form-control" value="{{ old('shift_start_time') }}">
@@ -203,7 +192,6 @@
                         <label class="form-label">Shift End Time <span class="text-muted">(optional)</span></label>
                         <input type="time" name="shift_end_time" class="form-control" value="{{ old('shift_end_time') }}">
                     </div>
-
                     <div class="col-md-6">
                         <label class="form-label">Reporting Manager <span class="text-muted">(optional)</span></label>
                         <select name="reporting_manager_id" class="form-select">
@@ -214,8 +202,9 @@
                         </select>
                     </div>
 
-                    <!-- Salary -->
+                    {{-- ============ SALARY & PAYROLL ============ --}}
                     <div class="col-12 mt-2"><h5 class="border-bottom pb-2">Salary & Payroll</h5></div>
+
                     <div class="col-md-6">
                         <label class="form-label">Hire Date <span class="text-danger">*</span></label>
                         <input type="date" name="hire_date" class="form-control @error('hire_date') is-invalid @enderror" value="{{ old('hire_date') }}" required>
@@ -239,16 +228,48 @@
                         <label class="form-label">Hourly Rate (if applicable)</label>
                         <input type="number" step="0.01" name="hourly_rate" class="form-control" value="{{ old('hourly_rate') }}">
                     </div>
+
+                    {{-- ⭐ PAYMENT METHOD --}}
                     <div class="col-md-6">
-                        <label class="form-label">Bank Account No.</label>
-                        <input type="text" name="bank_account_no" class="form-control" value="{{ old('bank_account_no') }}">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Bank Name</label>
-                        <input type="text" name="bank_name" class="form-control" value="{{ old('bank_name') }}">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label m-0">Payment Method</label>
+                            <a href="{{ route('admin.payroll-payment-methods.index') }}" target="_blank"
+                               class="small text-decoration-none">
+                                <i class="fa-solid fa-gear"></i> Manage
+                            </a>
+                        </div>
+                        <select name="payment_method_id" id="paymentMethodSelect"
+                                class="form-select @error('payment_method_id') is-invalid @enderror">
+                            <option value="">-- Select payment method --</option>
+                            @foreach($paymentMethods as $pm)
+                                <option value="{{ $pm->id }}"
+                                        data-code="{{ strtoupper($pm->code ?? '') }}"
+                                        @selected(old('payment_method_id')==$pm->id)>
+                                    {{ $pm->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="form-text">Chosen method will auto-fill on payroll generation.</div>
+                        @error('payment_method_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- Status -->
+                    <div class="col-md-6"></div>
+
+                    {{-- Dynamic fields container --}}
+                    <div class="col-12">
+                        <div id="methodFieldsWrapper" style="display:none;">
+                            <div class="card border-0" style="background:#f9fafb;border-radius:12px;">
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-3 small text-uppercase text-muted" id="methodFieldsTitle">
+                                        <i class="fa-solid fa-credit-card me-2" style="color:#ff2d7a;"></i>
+                                        Payment Method Details
+                                    </h6>
+                                    <div class="row g-3" id="methodFieldsContainer"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-md-6">
                         <label class="form-label">Status <span class="text-danger">*</span></label>
                         <select name="status" class="form-select @error('status') is-invalid @enderror" required>
@@ -259,7 +280,6 @@
                         @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- ✅ FIXED Submit Buttons -->
                     <div class="col-12">
                         <div class="staff-form-actions">
                             <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">Save Staff</button>
@@ -273,7 +293,107 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function(){
+    'use strict';
+
+    // ===== Field definitions per method code =====
+    const METHOD_FIELDS = {
+        'CASH': [],
+        'BANK': [
+            { key: 'bank_name',      label: 'Bank Name',       type: 'text',     required: true  },
+            { key: 'account_title',  label: 'Account Title',   type: 'text',     required: true  },
+            { key: 'account_number', label: 'Account Number',  type: 'text',     required: true  },
+            { key: 'iban',           label: 'IBAN (optional)', type: 'text',     required: false }
+        ],
+        'CHEQUE': [
+            { key: 'bank_name',      label: 'Bank Name',           type: 'text', required: true  },
+            { key: 'cheque_number',  label: 'Cheque No. (optional)',type: 'text', required: false }
+        ],
+        'EASYPAISA': [
+            { key: 'mobile_number',  label: 'Easypaisa Mobile Number', type: 'text', required: true },
+            { key: 'account_title',  label: 'Account Title',           type: 'text', required: true }
+        ],
+        'JAZZCASH': [
+            { key: 'mobile_number',  label: 'JazzCash Mobile Number', type: 'text', required: true },
+            { key: 'account_title',  label: 'Account Title',           type: 'text', required: true }
+        ],
+        'OTHER': [
+            { key: 'custom_label',   label: 'Label / Field Name', type: 'text',     required: true },
+            { key: 'custom_value',   label: 'Details',            type: 'textarea', required: true }
+        ]
+    };
+
+    const methodSelect = document.getElementById('paymentMethodSelect');
+    const wrapper = document.getElementById('methodFieldsWrapper');
+    const container = document.getElementById('methodFieldsContainer');
+    const titleEl = document.getElementById('methodFieldsTitle');
+
+    // Pre-existing values (for edit / old input)
+    const OLD_DETAILS = @json(old('payment_details', []));
+
+    function renderFields(code){
+        container.innerHTML = '';
+
+        if (!code){
+            wrapper.style.display = 'none';
+            return;
+        }
+
+        const fields = METHOD_FIELDS[code] || [];
+
+        if (fields.length === 0){
+            // No extra fields (e.g. Cash) — show info message
+            wrapper.style.display = 'block';
+            titleEl.innerHTML = '<i class="fa-solid fa-credit-card me-2" style="color:#ff2d7a;"></i> Payment Method Details';
+            container.innerHTML = `
+                <div class="col-12">
+                    <div class="text-muted small">
+                        <i class="fa-solid fa-info-circle me-1"></i>
+                        This method requires no additional details.
+                    </div>
+                </div>`;
+            return;
+        }
+
+        wrapper.style.display = 'block';
+        const methodName = methodSelect.options[methodSelect.selectedIndex].textContent.trim();
+        titleEl.innerHTML = `<i class="fa-solid fa-credit-card me-2" style="color:#ff2d7a;"></i> ${methodName} — Details`;
+
+        fields.forEach(f => {
+            const val = OLD_DETAILS && OLD_DETAILS[f.key] ? String(OLD_DETAILS[f.key]) : '';
+            const req = f.required ? 'required' : '';
+            const star = f.required ? ' <span class="text-danger">*</span>' : '';
+
+            if (f.type === 'textarea'){
+                container.innerHTML += `
+                    <div class="col-md-12">
+                        <label class="form-label small fw-semibold">${f.label}${star}</label>
+                        <textarea name="payment_details[${f.key}]" class="form-control" rows="2" ${req}>${val}</textarea>
+                    </div>`;
+            } else {
+                container.innerHTML += `
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">${f.label}${star}</label>
+                        <input type="text" name="payment_details[${f.key}]" class="form-control" value="${val}" ${req}>
+                    </div>`;
+            }
+        });
+    }
+
+    methodSelect?.addEventListener('change', function(){
+        const opt = this.options[this.selectedIndex];
+        const code = (opt.dataset.code || '').toUpperCase();
+        renderFields(code);
+    });
+
+    // Initial render (for edit / old input)
+    if (methodSelect && methodSelect.value){
+        const opt = methodSelect.options[methodSelect.selectedIndex];
+        const code = (opt.dataset.code || '').toUpperCase();
+        renderFields(code);
+    }
+
+    // ===== User search (unchanged) =====
     const searchInput = document.getElementById('userSearchInput');
     const resultsDiv = document.getElementById('userSearchResults');
     const selectedUserId = document.getElementById('selectedUserId');
@@ -281,13 +401,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearBtn = document.getElementById('clearUserBtn');
     let timer;
 
-    searchInput.addEventListener('input', function() {
+    searchInput?.addEventListener('input', function() {
         clearTimeout(timer);
         const q = this.value.trim();
-        if (q.length < 2) {
-            resultsDiv.style.display = 'none';
-            return;
-        }
+        if (q.length < 2) { resultsDiv.style.display = 'none'; return; }
         timer = setTimeout(() => {
             fetch("{{ route('admin.staff.search-users') }}?q=" + encodeURIComponent(q))
                 .then(res => res.json())
@@ -318,12 +435,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             resultsDiv.style.display = 'none';
                         });
                     });
-                })
-                .catch(() => {});
+                }).catch(() => {});
         }, 300);
     });
 
-    clearBtn.addEventListener('click', function() {
+    clearBtn?.addEventListener('click', function() {
         searchInput.value = '';
         selectedUserId.value = '';
         selectedDisplay.innerHTML = '';
@@ -335,6 +451,6 @@ document.addEventListener('DOMContentLoaded', function() {
             resultsDiv.style.display = 'none';
         }
     });
-});
+})();
 </script>
 @endsection

@@ -24,6 +24,10 @@ use App\Http\Controllers\front\OrderController;
 use App\Http\Controllers\Staff\AttendanceController;
 use App\Http\Controllers\Staff\LeaveController;
 use App\Http\Controllers\pos\PosOrderController;
+use App\Http\Controllers\backend\StaffPayrollController;
+use App\Http\Controllers\backend\PayrollTypeController;
+use App\Http\Controllers\backend\PayrollPaymentMethodController;
+use App\Http\Controllers\backend\PayrollAllowanceCompanyController;
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
@@ -72,17 +76,43 @@ Route::middleware(['auth'])->group(function () {
         return view('pos.pos_dashboard');
     })->name('pos.dashboard');
 
+    // =============================================================
+    // STAFF DASHBOARD
+    // =============================================================
     Route::get('/staff/dashboard', [StaffController::class, 'dashboard'])->name('staff.dashboard');
     Route::post('/staff/clock-in', [AttendanceController::class, 'clockIn'])->name('staff.clock-in');
     Route::post('/staff/clock-out', [AttendanceController::class, 'clockOut'])->name('staff.clock-out');
     Route::get('/staff/attendance', [AttendanceController::class, 'index'])->name('staff.attendance');
 
+    // =============================================================
+    // STAFF MANAGE LEAVE
+    // =============================================================
     Route::prefix('staff/manage-leave')->name('staff.manage_leave.')->controller(LeaveController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
         Route::get('/edit/{id}', 'edit')->name('edit');
         Route::put('/update/{id}', 'update')->name('update');
+    });
+
+    // =============================================================
+    // STAFF PAYROLL
+    // =============================================================
+    Route::prefix('staff/payroll')->name('staff.payroll.')->controller(StaffPayrollController::class)->group(function () {
+        Route::get('/',          'myPayroll')->name('index');
+        Route::get('/{id}/slip', 'mySlip')->name('slip');
+    });
+
+    // =============================================================
+    // STAFF ALLOWANCES
+    // =============================================================
+    Route::prefix('staff/allowences')->name('staff.allowences.')->controller(StaffPayrollController::class)->group(function () {
+        Route::get('/',                       'myAllowances')->name('index');
+        Route::post('/request',               'submitAllowanceRequest')->name('request.submit');
+        Route::delete('/request/{id}',        'cancelAllowanceRequest')->name('request.cancel');
+        // Backwards-compat routes (kept, not used by new staff UI)
+        Route::post('/expense',               'storeExpense')->name('expense.store');
+        Route::delete('/expense/{id}',        'deleteExpense')->name('expense.destroy');
     });
 
     Route::get('/payment', [CheckoutController::class, 'index'])->name('payment');
@@ -199,6 +229,81 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/assign', 'assignLeave')->name('assign');
         });
 
+        // =============================================================
+        // ADMIN — STAFF PAYROLL
+        // =============================================================
+        Route::prefix('payrolls')->name('payrolls.')->controller(StaffPayrollController::class)->group(function () {
+            Route::get('/',                  'index')->name('index');
+            Route::get('/create',            'create')->name('create');
+            Route::post('/store',            'store')->name('store');
+            Route::get('/show/{id}',         'show')->name('show');
+            Route::get('/edit/{id}',         'edit')->name('edit');
+            Route::put('/update/{id}',       'update')->name('update');
+            Route::delete('/delete/{id}',    'destroy')->name('destroy');
+            Route::post('/{id}/mark-paid',   'markPaid')->name('mark-paid');
+            Route::get('/{id}/slip',         'printSlip')->name('slip');
+        });
+
+        // =============================================================
+        // ADMIN — PAYROLL ALLOWANCE TYPES
+        // =============================================================
+        Route::prefix('payroll-allowance-types')->name('payroll-allowance-types.')->controller(PayrollTypeController::class)->group(function () {
+            Route::get('/',              'index')->name('index');
+            Route::get('/create',        'create')->name('create');
+            Route::post('/store',        'store')->name('store');
+            Route::get('/edit/{id}',     'edit')->name('edit');
+            Route::put('/update/{id}',   'update')->name('update');
+            Route::delete('/delete/{id}','destroy')->name('destroy');
+        });
+
+        // =============================================================
+        // ADMIN — PAYROLL DEDUCTION TYPES
+        // =============================================================
+        Route::prefix('payroll-deduction-types')->name('payroll-deduction-types.')->controller(PayrollTypeController::class)->group(function () {
+            Route::get('/',              'index')->name('index');
+            Route::get('/create',        'create')->name('create');
+            Route::post('/store',        'store')->name('store');
+            Route::get('/edit/{id}',     'edit')->name('edit');
+            Route::put('/update/{id}',   'update')->name('update');
+            Route::delete('/delete/{id}','destroy')->name('destroy');
+        });
+
+        // =============================================================
+        // ADMIN — PAYROLL PAYMENT METHODS
+        // =============================================================
+        Route::prefix('payroll-payment-methods')->name('payroll-payment-methods.')
+            ->controller(PayrollPaymentMethodController::class)->group(function () {
+                Route::get('/',              'index')->name('index');
+                Route::get('/create',        'create')->name('create');
+                Route::post('/store',        'store')->name('store');
+                Route::get('/edit/{id}',     'edit')->name('edit');
+                Route::put('/update/{id}',   'update')->name('update');
+                Route::delete('/delete/{id}','destroy')->name('destroy');
+            });
+
+        // =============================================================
+        // ADMIN — PAYROLL ALLOWANCE COMPANIES
+        // =============================================================
+        Route::prefix('payroll-allowance-companies')->name('payroll-allowance-companies.')
+            ->controller(PayrollAllowanceCompanyController::class)->group(function () {
+                Route::get('/',              'index')->name('index');
+                Route::get('/create',        'create')->name('create');
+                Route::post('/store',        'store')->name('store');
+                Route::get('/edit/{id}',     'edit')->name('edit');
+                Route::put('/update/{id}',   'update')->name('update');
+                Route::delete('/delete/{id}','destroy')->name('destroy');
+            });
+
+        // =============================================================
+        // ADMIN — ALLOWANCE CLAIMS (staff allowance requests)
+        // =============================================================
+        Route::prefix('allowance-requests')->name('allowance-requests.')
+            ->controller(StaffPayrollController::class)->group(function () {
+                Route::get('/',                       'adminAllowanceRequests')->name('index');
+                Route::post('/{id}/approve',          'approveAllowanceRequest')->name('approve');
+                Route::post('/{id}/reject',           'rejectAllowanceRequest')->name('reject');
+            });
+
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
         Route::post('/reviews/{id}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
@@ -212,7 +317,7 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // =============================================================
-    // ✅ POS TABLES ROUTES — /pos/tables
+    // POS TABLES ROUTES
     // =============================================================
     Route::prefix('pos/tables')->name('pos.tables.')->controller(TableController::class)->group(function () {
         Route::get('/', 'index')->name('index');
@@ -230,7 +335,6 @@ Route::middleware(['auth'])->group(function () {
     // POS ORDERS ROUTES
     // =============================================================
     Route::prefix('pos/orders')->name('pos.orders.')->controller(PosOrderController::class)->group(function () {
-
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/', 'store')->name('store');
@@ -242,11 +346,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}/items/{itemId}', 'updateItem')->name('items.update');
         Route::delete('/{id}/items/{itemId}', 'removeItem')->name('items.remove');
         Route::post('/{id}/charges', 'applyCharges')->name('charges');
-
-        // 🧾 Print Receipt (opens new window with 2 receipts)
         Route::get('/{id}/print-receipt', 'printReceipt')->name('print.receipt');
-
-        // 🧾 Receipt PDF Data (base64 JSON — bypasses IDM)
         Route::get('/{id}/receipt-data', 'receiptData')->name('receipt.data');
     });
 
