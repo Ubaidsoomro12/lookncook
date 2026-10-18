@@ -110,12 +110,12 @@
                     <i class="fa-solid fa-xmark me-1"></i>Close
                 </button>
                 <button type="button" class="btn" id="receiptPrintBtn"
-                        style="background:#111827;color:#fff;border:none;font-weight:600;">
-                    <i class="fa-solid fa-print me-1"></i>Print (Windows Dialog)
+                        style="background:linear-gradient(135deg,#ff2d7a,#ff4b91);color:#fff;border:none;font-weight:600;">
+                    <i class="fa-solid fa-print me-1"></i>Print
                 </button>
                 <button type="button" class="btn" id="receiptDownloadBtn"
-                        style="background:linear-gradient(135deg,#ff2d7a,#ff4b91);color:#fff;border:none;font-weight:600;">
-                    <i class="fa-solid fa-download me-1"></i>Download PDF (Both)
+                        style="background:#111827;color:#fff;border:none;font-weight:600;">
+                    <i class="fa-solid fa-download me-1"></i>Save(PDF)
                 </button>
             </div>
         </div>

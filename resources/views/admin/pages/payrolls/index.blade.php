@@ -1,14 +1,14 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Staff Payrolls')
+@section('title', 'Staff Payrolls (Allowances & Deductions)')
 
 @section('content')
 <div class="container-fluid px-4 py-4">
 
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
-            <h4 class="fw-bold mb-1">Staff Payrolls</h4>
-            <p class="text-muted small m-0">Manage monthly staff salaries and payments</p>
+            <h4 class="fw-bold mb-1">Allowances & Deductions</h4>
+            <p class="text-muted small m-0">Distribute monthly allowances and deductions to staff</p>
         </div>
         <div class="d-flex gap-2 flex-wrap">
             <a href="{{ route('admin.payroll-allowance-types.index') }}" class="btn btn-outline-secondary">
@@ -19,18 +19,18 @@
             </a>
             <a href="{{ route('admin.payrolls.create') }}" class="btn px-4"
                style="background:linear-gradient(135deg,#ff2d7a,#ff4b91);color:#fff;border:none;">
-                <i class="fa-solid fa-plus me-2"></i>Add Payroll
+                <i class="fa-solid fa-plus me-2"></i>Send Allowance/Deduction
             </a>
         </div>
     </div>
 
     @php
-        $stats = $stats ?? ['total_pending'=>0,'total_paid'=>0,'this_month'=>0,'total_payout'=>0];
+        $stats = $stats ?? ['total_pending'=>0,'total_paid'=>0,'this_month'=>0,'total_allowances'=>0,'total_deductions'=>0];
         $statCards = [
-            ['label'=>'Pending',      'value'=>$stats['total_pending'], 'icon'=>'fa-hourglass-half', 'color'=>'#f59e0b'],
-            ['label'=>'Paid',         'value'=>$stats['total_paid'],    'icon'=>'fa-circle-check',   'color'=>'#10b981'],
-            ['label'=>'This Month',   'value'=>$stats['this_month'],    'icon'=>'fa-calendar-day',   'color'=>'#3b82f6'],
-            ['label'=>'Total Payout', 'value'=>'Rs '.number_format($stats['total_payout'], 2), 'icon'=>'fa-money-bill-wave', 'color'=>'#ff2d7a'],
+            ['label'=>'Pending Records',  'value'=>$stats['total_pending'], 'icon'=>'fa-hourglass-half', 'color'=>'#f59e0b'],
+            ['label'=>'This Month',       'value'=>$stats['this_month'].' Entries', 'icon'=>'fa-calendar-day',   'color'=>'#3b82f6'],
+            ['label'=>'Allowances Given (Month)', 'value'=>'Rs '.number_format($stats['total_allowances'], 2), 'icon'=>'fa-circle-plus', 'color'=>'#10b981'],
+            ['label'=>'Deductions (Month)','value'=>'Rs '.number_format($stats['total_deductions'], 2), 'icon'=>'fa-circle-minus', 'color'=>'#ef4444'],
         ];
     @endphp
     <div class="row g-3 mb-4">
@@ -81,8 +81,7 @@
                     <select name="status" class="form-select">
                         <option value="">All Status</option>
                         <option value="pending"   @selected(request('status')=='pending')>Pending</option>
-                        <option value="paid"      @selected(request('status')=='paid')>Paid</option>
-                        <option value="cancelled" @selected(request('status')=='cancelled')>Cancelled</option>
+                        <option value="paid"      @selected(request('status')=='paid')>Processed</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -103,12 +102,10 @@
                             <th class="ps-4" style="width:60px;">#</th>
                             <th>Staff</th>
                             <th>Period</th>
-                            <th>Basic</th>
-                            <th>Allowances</th>
-                            <th>Deductions</th>
-                            <th>Net Salary</th>
+                            <th class="text-success">Allowances</th>
+                            <th class="text-danger">Deductions</th>
                             <th>Status</th>
-                            <th class="text-center" style="width:170px;">Actions</th>
+                            <th class="text-center" style="width:150px;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,10 +126,12 @@
                                     {{ $p->month_name }} {{ $p->period_year }}
                                 </span>
                             </td>
-                            <td>{{ number_format($p->basic_salary, 2) }}</td>
-                            <td class="text-success">+ {{ number_format($p->total_allowances + $p->overtime_amount, 2) }}</td>
-                            <td class="text-danger">- {{ number_format($p->total_deductions, 2) }}</td>
-                            <td class="fw-bold">{{ number_format($p->net_salary, 2) }}</td>
+                            <td class="text-success fw-semibold">
+                                + Rs {{ number_format($p->total_allowances + $p->overtime_amount, 2) }}
+                            </td>
+                            <td class="text-danger fw-semibold">
+                                - Rs {{ number_format($p->total_deductions, 2) }}
+                            </td>
                             <td>{!! $p->status_badge !!}</td>
                             <td>
                                 <div class="d-flex gap-1 justify-content-center">
@@ -140,21 +139,11 @@
                                        class="btn btn-sm btn-outline-info" title="View">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.payrolls.slip', $p->id) }}" target="_blank"
-                                       class="btn btn-sm btn-outline-dark" title="Print Slip">
-                                        <i class="fa-solid fa-print"></i>
-                                    </a>
                                     <a href="{{ route('admin.payrolls.edit', $p->id) }}"
-                                       class="btn btn-sm btn-outline-primary" title="Edit">
+                                       class="btn btn-sm btn-outline-primary" title="Edit Allowances/Deductions">
                                         <i class="fa-solid fa-pen"></i>
                                     </a>
-                                    @if($p->payment_status !== 'paid')
-                                    <button type="button" class="btn btn-sm btn-outline-success mark-paid-btn"
-                                            data-id="{{ $p->id }}" data-url="{{ route('admin.payrolls.mark-paid', $p->id) }}"
-                                            title="Mark Paid">
-                                        <i class="fa-solid fa-check"></i>
-                                    </button>
-                                    @endif
+                                    
                                     <button type="button" class="btn btn-sm btn-outline-danger delete-payroll-btn"
                                             data-id="{{ $p->id }}" data-url="{{ route('admin.payrolls.destroy', $p->id) }}"
                                             data-name="{{ $p->staff?->name ?? 'Payroll' }} ({{ $p->period_label }})"
@@ -166,10 +155,10 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="9" class="text-center py-5">
+                            <td colspan="7" class="text-center py-5">
                                 <i class="fa-solid fa-money-check-dollar fa-3x text-muted mb-3 d-block"></i>
-                                <h5 class="text-muted">No Payrolls Found</h5>
-                                <p class="text-muted small mb-0">Click <strong>"Add Payroll"</strong> to create one.</p>
+                                <h5 class="text-muted">No Records Found</h5>
+                                <p class="text-muted small mb-0">Click <strong>"Send Allowance/Deduction"</strong> to create one.</p>
                             </td>
                         </tr>
                         @endforelse
@@ -203,9 +192,10 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.addEventListener('click', function () {
             const url = this.dataset.url;
             const name = this.dataset.name;
+            
             Swal.fire({
-                title: 'Delete Payroll?',
-                html: `Delete payroll for <strong>${name}</strong>?<br>This cannot be undone.`,
+                title: 'Delete Record?',
+                html: `Delete allowance/deduction record for <strong>${name}</strong>?<br>This cannot be undone.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -220,40 +210,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(d => {
                     if (d.success) {
                         Swal.fire({icon: 'success', title: 'Deleted', timer: 1200, showConfirmButton: false})
-                            .then(() => location.reload());
-                    } else {
-                        Swal.fire('Error', d.message, 'error');
-                    }
-                });
-            });
-        });
-    });
-
-    document.querySelectorAll('.mark-paid-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const url = this.dataset.url;
-            Swal.fire({
-                title: 'Mark as Paid?',
-                text: 'This will mark the payroll as paid today.',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#10b981',
-                confirmButtonText: 'Yes, mark paid',
-            }).then(r => {
-                if (!r.isConfirmed) return;
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrf,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ payment_method: 'Cash' })
-                })
-                .then(r => r.json())
-                .then(d => {
-                    if (d.success) {
-                        Swal.fire({icon: 'success', title: 'Paid', timer: 1200, showConfirmButton: false})
                             .then(() => location.reload());
                     } else {
                         Swal.fire('Error', d.message, 'error');

@@ -124,14 +124,6 @@
                             Rs {{ number_format($payroll->net_salary, 2) }}
                         </div>
                     </div>
-                    @if($payroll->payment_status !== 'paid')
-                        <form action="{{ route('admin.payrolls.mark-paid', $payroll->id) }}" method="POST">
-                            @csrf
-                            <button type="submit" class="btn btn-success px-4">
-                                <i class="fa-solid fa-check me-2"></i>Mark as Paid
-                            </button>
-                        </form>
-                    @endif
                 </div>
             </div>
         </div>

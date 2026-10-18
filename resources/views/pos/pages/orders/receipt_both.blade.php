@@ -187,11 +187,10 @@
             <div class="divider">&mdash;&mdash;&mdash; Powered by Look n Cook POS &mdash;&mdash;&mdash;</div>
         </div>
     </div>
-
     {{-- =====================================================
          PAGE 2: DEPARTMENT / KITCHEN RECEIPT
     ====================================================== --}}
-    <div class="receipt-page">
+     <div class="receipt-page">
         <div class="header">
             @if(file_exists(public_path('images/lock-logo.png')))
                 <img class="logo" src="{{ public_path('images/lock-logo.png') }}" alt="Logo">
@@ -224,35 +223,63 @@
                     <span class="value">{{ $order->waiter?->name ?? 'Unassigned' }}</span>
                 </td>
             </tr>
+            <tr>
+                <td colspan="2">
+                    <span class="label">Customer</span>
+                    <span class="value">{{ $order->customer_name ?: 'Walk-in Customer' }}</span>
+                </td>
+            </tr>
         </table>
 
         <table class="items-table">
             <thead>
                 <tr>
-                    <th class="center" style="width: 15%;">Qty</th>
-                    <th style="width: 55%;">Item</th>
-                    <th style="width: 30%;">Category</th>
+                    <th style="width: 45%;">Item</th>
+                    <th class="center" style="width: 12%;">Qty</th>
+                    <th class="right" style="width: 20%;">Unit Price</th>
+                    <th class="right" style="width: 23%;">Total</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($order->items as $item)
                     <tr>
-                        <td class="center" style="font-size: 14px; font-weight: bold;">{{ $item->quantity }}×</td>
                         <td>
                             <div class="item-name">{{ $item->product_name }}</div>
-                            @if($item->notes)
-                                <div class="item-cat" style="color: #dc2626; font-weight: 600;">Note: {{ $item->notes }}</div>
-                            @endif
+                            @if($item->category)<div class="item-cat">{{ $item->category->name }}</div>@endif
                         </td>
-                        <td>{{ $item->category?->name ?? '—' }}</td>
+                        <td class="center">{{ $item->quantity }}</td>
+                        <td class="right">Rs {{ number_format($item->unit_price, 2) }}</td>
+                        <td class="right">Rs {{ number_format($item->total_price, 2) }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="3" class="center" style="color: #9ca3af; padding: 20px;">No items</td></tr>
+                    <tr><td colspan="4" class="center" style="color: #9ca3af; padding: 20px;">No items</td></tr>
                 @endforelse
             </tbody>
         </table>
 
-        @if($order->notes)
+        <div class="bill-wrap">
+            <table class="bill-table">
+                <tr><td class="bill-label">Subtotal</td><td class="bill-value">Rs {{ number_format($order->subtotal, 2) }}</td></tr>
+                @if((float) $order->tax > 0)
+                <tr>
+                    <td class="bill-label">Tax ({{ rtrim(rtrim(number_format($order->tax, 2, '.', ''), '0'), '.') }}%)</td>
+                    <td class="bill-value">Rs {{ number_format($order->tax_amount, 2) }}</td>
+                </tr>
+                @endif
+                @if((float) $order->discount > 0)
+                <tr>
+                    <td class="bill-label">Discount ({{ rtrim(rtrim(number_format($order->discount, 2, '.', ''), '0'), '.') }}%)</td>
+                    <td class="bill-value">- Rs {{ number_format($order->discount_amount, 2) }}</td>
+                </tr>
+                @endif
+                <tr class="total-row">
+                    <td class="bill-label">Grand Total</td>
+                    <td class="bill-value">Rs {{ number_format($order->total_amount, 2) }}</td>
+                </tr>
+            </table>
+        </div>
+
+      @if($order->notes)
         <div class="notes-box">
             <div class="notes-title">Special Instructions from Order</div>
             {{ $order->notes }}
@@ -264,7 +291,6 @@
             <p class="msg">Please ensure all items are prepared as per our standards.</p>
             <div class="divider">&mdash;&mdash;&mdash; Kitchen / Bar Department Copy &mdash;&mdash;&mdash;</div>
         </div>
-    </div>
 
 </body>
 </html>

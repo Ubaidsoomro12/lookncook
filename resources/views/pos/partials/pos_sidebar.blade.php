@@ -55,6 +55,11 @@
                     <i class="fa-solid fa-list" style="font-size:14px;"></i>
                     <span>All Orders</span>
                 </a>
+                  <a href="{{ route('pos.reservations.index') }}"
+                    style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
+                    <i class="fa-solid fa-utensils" style="font-size:14px;"></i>
+                    <span>Reservations</span>
+                </a>
                 <a href="#"
                     style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; color:#9ca3af;">
                     <i class="fa-solid fa-utensils" style="font-size:14px;"></i>

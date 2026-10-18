@@ -28,6 +28,8 @@ use App\Http\Controllers\backend\StaffPayrollController;
 use App\Http\Controllers\backend\PayrollTypeController;
 use App\Http\Controllers\backend\PayrollPaymentMethodController;
 use App\Http\Controllers\backend\PayrollAllowanceCompanyController;
+use App\Http\Controllers\backend\StaffPaymentController;
+use App\Http\Controllers\pos\ReservationController; // Added
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
@@ -110,7 +112,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/',                       'myAllowances')->name('index');
         Route::post('/request',               'submitAllowanceRequest')->name('request.submit');
         Route::delete('/request/{id}',        'cancelAllowanceRequest')->name('request.cancel');
-        // Backwards-compat routes (kept, not used by new staff UI)
+        Route::get('/payroll-slip/{id}',      'getPayrollSlipAjax')->name('payroll.ajax'); 
         Route::post('/expense',               'storeExpense')->name('expense.store');
         Route::delete('/expense/{id}',        'deleteExpense')->name('expense.destroy');
     });
@@ -229,9 +231,6 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/assign', 'assignLeave')->name('assign');
         });
 
-        // =============================================================
-        // ADMIN — STAFF PAYROLL
-        // =============================================================
         Route::prefix('payrolls')->name('payrolls.')->controller(StaffPayrollController::class)->group(function () {
             Route::get('/',                  'index')->name('index');
             Route::get('/create',            'create')->name('create');
@@ -244,9 +243,6 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/{id}/slip',         'printSlip')->name('slip');
         });
 
-        // =============================================================
-        // ADMIN — PAYROLL ALLOWANCE TYPES
-        // =============================================================
         Route::prefix('payroll-allowance-types')->name('payroll-allowance-types.')->controller(PayrollTypeController::class)->group(function () {
             Route::get('/',              'index')->name('index');
             Route::get('/create',        'create')->name('create');
@@ -256,9 +252,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{id}','destroy')->name('destroy');
         });
 
-        // =============================================================
-        // ADMIN — PAYROLL DEDUCTION TYPES
-        // =============================================================
         Route::prefix('payroll-deduction-types')->name('payroll-deduction-types.')->controller(PayrollTypeController::class)->group(function () {
             Route::get('/',              'index')->name('index');
             Route::get('/create',        'create')->name('create');
@@ -268,9 +261,6 @@ Route::middleware(['auth'])->group(function () {
             Route::delete('/delete/{id}','destroy')->name('destroy');
         });
 
-        // =============================================================
-        // ADMIN — PAYROLL PAYMENT METHODS
-        // =============================================================
         Route::prefix('payroll-payment-methods')->name('payroll-payment-methods.')
             ->controller(PayrollPaymentMethodController::class)->group(function () {
                 Route::get('/',              'index')->name('index');
@@ -281,9 +271,6 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/delete/{id}','destroy')->name('destroy');
             });
 
-        // =============================================================
-        // ADMIN — PAYROLL ALLOWANCE COMPANIES
-        // =============================================================
         Route::prefix('payroll-allowance-companies')->name('payroll-allowance-companies.')
             ->controller(PayrollAllowanceCompanyController::class)->group(function () {
                 Route::get('/',              'index')->name('index');
@@ -294,15 +281,22 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/delete/{id}','destroy')->name('destroy');
             });
 
-        // =============================================================
-        // ADMIN — ALLOWANCE CLAIMS (staff allowance requests)
-        // =============================================================
         Route::prefix('allowance-requests')->name('allowance-requests.')
             ->controller(StaffPayrollController::class)->group(function () {
                 Route::get('/',                       'adminAllowanceRequests')->name('index');
                 Route::post('/{id}/approve',          'approveAllowanceRequest')->name('approve');
                 Route::post('/{id}/reject',           'rejectAllowanceRequest')->name('reject');
             });
+
+        Route::prefix('staff-payments')->name('staff-payments.')->controller(StaffPaymentController::class)->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::get('/{id}/edit', 'edit')->name('edit');
+            Route::put('/{id}', 'update')->name('update');
+            Route::delete('/{id}', 'destroy')->name('destroy');
+            Route::get('/get-payrolls/{staffId}', 'getPayrolls')->name('get-payrolls');
+        });
 
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
         Route::post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
@@ -348,6 +342,20 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/{id}/charges', 'applyCharges')->name('charges');
         Route::get('/{id}/print-receipt', 'printReceipt')->name('print.receipt');
         Route::get('/{id}/receipt-data', 'receiptData')->name('receipt.data');
+    });
+
+    // =============================================================
+    // POS RESERVATIONS ROUTES (NEW)
+    // =============================================================
+    Route::prefix('pos/reservations')->name('pos.reservations.')->controller(ReservationController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/store', 'store')->name('store');
+        Route::get('/{id}/edit', 'edit')->name('edit');   // Added Edit
+        Route::put('/{id}', 'update')->name('update');    // Added Update
+        Route::get('/{id}/print', 'print')->name('print');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+        Route::get('/ajax/foods/{categoryId}', 'getFoods')->name('foods');
     });
 
     Route::get('pos/ajax/foods/{categoryId}', [PosOrderController::class, 'foodsByCategory'])

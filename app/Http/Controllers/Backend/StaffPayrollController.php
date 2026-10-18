@@ -10,6 +10,7 @@ use App\Models\PayrollPaymentMethod;
 use App\Models\Staff;
 use App\Models\StaffAllowanceExpense;
 use App\Models\StaffAllowanceRequest;
+use App\Models\StaffPayment;
 use App\Models\StaffPayroll;
 use App\Models\StaffPayrollAllowance;
 use App\Models\StaffPayrollDeduction;
@@ -27,13 +28,11 @@ class StaffPayrollController extends Controller
         $this->middleware(function ($request, $next) {
             $routeName = $request->route() ? $request->route()->getName() : '';
 
-            // ⭐ Staff-facing routes — allow any logged-in user
             if (str_starts_with((string) $routeName, 'staff.payroll.')
                 || str_starts_with((string) $routeName, 'staff.allowences.')) {
                 return $next($request);
             }
 
-            // Admin-only routes
             if (auth()->user()->role_id != 1) {
                 return redirect('/')->withErrors(['email' => 'You do not have administrative privileges.']);
             }
@@ -69,11 +68,14 @@ class StaffPayrollController extends Controller
             ->appends($request->query());
 
         $stats = [
-            'total_pending' => StaffPayroll::where('payment_status', 'pending')->count(),
-            'total_paid'    => StaffPayroll::where('payment_status', 'paid')->count(),
-            'this_month'    => StaffPayroll::where('period_month', now()->month)
-                                ->where('period_year', now()->year)->count(),
-            'total_payout'  => StaffPayroll::where('payment_status', 'paid')->sum('net_salary'),
+            'total_pending'    => StaffPayroll::where('payment_status', 'pending')->count(),
+            'total_paid'       => StaffPayroll::where('payment_status', 'paid')->count(),
+            'this_month'       => StaffPayroll::where('period_month', now()->month)
+                                    ->where('period_year', now()->year)->count(),
+            'total_allowances' => (float) StaffPayroll::where('period_month', now()->month)
+                                    ->where('period_year', now()->year)->sum('total_allowances'),
+            'total_deductions' => (float) StaffPayroll::where('period_month', now()->month)
+                                    ->where('period_year', now()->year)->sum('total_deductions'),
         ];
 
         return view('admin.pages.payrolls.index', compact('payrolls', 'stats'));
@@ -164,7 +166,6 @@ class StaffPayrollController extends Controller
             $payroll->created_by = auth()->id();
             $payroll->save();
 
-            // ── Dynamic allowances ──
             $allowances     = $request->input('allowance_amount', []);
             $enabled        = $request->input('allowance_enabled', []);
             $companiesInput = $request->input('allowance_company', []);
@@ -185,7 +186,6 @@ class StaffPayrollController extends Controller
                 ]);
             }
 
-            // ── Dynamic deductions ──
             $deductions = $request->input('deduction_amount', []);
             $enabled    = $request->input('deduction_enabled', []);
             foreach ($deductions as $typeId => $amount) {
@@ -316,7 +316,6 @@ class StaffPayrollController extends Controller
             ]);
             $payroll->save();
 
-            // Clear + re-save allowances
             $payroll->allowances()->delete();
             $allowances     = $request->input('allowance_amount', []);
             $enabled        = $request->input('allowance_enabled', []);
@@ -338,7 +337,6 @@ class StaffPayrollController extends Controller
                 ]);
             }
 
-            // Clear + re-save deductions
             $payroll->deductions()->delete();
             $deductions = $request->input('deduction_amount', []);
             $enabled    = $request->input('deduction_enabled', []);
@@ -382,24 +380,6 @@ class StaffPayrollController extends Controller
     }
 
     /* ============================================================
-       ADMIN — MARK AS PAID
-    ============================================================ */
-    public function markPaid(Request $request, $id)
-    {
-        try {
-            $payroll = StaffPayroll::findOrFail($id);
-            $payroll->payment_status = 'paid';
-            $payroll->payment_date   = $request->input('payment_date', now()->toDateString());
-            $payroll->payment_method = $request->input('payment_method', $payroll->payment_method ?: 'Cash');
-            $payroll->save();
-
-            return response()->json(['success' => true, 'message' => 'Marked as paid.']);
-        } catch (\Throwable $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
-    }
-
-    /* ============================================================
        ADMIN — PRINT SLIP
     ============================================================ */
     public function printSlip($id)
@@ -412,8 +392,8 @@ class StaffPayrollController extends Controller
         return view('admin.pages.payrolls.slip', compact('payroll'));
     }
 
-    /* ============================================================
-       STAFF — MY PAYROLL
+         /* ============================================================
+       STAFF — MY PAYROLL (PAYMENT HISTORY)
     ============================================================ */
     public function myPayroll(Request $request)
     {
@@ -422,39 +402,48 @@ class StaffPayrollController extends Controller
         if (!$staff) {
             return view('staff.pages.payroll.index', [
                 'staff'    => null,
-                'payrolls' => new LengthAwarePaginator([], 0, 12),
+                'payments' => collect(),
                 'summary'  => [
-                    'total_earned'  => 0,
-                    'total_paid'    => 0,
-                    'total_pending' => 0,
-                    'this_month'    => 0,
+                    'base_salary' => 0,
+                    'total_paid'  => 0,
+                    'pending'     => 0,
+                    'this_month'  => 0,
                 ],
+                'hireYear' => now()->year,
             ]);
         }
 
-        $query = StaffPayroll::where('staff_id', $staff->id);
+        // Fetch ALL payments (removed pagination so JS can filter everything)
+        $payments = StaffPayment::with(['paymentMethod'])
+            ->where('staff_id', $staff->id)
+            ->orderByDesc('payment_date')
+            ->orderByDesc('id')
+            ->get();
 
-        if ($request->filled('year'))   $query->where('period_year', $request->year);
-        if ($request->filled('status')) $query->where('payment_status', $request->status);
+        $baseSalary = (float) $staff->salary;
+        $totalPaid  = (float) StaffPayment::where('staff_id', $staff->id)
+            ->where('status', 'completed')
+            ->sum('amount');
+            
+        $pending = max(0, $baseSalary - $totalPaid);
 
-        $payrolls = $query->orderByDesc('period_year')
-            ->orderByDesc('period_month')
-            ->paginate(12)
-            ->appends($request->query());
+        $thisMonth = (float) StaffPayment::where('staff_id', $staff->id)
+            ->where('status', 'completed')
+            ->whereMonth('payment_date', now()->month)
+            ->whereYear('payment_date', now()->year)
+            ->sum('amount');
 
         $summary = [
-            'total_earned'  => (float) StaffPayroll::where('staff_id', $staff->id)->sum('net_salary'),
-            'total_paid'    => (float) StaffPayroll::where('staff_id', $staff->id)
-                                ->where('payment_status', 'paid')->sum('net_salary'),
-            'total_pending' => (float) StaffPayroll::where('staff_id', $staff->id)
-                                ->where('payment_status', 'pending')->sum('net_salary'),
-            'this_month'    => (float) (StaffPayroll::where('staff_id', $staff->id)
-                                ->where('period_month', now()->month)
-                                ->where('period_year', now()->year)
-                                ->value('net_salary') ?? 0),
+            'base_salary' => $baseSalary,
+            'total_paid'  => $totalPaid,
+            'pending'     => $pending,
+            'this_month'  => $thisMonth,
         ];
 
-        return view('staff.pages.payroll.index', compact('staff', 'payrolls', 'summary'));
+        // Calculate the year they joined
+        $hireYear = $staff->hire_date ? \Carbon\Carbon::parse($staff->hire_date)->year : now()->year;
+
+        return view('staff.pages.payroll.index', compact('staff', 'payments', 'summary', 'hireYear'));
     }
 
     /* ============================================================
@@ -477,6 +466,29 @@ class StaffPayrollController extends Controller
     }
 
     /* ============================================================
+       STAFF — AJAX PAYROLL SLIP FOR ALLOWANCES POPUP
+    ============================================================ */
+    public function getPayrollSlipAjax($id)
+    {
+        try {
+            $staff = Staff::where('user_id', auth()->id())->firstOrFail();
+            
+            $payroll = StaffPayroll::with([
+                'allowances.type', 'allowances.company', 'deductions.type'
+            ])
+            ->where('staff_id', $staff->id)
+            ->where('id', $id)
+            ->firstOrFail();
+
+            $html = view('staff.partials.payroll_slip_modal', compact('payroll'))->render();
+            
+            return response()->json(['success' => true, 'html' => $html]);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /* ============================================================
        STAFF — MY ALLOWANCES DASHBOARD
     ============================================================ */
     public function myAllowances(Request $request)
@@ -496,7 +508,6 @@ class StaffPayrollController extends Controller
             ]);
         }
 
-        // All allowance entries
         $entries = StaffPayrollAllowance::with([
                 'type', 'company', 'payroll', 'expenses', 'requests',
             ])
@@ -511,7 +522,6 @@ class StaffPayrollController extends Controller
             })
             ->values();
 
-        // Compute per-entry numbers
         $entries = $entries->map(function ($e) {
             $spentApproved = (float) $e->expenses->sum('amount');
             $pendingSum    = (float) $e->requests->where('status', 'pending')->sum('amount');
@@ -523,7 +533,6 @@ class StaffPayrollController extends Controller
             return $e;
         });
 
-        // Group by type
         $entriesByType = $entries
             ->groupBy('allowance_type_id')
             ->map(function ($items) {
@@ -559,7 +568,6 @@ class StaffPayrollController extends Controller
             ->values()
             ->toArray();
 
-        // Recent expenses (approved)
         $expenses = StaffAllowanceExpense::with([
                 'allowanceEntry.type',
                 'allowanceEntry.company',
@@ -571,7 +579,6 @@ class StaffPayrollController extends Controller
             ->limit(50)
             ->get();
 
-        // All my requests
         $requests = StaffAllowanceRequest::with([
                 'allowanceEntry.type',
                 'allowanceEntry.company',
@@ -587,7 +594,6 @@ class StaffPayrollController extends Controller
         $totalSpent   = (float) $entries->sum('spent_computed');
         $totalPending = (float) $entries->sum('pending_computed');
 
-        // By company
         $byCompany = $entries
             ->groupBy(function ($e) {
                 return $e->company?->name ?? 'Direct / No Company';
@@ -605,7 +611,6 @@ class StaffPayrollController extends Controller
             })
             ->values();
 
-        // Available entries for new request
         $availableEntries = $entries->filter(function ($e) {
             return $e->available_computed > 0;
         })->values();
@@ -727,7 +732,6 @@ class StaffPayrollController extends Controller
                 return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
             }
 
-            // Compute available = amount - approved_expenses - pending_requests
             $spentApproved = (float) $entry->expenses()->sum('amount');
             $pendingSum    = (float) $entry->pendingRequests()->sum('amount');
             $available     = (float) $entry->amount - $spentApproved - $pendingSum;
@@ -740,7 +744,6 @@ class StaffPayrollController extends Controller
                 ], 422);
             }
 
-            // Save receipt image
             $receiptPath = null;
             if ($request->hasFile('receipt_image')) {
                 $folder = public_path('staff/allowance-receipts');
@@ -793,7 +796,6 @@ class StaffPayrollController extends Controller
 
     /* ============================================================
        ADMIN — LIST ALL ALLOWANCE REQUESTS
-       Loads ALL statuses so the admin view tabs & filters work client-side.
     ============================================================ */
     public function adminAllowanceRequests(Request $request)
     {
@@ -802,7 +804,6 @@ class StaffPayrollController extends Controller
             'allowanceEntry.payroll', 'reviewer',
         ]);
 
-        // No status filter here — the blade does it client-side
         if ($request->filled('staff_id')) {
             $query->where('staff_id', $request->staff_id);
         }
@@ -838,7 +839,7 @@ class StaffPayrollController extends Controller
     }
 
     /* ============================================================
-       ADMIN — APPROVE A REQUEST → creates expense entry
+       ADMIN — APPROVE A REQUEST
     ============================================================ */
     public function approveAllowanceRequest(Request $request, $id)
     {
@@ -851,7 +852,6 @@ class StaffPayrollController extends Controller
 
             $entry = $req->allowanceEntry;
 
-            // Re-check balance at approval time
             $alreadySpent = (float) $entry->expenses()->sum('amount');
             $available    = (float) $entry->amount - $alreadySpent;
 
@@ -864,14 +864,12 @@ class StaffPayrollController extends Controller
 
             DB::beginTransaction();
 
-            // Mark request approved
             $req->status      = 'approved';
             $req->admin_notes = $request->input('admin_notes');
             $req->reviewed_by = auth()->id();
             $req->reviewed_at = now();
             $req->save();
 
-            // Create matching expense entry
             StaffAllowanceExpense::create([
                 'staff_id'                   => $req->staff_id,
                 'staff_payroll_allowance_id' => $req->staff_payroll_allowance_id,

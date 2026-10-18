@@ -1,7 +1,7 @@
 {{-- ============================================================
      FILE: resources/views/staff/pages/allowences/index.blade.php
      PURPOSE: Staff's own allowances dashboard
-     LAST UPDATED: 2026-10-11
+     LAST UPDATED: 2026-10-17
      ============================================================ --}}
 @extends('staff.layouts.master')
 
@@ -47,30 +47,6 @@
     .alw-summary-card .alw-sub {
         font-size: 11px; color: #9ca3af; margin-top: 3px;
     }
-
-    .alw-company-tile {
-        background: #fff;
-        border: 1px solid #eef2f7;
-        border-radius: 12px;
-        padding: 14px 16px;
-        height: 100%;
-        transition: all .2s ease;
-    }
-    .alw-company-tile:hover {
-        border-color: #ffd6e5;
-        box-shadow: 0 6px 18px -8px rgba(255,45,122,.25);
-    }
-    .alw-company-tile .ac-name {
-        font-size: 13px; font-weight: 700; color: #111827;
-        margin-bottom: 3px;
-        word-break: break-word;
-    }
-    .alw-company-tile .ac-row {
-        display: flex; justify-content: space-between;
-        font-size: 12px; padding: 2px 0;
-        color: #4b5563;
-    }
-    .alw-company-tile .ac-row strong { color: #111827; }
 
     .alw-progress {
         height: 6px;
@@ -326,8 +302,10 @@
                                 <th>Company</th>
                                 <th class="text-end">Given</th>
                                 <th class="text-end">Spent</th>
+                                <th class="text-end text-warning">Pending</th> {{-- NEW COLUMN --}}
                                 <th class="text-end">Left</th>
                                 <th style="width:140px;">Progress</th>
+                                <th style="width:100px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -361,6 +339,16 @@
                                     </td>
                                     <td class="text-end fw-semibold">Rs {{ number_format($e->amount, 2) }}</td>
                                     <td class="text-end text-danger">- Rs {{ number_format($e->spent_computed, 2) }}</td>
+                                    
+                                    {{-- NEW PENDING CELL --}}
+                                    <td class="text-end text-warning fw-semibold">
+                                        @if($e->pending_computed > 0)
+                                            - Rs {{ number_format($e->pending_computed, 2) }}
+                                        @else
+                                            <span class="text-muted small">Rs 0.00</span>
+                                        @endif
+                                    </td>
+
                                     <td class="text-end fw-bold" style="color:#ff2d7a;">
                                         Rs {{ number_format($e->left_computed, 2) }}
                                     </td>
@@ -372,10 +360,17 @@
                                             {{ number_format($pct, 0) }}% used
                                         </div>
                                     </td>
+                                    <td>
+                                        @if($e->payroll)
+                                            <button type="button" class="btn btn-sm btn-outline-primary view-payroll-btn" data-id="{{ $e->payroll->id }}" title="View Payroll Breakdown">
+                                                <i class="fa-solid fa-file-invoice"></i> Slip
+                                            </button>
+                                        @endif
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-5 text-muted">
+                                    <td colspan="9" class="text-center py-5 text-muted">
                                         <i class="fa-solid fa-inbox fa-3x mb-3 d-block" style="color:#e5e7eb;"></i>
                                         No allowances yet. Your salary slip will show them once payroll is created.
                                     </td>
@@ -683,6 +678,15 @@
             </div>
         </div>
         @endif
+        
+        {{-- EMPTY PAYROLL SLIP MODAL (AJAX Target) --}}
+        <div class="modal fade" id="payrollSlipModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content" style="border:none;border-radius:16px;overflow:hidden;" id="payrollSlipModalContent">
+                    {{-- JS will inject content here --}}
+                </div>
+            </div>
+        </div>
 
     @endif
 
@@ -748,9 +752,7 @@ window.STAFF_ALLOWANCE_COMPANIES = @json($entriesByType ?? []);
 
     var select = document.getElementById('reqShowSelect');
     if (select) {
-        // Default view = pending
         applyShowFilter(select.value || 'pending');
-
         select.addEventListener('change', function () {
             applyShowFilter(this.value);
         });
@@ -760,7 +762,7 @@ window.STAFF_ALLOWANCE_COMPANIES = @json($entriesByType ?? []);
 })();
 
 /* ══════════════════════════════════════════════════════════════
-   EVERYTHING ELSE (companies popup, request modal, etc.)
+   EVERYTHING ELSE (companies popup, request modal, ajax payroll popup)
    ══════════════════════════════════════════════════════════════ */
 (function(){
     'use strict';
@@ -854,6 +856,43 @@ window.STAFF_ALLOWANCE_COMPANIES = @json($entriesByType ?? []);
             listEl.style.display = 'block';
         });
     }
+
+    /* ── AJAX Payroll Slip Modal ── */
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.view-payroll-btn');
+        if (!btn) return;
+
+        const payrollId = btn.dataset.id;
+        const modalContent = document.getElementById('payrollSlipModalContent');
+        
+        // Show loading state
+        modalContent.innerHTML = `
+            <div class="p-5 text-center text-muted">
+                <span class="spinner-border spinner-border-sm me-2"></span>Loading details...
+            </div>
+        `;
+        
+        const modal = new bootstrap.Modal(document.getElementById('payrollSlipModal'));
+        modal.show();
+
+        fetch(`{{ url('/staff/allowences/payroll-slip') }}/${payrollId}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                modalContent.innerHTML = data.html;
+            } else {
+                modalContent.innerHTML = `<div class="p-4 text-danger text-center">Error loading details.</div>`;
+            }
+        })
+        .catch(err => {
+            modalContent.innerHTML = `<div class="p-4 text-danger text-center">Network error: ${err.message}</div>`;
+        });
+    });
 
     /* ── Request modal balance hint ── */
     const reqSelect = document.getElementById('requestEntrySelect');
