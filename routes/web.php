@@ -77,6 +77,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/staff/clock-out', [AttendanceController::class, 'clockOut'])->name('staff.clock-out');
     Route::get('/staff/attendance', [AttendanceController::class, 'index'])->name('staff.attendance');
 
+    // ✅ NAYE ROUTES STAFF REVIEWS KE LIYE (Yahan add kiye hain)
+    Route::get('/staff/customer-reviews', function () {
+        return view('pages.reviews'); 
+    })->name('staff.customer.reviews');
+    
+    Route::post('/staff/customer-reviews', [ReviewController::class, 'staffReviewStore'])
+        ->name('staff.reviews.store');
+
+
     Route::prefix('staff/manage-leave')->name('staff.manage_leave.')->controller(LeaveController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
@@ -262,3 +271,14 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::get('/order/confirmation/{order}', [CheckoutController::class, 'orderSuccess'])->name('order.success');
+
+
+    // ✅ NAYE ROUTES STAFF REVIEWS KE LIYE
+    Route::get('/staff/customer-reviews', function () {
+        // pos_tables table se active tables fetch kar rahe hain
+        $tables = \Illuminate\Support\Facades\DB::table('pos_tables')->where('is_active', 1)->get(); 
+        return view('pages.reviews', compact('tables')); 
+    })->name('staff.customer.reviews');
+    
+    Route::post('/staff/customer-reviews', [ReviewController::class, 'staffReviewStore'])
+        ->name('staff.reviews.store');
