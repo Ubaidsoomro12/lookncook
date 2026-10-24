@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
+<<<<<<< HEAD
             
             // ✅ Staff Fields
             $table->unsignedBigInteger('staff_id')->nullable();
@@ -26,6 +27,14 @@ return new class extends Migration
             $table->integer('rating')->nullable();
             $table->enum('status', ['pending', 'good', 'bad', 'excellent', 'average'])->default('pending');
             
+=======
+            $table->string('name');
+            $table->string('email');
+            $table->string('profession');
+            $table->text('message');
+            $table->integer('rating');
+            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending'); // ✅ Status column
+>>>>>>> muzamil_dev
             $table->timestamps();
         });
     }

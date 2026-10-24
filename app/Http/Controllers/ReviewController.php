@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Review;
+<<<<<<< HEAD
 use App\Models\Staff; 
+=======
+>>>>>>> muzamil_dev
 use Illuminate\Support\Facades\DB;
 
 class ReviewController extends Controller
 {
+<<<<<<< HEAD
     // Submit review (frontend - Customer)
+=======
+    // Submit review (frontend)
+>>>>>>> muzamil_dev
     public function submit(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -66,6 +73,7 @@ class ReviewController extends Controller
     {
         try {
             $review = Review::findOrFail($id);
+<<<<<<< HEAD
             if ($review->staff_id) {
                 $review->staff_status = 'good';
             } else {
@@ -76,6 +84,20 @@ class ReviewController extends Controller
             return response()->json(['success' => true, 'message' => 'Review approved successfully!']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to approve review.'], 500);
+=======
+            $review->status = 'approved';
+            $review->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Review approved successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to approve review.'
+            ], 500);
+>>>>>>> muzamil_dev
         }
     }
 
@@ -84,6 +106,7 @@ class ReviewController extends Controller
     {
         try {
             $review = Review::findOrFail($id);
+<<<<<<< HEAD
             if ($review->staff_id) {
                 $review->staff_status = 'bad';
             } else {
@@ -94,6 +117,20 @@ class ReviewController extends Controller
             return response()->json(['success' => true, 'message' => 'Review rejected successfully!']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to reject review.'], 500);
+=======
+            $review->status = 'rejected';
+            $review->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Review rejected successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to reject review.'
+            ], 500);
+>>>>>>> muzamil_dev
         }
     }
 
@@ -115,6 +152,7 @@ class ReviewController extends Controller
             ], 500);
         }
     }
+<<<<<<< HEAD
 
     // ✅ Staff: Submit Review (Table ID ke sath)
     public function staffReviewStore(Request $request)
@@ -165,4 +203,6 @@ class ReviewController extends Controller
             return redirect()->back()->withErrors(['error' => 'DB Error: ' . $e->getMessage()]);
         }
     }
+=======
+>>>>>>> muzamil_dev
 }

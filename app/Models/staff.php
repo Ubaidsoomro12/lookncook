@@ -17,7 +17,12 @@ class Staff extends Model
         'cv_image', 'appointment_letter_image', 'address',
         'emergency_contact_name', 'emergency_contact_number', 'blood_group',
         'hire_date', 'salary', 'salary_type', 'hourly_rate',
+<<<<<<< HEAD
         'bank_account_no', 'bank_name', 'employee_type',
+=======
+        'payment_method_id', 'payment_details',
+        'employee_type',
+>>>>>>> muzamil_dev
         'department', 'designation', 'branch', 'work_shift',
         'shift_start_time', 'shift_end_time',
         'reporting_manager_id', 'status'
@@ -30,8 +35,16 @@ class Staff extends Model
         'hourly_rate' => 'decimal:2',
         'shift_start_time' => 'datetime:H:i',
         'shift_end_time' => 'datetime:H:i',
+<<<<<<< HEAD
     ];
 
+=======
+        'payment_details' => 'array',   // ⭐ JSON <-> array
+    ];
+
+    /* ---------- Relations ---------- */
+
+>>>>>>> muzamil_dev
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -58,6 +71,16 @@ class Staff extends Model
                     ->where('date', now()->toDateString());
     }
 
+<<<<<<< HEAD
+=======
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PayrollPaymentMethod::class, 'payment_method_id');
+    }
+
+    /* ---------- Accessors ---------- */
+
+>>>>>>> muzamil_dev
     public function getImageUrlAttribute()
     {
         return $this->image ? asset($this->image) : asset('assets/images/default-avatar.png');

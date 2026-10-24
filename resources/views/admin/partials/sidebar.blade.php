@@ -44,8 +44,11 @@
             </a>
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> muzamil_dev
             <!-- MANAGEMENT SECTION -->
             <p
                 style="font-size:11px; font-weight:700; color:#4b5563; text-transform:uppercase; letter-spacing:0.05em; padding:0 8px; margin-top:16px; margin-bottom:8px;">
@@ -87,8 +90,11 @@
                     <span>Reviews Management</span>
                 </a>
 
+<<<<<<< HEAD
                 
 
+=======
+>>>>>>> muzamil_dev
                 <a href="{{ route('admin.users.index') }}"
                     style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.users*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
                     <i class="fa-solid fa-users-gear"
@@ -117,6 +123,79 @@
                     <span>leaves Management</span>
                 </a>
 
+<<<<<<< HEAD
+=======
+                {{-- ⭐ PAYROLL DROPDOWN SECTION --}}
+                @php
+                    $isPayrollGroupActive = request()->routeIs('admin.payrolls.*') ||
+                                            request()->routeIs('admin.staff-payments.*') ||
+                                            request()->routeIs('admin.allowance-requests.*') ||
+                                            request()->routeIs('admin.payroll-allowance-companies.*') ||
+                                            request()->routeIs('admin.payroll-allowance-types.*') ||
+                                            request()->routeIs('admin.payroll-deduction-types.*') ||
+                                            request()->routeIs('admin.payroll-payment-methods.*');
+                @endphp
+
+                <details {{ $isPayrollGroupActive ? 'open' : '' }} style="width:100%; margin:0; padding:0;">
+                    <summary style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; cursor:pointer; list-style:none; outline:none; {{ $isPayrollGroupActive ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
+                        <i class="fa-solid fa-money-check-dollar" style="font-size:14px; {{ $isPayrollGroupActive ? 'color:#ff2d7a;' : '' }}"></i>
+                        <span>Payroll</span>
+                        <i class="fa-solid fa-chevron-down ms-auto payroll-chevron" style="font-size:10px; transition: transform 0.2s;"></i>
+                    </summary>
+                    
+                    <div style="display:flex; flex-direction:column; gap:4px; padding-top:4px;">
+                        <a href="{{ route('admin.payrolls.index') }}"
+                            style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.payrolls.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
+                            <i class="fa-solid fa-circle"
+                                style="font-size:6px; {{ request()->routeIs('admin.payrolls.*') ? 'color:#ff2d7a;' : '' }}"></i>
+                            <span>Allowances Given</span>
+                        </a>
+
+                        <a href="{{ route('admin.staff-payments.index') }}"
+                            style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.staff-payments.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
+                            <i class="fa-solid fa-circle"
+                                style="font-size:6px; {{ request()->routeIs('admin.staff-payments.*') ? 'color:#ff2d7a;' : '' }}"></i>
+                            <span>Staff Payments</span>
+                        </a>
+
+                        <a href="{{ route('admin.allowance-requests.index') }}"
+                            style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.allowance-requests.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
+                            <i class="fa-solid fa-circle"
+                            style="font-size:6px; {{ request()->routeIs('admin.allowance-requests.*') ? 'color:#ff2d7a;' : '' }}"></i>
+                            <span>Allowance Claims</span>
+                        </a>
+
+                        <a href="{{ route('admin.payroll-allowance-companies.index') }}"
+                             style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.payroll-allowance-companies.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
+                            <i class="fa-solid fa-circle"
+                            style="font-size:6px; {{ request()->routeIs('admin.payroll-allowance-companies.*') ? 'color:#ff2d7a;' : '' }}"></i>
+                            <span>Allowance Companies</span>
+                        </a>
+
+                        <a href="{{ route('admin.payroll-allowance-types.index') }}"
+                            style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.payroll-allowance-types.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
+                            <i class="fa-solid fa-circle"
+                                style="font-size:6px; {{ request()->routeIs('admin.payroll-allowance-types.*') ? 'color:#ff2d7a;' : '' }}"></i>
+                            <span>Allowance Types</span>
+                        </a>
+
+                        <a href="{{ route('admin.payroll-deduction-types.index') }}"
+                            style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.payroll-deduction-types.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
+                            <i class="fa-solid fa-circle"
+                                style="font-size:6px; {{ request()->routeIs('admin.payroll-deduction-types.*') ? 'color:#ff2d7a;' : '' }}"></i>
+                            <span>Deduction Types</span>
+                        </a>
+
+                        <a href="{{ route('admin.payroll-payment-methods.index') }}"
+                            style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.payroll-payment-methods.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
+                            <i class="fa-solid fa-circle"
+                                style="font-size:6px; {{ request()->routeIs('admin.payroll-payment-methods.*') ? 'color:#ff2d7a;' : '' }}"></i>
+                            <span>Payment Methods</span>
+                        </a>
+                    </div>
+                </details>
+
+>>>>>>> muzamil_dev
                 <a href="{{ route('admin.branches.index') }}"
                     style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.branches*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
                     <i class="fa-solid fa-user-shield"
@@ -304,6 +383,22 @@
         }
     }
 
+<<<<<<< HEAD
+=======
+    /* Hide default details marker */
+    summary::-webkit-details-marker {
+        display: none;
+    }
+    summary {
+        list-style: none;
+    }
+
+    /* Rotate chevron when open */
+    details[open] summary .payroll-chevron {
+        transform: rotate(180deg);
+    }
+
+>>>>>>> muzamil_dev
     /* Scrollbar styling */
     #adminSidebar>div:first-child::-webkit-scrollbar {
         width: 4px;

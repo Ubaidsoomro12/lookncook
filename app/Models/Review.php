@@ -10,12 +10,16 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
+<<<<<<< HEAD
         // ✅ Customer Fields
+=======
+>>>>>>> muzamil_dev
         'name', 
         'email', 
         'profession', 
         'message', 
         'rating',
+<<<<<<< HEAD
         'status',
         
         // ✅ Staff Fields
@@ -25,5 +29,8 @@ class Review extends Model
         'staff_review',
         'staff_rating',
         'staff_status'
+=======
+        'status'  // ✅ Status added
+>>>>>>> muzamil_dev
     ];
 }

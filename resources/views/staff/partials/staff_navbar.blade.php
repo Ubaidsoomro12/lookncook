@@ -6,6 +6,7 @@
         </button>
         <h5 class="mb-0" style="font-weight:600;">@yield('page-title', 'Staff Dashboard')</h5>
     </div>
+<<<<<<< HEAD
 
     <!-- User Dropdown Block (matching admin panel) -->
     <div class="dash-user-dropdown">
@@ -185,6 +186,29 @@
     }
 </style>
 
+=======
+    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <span style="font-weight:600; color:#1f2937;">
+            <i class="fa-regular fa-circle-user me-2"></i>
+            {{ auth()->user()->name }}
+            <small style="font-weight:400; color:#6b7280;">
+                @php
+                    $roleLabels = [1=>'Admin',2=>'User',3=>'Manager',4=>'Waiter',5=>'Chef',6=>'Cashier',7=>'Cleaner',8=>'Delivery Rider'];
+                    $roleName = $roleLabels[auth()->user()->role_id] ?? 'Staff';
+                @endphp
+                ({{ $roleName }})
+            </small>
+        </span>
+        <a href="#" class="btn btn-sm btn-outline-secondary" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="fa-solid fa-sign-out-alt"></i> Logout
+        </a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+    </div>
+</nav>
+
+>>>>>>> muzamil_dev
 <script>
     // Show mobile toggle button on small screens
     document.addEventListener('DOMContentLoaded', function() {
@@ -199,6 +223,7 @@
                 toggleBtn.style.display = 'none';
             }
         });
+<<<<<<< HEAD
 
         // Profile Dropdown Toggle
         const profileBtn = document.getElementById('profileDropdownBtn');
@@ -217,5 +242,7 @@
                 }
             });
         }
+=======
+>>>>>>> muzamil_dev
     });
 </script>

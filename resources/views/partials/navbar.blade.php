@@ -78,6 +78,7 @@
                 </div>
 
                 @auth
+<<<<<<< HEAD
                     @php
                         // ✅ Staff roles: Manager(3), Waiter(4), Chef(5), Cashier(6), Cleaner(7), Delivery Rider(8)
                         $roleId     = Auth::user()->role_id;
@@ -87,6 +88,8 @@
                         $isPos      = ($roleId === 3); // POS dashboard
                     @endphp
 
+=======
+>>>>>>> muzamil_dev
                     <div class="custom-user-dropdown" id="customUserDropdown">
                         <button type="button" class="btn user-profile-dropdown" id="userDropdownToggle">
                             <i class="bi bi-person-circle me-2"></i>
@@ -101,20 +104,29 @@
                             <a class="custom-menu-item" href="{{ route('orders.index') }}">
                                 <i class="bi bi-bag-check"></i><span>My Orders</span>
                             </a>
+<<<<<<< HEAD
 
                             {{-- ✅ Admin Dashboard --}}
                             @if($isAdmin)
+=======
+                            @if(Auth::user()->role_id == 1)
+>>>>>>> muzamil_dev
                                 <a class="custom-menu-item" href="{{ route('admin.dashboard') }}">
                                     <i class="bi bi-speedometer2"></i><span>Admin Dashboard</span>
                                 </a>
                             @endif
+<<<<<<< HEAD
 
                             {{-- ✅ POS Dashboard (Manager only) --}}
                             @if($isPos)
+=======
+                            @if(Auth::user()->role_id == 3)
+>>>>>>> muzamil_dev
                                 <a class="custom-menu-item" href="{{ route('pos.dashboard') }}">
                                     <i class="bi bi-speedometer2"></i><span>POS Dashboard</span>
                                 </a>
                             @endif
+<<<<<<< HEAD
 
                             {{-- ✅ Staff Dashboard --}}
                             @if($isStaff && !$isPos)
@@ -134,6 +146,11 @@
                                 <div class="custom-menu-divider"></div>
                             @endif
 
+=======
+                            @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 3)
+                                <div class="custom-menu-divider"></div>
+                            @endif
+>>>>>>> muzamil_dev
                             <a class="custom-menu-item custom-menu-logout" href="#"
                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="bi bi-box-arrow-right"></i><span>Logout</span>
@@ -284,6 +301,7 @@
         overflow: visible !important;
     }
 
+<<<<<<< HEAD
     /* ---------- BRAND ---------- */
     .brand-wrap { flex-shrink: 0; margin-right: 1rem; }
     .brand-logo { width: 58px; height: 58px; flex-shrink: 0; }
@@ -296,6 +314,39 @@
     .brand-sub {
         font-size: 10px; letter-spacing: 4px; color: #888;
         margin-top: 4px; text-transform: uppercase; font-weight: 600;
+=======
+    /* ---------- BRAND (class based so it can shrink responsively) ---------- */
+    .brand-wrap {
+        flex-shrink: 0;
+        margin-right: 1rem;
+    }
+
+    .brand-logo {
+        width: 58px;
+        height: 58px;
+        flex-shrink: 0;
+    }
+
+    .brand-line {
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    .brand-line-pink { color: #ff2d7a; }
+    .brand-line-dark { color: #111; }
+
+    .brand-sub {
+        font-size: 10px;
+        letter-spacing: 4px;
+        color: #888;
+        margin-top: 4px;
+        text-transform: uppercase;
+        font-weight: 600;
+>>>>>>> muzamil_dev
         white-space: nowrap;
     }
 
@@ -310,6 +361,7 @@
         transition: 0.3s;
         position: relative;
     }
+<<<<<<< HEAD
     .navbar-nav .nav-link:hover { color: #ff2d7a !important; }
     .navbar-nav .nav-link::after {
         content: ''; position: absolute; left: 0; bottom: -5px;
@@ -327,23 +379,93 @@
         display: flex; align-items: center; justify-content: center;
         color: #ff2d7a; font-size: 24px; padding: 0;
         transition: 0.3s ease; backdrop-filter: blur(8px);
+=======
+
+    .navbar-nav .nav-link:hover {
+        color: #ff2d7a !important;
+    }
+
+    .navbar-nav .nav-link::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+        width: 0%;
+        height: 2px;
+        background: #ff2d7a;
+        transition: 0.3s;
+    }
+
+    .navbar-nav .nav-link:hover::after {
+        width: 100%;
+    }
+
+    /* ---------- RIGHT SIDE ACTIONS ---------- */
+    .nav-actions {
+        gap: 16px;
+        flex-shrink: 0;
+    }
+
+    .nav-icon-btn {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: rgba(255, 45, 122, 0.10);
+        border: 1px solid rgba(255, 45, 122, 0.20);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ff2d7a;
+        font-size: 24px;
+        padding: 0;
+        transition: 0.3s ease;
+        backdrop-filter: blur(8px);
+>>>>>>> muzamil_dev
         box-shadow: 0 6px 20px rgba(255, 45, 122, 0.12);
     }
 
     .nav-badge {
+<<<<<<< HEAD
         background: #ff2d7a; font-size: 10px;
         min-width: 20px; height: 20px;
         display: flex; align-items: center; justify-content: center;
+=======
+        background: #ff2d7a;
+        font-size: 10px;
+        min-width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+>>>>>>> muzamil_dev
         box-shadow: 0 4px 12px rgba(255, 45, 122, 0.35);
     }
 
     .login-btn {
+<<<<<<< HEAD
         background: #ff2d7a; color: #fff; border-radius: 8px;
         padding: 10px 28px; text-decoration: none; font-weight: 600;
         transition: 0.3s; display: inline-block; white-space: nowrap;
     }
     .login-btn:hover {
         background: #e91e63; color: #fff; transform: translateY(-2px);
+=======
+        background: #ff2d7a;
+        color: #fff;
+        border-radius: 8px;
+        padding: 10px 28px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .login-btn:hover {
+        background: #e91e63;
+        color: #fff;
+        transform: translateY(-2px);
+>>>>>>> muzamil_dev
     }
 
     .cart-btn-custom:hover,
@@ -352,20 +474,46 @@
         background: rgba(255, 45, 122, 0.18) !important;
         box-shadow: 0 10px 24px rgba(255, 45, 122, 0.20) !important;
     }
+<<<<<<< HEAD
     .cart-btn-custom:active,
     .wishlist-btn-custom:active { transform: scale(0.95); }
 
     /* Laptop / small desktop (992px – 1199px) */
     @media (min-width: 992px) and (max-width: 1199.98px) {
         .custom-navbar { padding: 10px 0; }
+=======
+
+    .cart-btn-custom:active,
+    .wishlist-btn-custom:active {
+        transform: scale(0.95);
+    }
+
+    /* ============================================
+       ✅ FIX: Laptop / small desktop (992px – 1199px)
+       Everything is scaled down so it fits in one row
+       ============================================ */
+    @media (min-width: 992px) and (max-width: 1199.98px) {
+        .custom-navbar { padding: 10px 0; }
+
+>>>>>>> muzamil_dev
         .brand-wrap { margin-right: 0.5rem; gap: 6px !important; }
         .brand-logo { width: 46px; height: 46px; }
         .brand-line { font-size: 21px; letter-spacing: 1px; }
         .brand-sub { font-size: 8px; letter-spacing: 2.5px; margin-top: 3px; }
+<<<<<<< HEAD
         .navbar-nav .nav-link { margin: 0 7px; font-size: 14px; }
         .nav-actions { gap: 8px; }
         .nav-icon-btn { width: 40px; height: 40px; font-size: 18px; }
         .nav-badge { font-size: 9px; min-width: 17px; height: 17px; }
+=======
+
+        .navbar-nav .nav-link { margin: 0 7px; font-size: 14px; }
+
+        .nav-actions { gap: 8px; }
+        .nav-icon-btn { width: 40px; height: 40px; font-size: 18px; }
+        .nav-badge { font-size: 9px; min-width: 17px; height: 17px; }
+
+>>>>>>> muzamil_dev
         .user-profile-dropdown {
             height: 40px !important;
             padding: 0 10px !important;
@@ -376,23 +524,39 @@
         .user-profile-dropdown .user-name-text { max-width: 55px !important; }
         .user-profile-dropdown .bi-person-circle { margin-right: 4px !important; }
         .user-profile-dropdown .bi-chevron-down { margin-left: 4px !important; }
+<<<<<<< HEAD
         .login-btn { padding: 8px 16px; font-size: 14px; }
     }
 
     /* Normal desktops (1200px – 1399px) */
+=======
+
+        .login-btn { padding: 8px 16px; font-size: 14px; }
+    }
+
+    /* Slightly tighter on normal desktops (1200px – 1399px) */
+>>>>>>> muzamil_dev
     @media (min-width: 1200px) and (max-width: 1399.98px) {
         .brand-line { font-size: 26px; }
         .navbar-nav .nav-link { margin: 0 9px; }
         .nav-actions { gap: 12px; }
     }
 
+<<<<<<< HEAD
     /* Mobile / tablet collapsed menu */
+=======
+    /* Mobile / tablet collapsed menu: keep things centered and neat */
+>>>>>>> muzamil_dev
     @media (max-width: 991.98px) {
         .navbar-nav .nav-link { margin: 0; padding: 10px 0; text-align: center; }
         .navbar-nav .nav-link::after { display: none; }
         .nav-actions { gap: 14px; flex-wrap: wrap; }
     }
 
+<<<<<<< HEAD
+=======
+    /* Small phones */
+>>>>>>> muzamil_dev
     @media (max-width: 575.98px) {
         .brand-logo { width: 44px; height: 44px; }
         .brand-line { font-size: 20px; letter-spacing: 1px; }
@@ -406,6 +570,7 @@
     }
 
     /* ============================================
+<<<<<<< HEAD
        CUSTOM USER DROPDOWN
        ============================================ */
     .custom-user-dropdown { position: relative; display: inline-block; }
@@ -425,6 +590,40 @@
         display: inline-block; max-width: 110px;
         overflow: hidden; text-overflow: ellipsis;
         white-space: nowrap; vertical-align: middle;
+=======
+       ✅ CUSTOM USER DROPDOWN
+       ============================================ */
+    .custom-user-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .user-profile-dropdown {
+        height: 52px;
+        padding: 0 16px;
+        border-radius: 14px !important;
+        background: rgba(255, 45, 122, 0.10) !important;
+        border: 1px solid rgba(255, 45, 122, 0.20) !important;
+        color: #ff2d7a !important;
+        font-weight: 600;
+        font-size: 15px;
+        display: inline-flex;
+        align-items: center;
+        transition: 0.3s ease;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 6px 20px rgba(255, 45, 122, 0.12);
+        white-space: nowrap;
+        max-width: 200px;
+    }
+
+    .user-profile-dropdown .user-name-text {
+        display: inline-block;
+        max-width: 110px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+>>>>>>> muzamil_dev
     }
 
     .user-profile-dropdown:hover,
@@ -436,6 +635,7 @@
     }
 
     .user-profile-dropdown:hover i,
+<<<<<<< HEAD
     .custom-user-dropdown.open .user-profile-dropdown i { color: #ffffff !important; }
 
     .custom-user-menu {
@@ -454,11 +654,62 @@
         text-decoration: none; transition: 0.2s ease; white-space: nowrap;
     }
     .custom-menu-item i { color: #9ca3af; font-size: 16px; flex-shrink: 0; }
+=======
+    .custom-user-dropdown.open .user-profile-dropdown i {
+        color: #ffffff !important;
+    }
+
+    /* Dropdown — JS sets position dynamically below the button */
+    .custom-user-menu {
+        display: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        min-width: 220px;
+        max-width: 260px;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 10px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.15);
+        z-index: 99999;
+        border: none;
+        overflow: visible;
+    }
+
+    .custom-user-dropdown.open .custom-user-menu {
+        display: block;
+    }
+
+    .custom-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        color: #374151;
+        font-weight: 500;
+        font-size: 14px;
+        text-decoration: none;
+        transition: 0.2s ease;
+        white-space: nowrap;
+    }
+
+    .custom-menu-item i {
+        color: #9ca3af;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+>>>>>>> muzamil_dev
     .custom-menu-item:hover {
         background: rgba(255, 45, 122, 0.10);
         color: #ff2d7a;
         transform: translateX(4px);
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> muzamil_dev
     .custom-menu-item:hover i { color: #ff2d7a; }
 
     .custom-menu-logout { color: #dc2626; }
@@ -470,7 +721,13 @@
     .custom-menu-logout:hover i { color: #dc2626; }
 
     .custom-menu-divider {
+<<<<<<< HEAD
         height: 1px; background: #f3f4f6; margin: 6px 4px;
+=======
+        height: 1px;
+        background: #f3f4f6;
+        margin: 6px 4px;
+>>>>>>> muzamil_dev
     }
 
     /* ============================================
@@ -478,13 +735,25 @@
        ============================================ */
     .cart-item-box {
         border: 1px solid rgba(0, 0, 0, 0.06);
+<<<<<<< HEAD
         border-radius: 18px; padding: 14px; margin-bottom: 15px;
         background: #fff; transition: 0.3s;
         display: flex; align-items: center; gap: 14px;
+=======
+        border-radius: 18px;
+        padding: 14px;
+        margin-bottom: 15px;
+        background: #fff;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+>>>>>>> muzamil_dev
     }
     .cart-item-box:hover { box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06); }
 
     .cart-qty-control {
+<<<<<<< HEAD
         display: flex; align-items: center; gap: 6px;
         background: #fff0f6; border-radius: 10px; padding: 2px 6px;
     }
@@ -499,6 +768,37 @@
     .cart-qty-control span {
         min-width: 28px; text-align: center;
         font-weight: 600; color: #111; font-size: 15px;
+=======
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: #fff0f6;
+        border-radius: 10px;
+        padding: 2px 6px;
+    }
+    .cart-qty-control button {
+        border: none;
+        background: transparent;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ff2d7a;
+        font-weight: bold;
+        font-size: 15px;
+        border-radius: 8px;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+    .cart-qty-control button:hover { background: rgba(255, 45, 122, 0.12); }
+    .cart-qty-control span {
+        min-width: 28px;
+        text-align: center;
+        font-weight: 600;
+        color: #111;
+        font-size: 15px;
+>>>>>>> muzamil_dev
     }
 
     @media (max-width: 480px) {
@@ -507,6 +807,7 @@
     }
 
     .add-cart-toast {
+<<<<<<< HEAD
         position: fixed; top: 110px; right: -420px;
         width: 340px; max-width: calc(100% - 30px);
         background: #fff; border-radius: 18px;
@@ -539,6 +840,59 @@
     .add-cart-toast .toast-close {
         border: none; background: transparent; color: #aaa;
         font-size: 20px; cursor: pointer; line-height: 1; align-self: flex-start;
+=======
+        position: fixed;
+        top: 110px;
+        right: -420px;
+        width: 340px;
+        max-width: calc(100% - 30px);
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        z-index: 999999;
+        transition: right 0.4s cubic-bezier(.25, 1, .5, 1), opacity 0.4s ease;
+        opacity: 0;
+        border-left: 5px solid #ff2d7a;
+    }
+    .add-cart-toast.show { right: 20px; opacity: 1; }
+    .add-cart-toast .toast-check {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(255, 45, 122, 0.12);
+        color: #ff2d7a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    .add-cart-toast img { width: 50px; height: 50px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
+    .add-cart-toast .toast-info { flex: 1; min-width: 0; }
+    .add-cart-toast .toast-title {
+        font-weight: 700;
+        color: #111;
+        font-size: 14px;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .add-cart-toast .toast-sub { font-size: 12px; color: #777; margin-bottom: 4px; }
+    .add-cart-toast .toast-cart-link { color: #ff2d7a; font-size: 12px; font-weight: 700; text-decoration: none; }
+    .add-cart-toast .toast-close {
+        border: none;
+        background: transparent;
+        color: #aaa;
+        font-size: 20px;
+        cursor: pointer;
+        line-height: 1;
+        align-self: flex-start;
+>>>>>>> muzamil_dev
     }
 
     @media (max-width: 480px) {
@@ -756,7 +1110,12 @@
     }
 
     // ============================================================
+<<<<<<< HEAD
     // CUSTOM DROPDOWN — fixed positioning calculated from button
+=======
+    // ✅ CUSTOM DROPDOWN — fixed positioning calculated from button
+    //    Always opens below the button and inside the viewport
+>>>>>>> muzamil_dev
     // ============================================================
     document.addEventListener('DOMContentLoaded', function () {
         const dropdown = document.getElementById('customUserDropdown');
