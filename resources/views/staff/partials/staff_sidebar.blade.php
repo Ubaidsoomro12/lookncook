@@ -13,16 +13,19 @@
     <div class="sidebar-brand">
         <i class="fa-solid fa-utensils"></i> Look n Cook
     </div>
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> muzamil_dev
     <ul class="nav flex-column sidebar-nav mt-3">
         <!-- Dashboard -->
         <li class="nav-item">
             <a href="{{ route('staff.dashboard') }}" class="nav-link {{ request()->routeIs('staff.dashboard') ? 'active' : '' }}">
                 <i class="fa-solid fa-gauge-high"></i> Dashboard
+            </a>
+        </li>
+
+                <!-- My Reviews -->
+        <li class="nav-item">
+            <a href="{{ route('staff.reviews.index') }}" class="nav-link {{ request()->routeIs('staff.reviews.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-star"></i> My Reviews
             </a>
         </li>
 
@@ -40,17 +43,6 @@
             </a>
         </li>
 
-<<<<<<< HEAD
-        <!-- manage leave -->
-        <li class="nav-item">
-            <a href="{{ route('staff.manage_leave.index') }}" class="nav-link">
-                <i class="fa-solid fa-message"></i> Leave
-            </a>
-        </li>
-        <!-- Payroll -->
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-=======
         <!-- Manage Leave -->
         <li class="nav-item">
             <a href="{{ route('staff.manage_leave.index') }}" class="nav-link {{ request()->routeIs('staff.manage_leave.*') ? 'active' : '' }}">
@@ -58,24 +50,20 @@
             </a>
         </li>
 
-        <!-- ⭐ Payroll -->
+        <!-- Payroll -->
         <li class="nav-item">
             <a href="{{ route('staff.payroll.index') }}" class="nav-link {{ request()->routeIs('staff.payroll.*') ? 'active' : '' }}">
->>>>>>> muzamil_dev
                 <i class="fa-solid fa-file-invoice"></i> Payroll
             </a>
         </li>
 
-<<<<<<< HEAD
-=======
-        <!-- ⭐ My Allowances -->
+        <!-- My Allowances -->
         <li class="nav-item">
             <a href="{{ route('staff.allowences.index') }}" class="nav-link {{ request()->routeIs('staff.allowences.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-wallet"></i> My Allowances
             </a>
         </li>
 
->>>>>>> muzamil_dev
         <!-- Messages -->
         <li class="nav-item">
             <a href="#" class="nav-link">

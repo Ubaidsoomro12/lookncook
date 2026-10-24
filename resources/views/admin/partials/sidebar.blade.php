@@ -43,12 +43,6 @@
                 <span>Dashboard</span>
             </a>
 
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> muzamil_dev
             <!-- MANAGEMENT SECTION -->
             <p
                 style="font-size:11px; font-weight:700; color:#4b5563; text-transform:uppercase; letter-spacing:0.05em; padding:0 8px; margin-top:16px; margin-bottom:8px;">
@@ -90,11 +84,6 @@
                     <span>Reviews Management</span>
                 </a>
 
-<<<<<<< HEAD
-                
-
-=======
->>>>>>> muzamil_dev
                 <a href="{{ route('admin.users.index') }}"
                     style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.users*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
                     <i class="fa-solid fa-users-gear"
@@ -123,8 +112,6 @@
                     <span>leaves Management</span>
                 </a>
 
-<<<<<<< HEAD
-=======
                 {{-- ⭐ PAYROLL DROPDOWN SECTION --}}
                 @php
                     $isPayrollGroupActive = request()->routeIs('admin.payrolls.*') ||
@@ -195,7 +182,6 @@
                     </div>
                 </details>
 
->>>>>>> muzamil_dev
                 <a href="{{ route('admin.branches.index') }}"
                     style="display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; transition:all 0.2s; text-decoration:none; {{ request()->routeIs('admin.branches*') ? 'background:rgba(255,45,122,0.1); color:#fff; border:1px solid rgba(255,45,122,0.3);' : 'color:#9ca3af;' }}">
                     <i class="fa-solid fa-user-shield"
@@ -383,8 +369,6 @@
         }
     }
 
-<<<<<<< HEAD
-=======
     /* Hide default details marker */
     summary::-webkit-details-marker {
         display: none;
@@ -398,7 +382,6 @@
         transform: rotate(180deg);
     }
 
->>>>>>> muzamil_dev
     /* Scrollbar styling */
     #adminSidebar>div:first-child::-webkit-scrollbar {
         width: 4px;

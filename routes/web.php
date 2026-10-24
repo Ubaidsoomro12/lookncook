@@ -24,15 +24,14 @@ use App\Http\Controllers\front\OrderController;
 use App\Http\Controllers\Staff\AttendanceController;
 use App\Http\Controllers\Staff\LeaveController;
 use App\Http\Controllers\pos\PosOrderController;
-<<<<<<< HEAD
-=======
+
 use App\Http\Controllers\backend\StaffPayrollController;
 use App\Http\Controllers\backend\PayrollTypeController;
 use App\Http\Controllers\backend\PayrollPaymentMethodController;
 use App\Http\Controllers\backend\PayrollAllowanceCompanyController;
 use App\Http\Controllers\backend\StaffPaymentController;
 use App\Http\Controllers\pos\ReservationController; // Added
->>>>>>> muzamil_dev
+
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
 Route::controller(PageController::class)->group(function () {
@@ -81,32 +80,34 @@ Route::middleware(['auth'])->group(function () {
         return view('pos.pos_dashboard');
     })->name('pos.dashboard');
 
-<<<<<<< HEAD
-=======
+
     // =============================================================
     // STAFF DASHBOARD
     // =============================================================
->>>>>>> muzamil_dev
+
     Route::get('/staff/dashboard', [StaffController::class, 'dashboard'])->name('staff.dashboard');
     Route::post('/staff/clock-in', [AttendanceController::class, 'clockIn'])->name('staff.clock-in');
     Route::post('/staff/clock-out', [AttendanceController::class, 'clockOut'])->name('staff.clock-out');
     Route::get('/staff/attendance', [AttendanceController::class, 'index'])->name('staff.attendance');
 
-<<<<<<< HEAD
+
     // ✅ NAYE ROUTES STAFF REVIEWS KE LIYE (Yahan add kiye hain)
     Route::get('/staff/customer-reviews', function () {
-        return view('pages.reviews'); 
+        $tables = \Illuminate\Support\Facades\DB::table('pos_tables')->where('is_active', 1)->get(); 
+        return view('pages.reviews', compact('tables')); 
     })->name('staff.customer.reviews');
     
     Route::post('/staff/customer-reviews', [ReviewController::class, 'staffReviewStore'])
         ->name('staff.reviews.store');
 
+    // NEW: Staff Read-only Reviews Page
+    Route::get('/staff/my-reviews', [ReviewController::class, 'myStaffReviews'])->name('staff.reviews.index');
 
-=======
+
     // =============================================================
     // STAFF MANAGE LEAVE
     // =============================================================
->>>>>>> muzamil_dev
+
     Route::prefix('staff/manage-leave')->name('staff.manage_leave.')->controller(LeaveController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
@@ -115,8 +116,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/update/{id}', 'update')->name('update');
     });
 
-<<<<<<< HEAD
-=======
+
     // =============================================================
     // STAFF PAYROLL
     // =============================================================
@@ -137,7 +137,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/expense/{id}',        'deleteExpense')->name('expense.destroy');
     });
 
->>>>>>> muzamil_dev
+
     Route::get('/payment', [CheckoutController::class, 'index'])->name('payment');
 
     /* Admin Panel */
@@ -252,8 +252,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/assign', 'assignLeave')->name('assign');
         });
 
-<<<<<<< HEAD
-=======
+
         Route::prefix('payrolls')->name('payrolls.')->controller(StaffPayrollController::class)->group(function () {
             Route::get('/',                  'index')->name('index');
             Route::get('/create',            'create')->name('create');
@@ -321,8 +320,10 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/get-payrolls/{staffId}', 'getPayrolls')->name('get-payrolls');
         });
 
->>>>>>> muzamil_dev
+
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+        Route::get('/reviews/staff', [ReviewController::class, 'staffReviewsIndex'])->name('reviews.staff'); // NEW
+        Route::post('/reviews/{id}/update-rating', [ReviewController::class, 'updateStaffRating'])->name('reviews.update-rating'); // NEW ROUTE FOR SLIDER
         Route::post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
         Route::post('/reviews/{id}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
         Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
@@ -335,11 +336,11 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // =============================================================
-<<<<<<< HEAD
+
     // ✅ POS TABLES ROUTES — /pos/tables
-=======
+
     // POS TABLES ROUTES
->>>>>>> muzamil_dev
+
     // =============================================================
     Route::prefix('pos/tables')->name('pos.tables.')->controller(TableController::class)->group(function () {
         Route::get('/', 'index')->name('index');
@@ -357,10 +358,7 @@ Route::middleware(['auth'])->group(function () {
     // POS ORDERS ROUTES
     // =============================================================
     Route::prefix('pos/orders')->name('pos.orders.')->controller(PosOrderController::class)->group(function () {
-<<<<<<< HEAD
 
-=======
->>>>>>> muzamil_dev
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/', 'store')->name('store');
@@ -372,7 +370,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}/items/{itemId}', 'updateItem')->name('items.update');
         Route::delete('/{id}/items/{itemId}', 'removeItem')->name('items.remove');
         Route::post('/{id}/charges', 'applyCharges')->name('charges');
-<<<<<<< HEAD
+
 
         // 🧾 Print Receipt (opens new window with 2 receipts)
         Route::get('/{id}/print-receipt', 'printReceipt')->name('print.receipt');
@@ -381,10 +379,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/receipt-data', 'receiptData')->name('receipt.data');
     });
 
-=======
-        Route::get('/{id}/print-receipt', 'printReceipt')->name('print.receipt');
-        Route::get('/{id}/receipt-data', 'receiptData')->name('receipt.data');
-    });
+
+    //     Route::get('/{id}/print-receipt', 'printReceipt')->name('print.receipt');
+    //     Route::get('/{id}/receipt-data', 'receiptData')->name('receipt.data');
+    // });
 
     // =============================================================
     // POS RESERVATIONS ROUTES (NEW)
@@ -400,7 +398,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/ajax/foods/{categoryId}', 'getFoods')->name('foods');
     });
 
->>>>>>> muzamil_dev
+
     Route::get('pos/ajax/foods/{categoryId}', [PosOrderController::class, 'foodsByCategory'])
         ->name('pos.foods.by-category');
 
@@ -412,10 +410,9 @@ Route::middleware(['auth'])->group(function () {
 // PAYMENT & CHECKOUT ROUTES
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
-<<<<<<< HEAD
 Route::get('/order/confirmation/{order}', [CheckoutController::class, 'orderSuccess'])->name('order.success');
 
-
+     
     // ✅ NAYE ROUTES STAFF REVIEWS KE LIYE
     Route::get('/staff/customer-reviews', function () {
         // pos_tables table se active tables fetch kar rahe hain
@@ -425,6 +422,5 @@ Route::get('/order/confirmation/{order}', [CheckoutController::class, 'orderSucc
     
     Route::post('/staff/customer-reviews', [ReviewController::class, 'staffReviewStore'])
         ->name('staff.reviews.store');
-=======
+
 Route::get('/order/confirmation/{order}', [CheckoutController::class, 'orderSuccess'])->name('order.success');
->>>>>>> muzamil_dev

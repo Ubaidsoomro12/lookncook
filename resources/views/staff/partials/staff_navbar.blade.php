@@ -6,9 +6,8 @@
         </button>
         <h5 class="mb-0" style="font-weight:600;">@yield('page-title', 'Staff Dashboard')</h5>
     </div>
-<<<<<<< HEAD
 
-    <!-- User Dropdown Block (matching admin panel) -->
+    <!-- User Dropdown Block -->
     <div class="dash-user-dropdown">
         <button id="profileDropdownBtn" class="dash-profile-btn">
             <div class="dash-avatar">
@@ -36,9 +35,9 @@
                 <i class="fa-solid fa-globe"></i> Go to Website
             </a>
 
-            {{-- ✅ Staff & Customer Reviews (only for staff roles 3–8) --}}
             @php
-                $staffRoles = [3, 4, 5, 6, 7, 8];
+                // Only actual staff (4-8), excludes Admin (1) and Manager (3)
+                $staffRoles = [4, 5, 6, 7, 8];
                 $isStaff    = in_array(auth()->user()->role_id, $staffRoles);
             @endphp
             @if($isStaff)
@@ -161,7 +160,6 @@
         color: #dc2626;
     }
 
-    /* ✅ Stylish bold look for Staff & Customer Reviews */
     .dash-dropdown-reviews {
         font-weight: 700;
         color: #ff2d7a;
@@ -178,7 +176,6 @@
         color: #e91e63;
     }
 
-    /* Responsive */
     @media (min-width: 640px) {
         .dash-welcome-text {
             display: inline-block;
@@ -186,29 +183,6 @@
     }
 </style>
 
-=======
-    <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
-        <span style="font-weight:600; color:#1f2937;">
-            <i class="fa-regular fa-circle-user me-2"></i>
-            {{ auth()->user()->name }}
-            <small style="font-weight:400; color:#6b7280;">
-                @php
-                    $roleLabels = [1=>'Admin',2=>'User',3=>'Manager',4=>'Waiter',5=>'Chef',6=>'Cashier',7=>'Cleaner',8=>'Delivery Rider'];
-                    $roleName = $roleLabels[auth()->user()->role_id] ?? 'Staff';
-                @endphp
-                ({{ $roleName }})
-            </small>
-        </span>
-        <a href="#" class="btn btn-sm btn-outline-secondary" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-            <i class="fa-solid fa-sign-out-alt"></i> Logout
-        </a>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
-    </div>
-</nav>
-
->>>>>>> muzamil_dev
 <script>
     // Show mobile toggle button on small screens
     document.addEventListener('DOMContentLoaded', function() {
@@ -223,7 +197,6 @@
                 toggleBtn.style.display = 'none';
             }
         });
-<<<<<<< HEAD
 
         // Profile Dropdown Toggle
         const profileBtn = document.getElementById('profileDropdownBtn');
@@ -242,7 +215,5 @@
                 }
             });
         }
-=======
->>>>>>> muzamil_dev
     });
 </script>

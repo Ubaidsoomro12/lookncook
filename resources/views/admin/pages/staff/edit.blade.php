@@ -1,16 +1,16 @@
 @extends('admin.layouts.master')
-<<<<<<< HEAD
+
 @section('title', 'Edit Staff')
 @section('content')
 <style>
     /* ✅ Fix 1: Action buttons alignment */
-=======
+
 
 @section('title', 'Edit Staff')
 
 @section('content')
-<style>
->>>>>>> muzamil_dev
+
+
     .staff-form-actions {
         display: flex;
         flex-wrap: wrap;
@@ -25,7 +25,7 @@
         gap: 8px;
     }
     @media (max-width: 480px) {
-<<<<<<< HEAD
+
         .staff-form-actions {
             flex-direction: column;
         }
@@ -76,7 +76,7 @@
             margin-left: 0;
             margin-top: 6px;
         }
-=======
+
         .staff-form-actions { flex-direction: column; }
         .staff-form-actions .btn { width: 100%; }
     }
@@ -93,7 +93,7 @@
     .staff-linked-alert .staff-linked-body .email { color: #0c4a6e; word-break: break-all; }
     .staff-linked-alert .staff-linked-hint {
         display: block; margin-top: 4px; font-size: 12px; color: #6b7280;
->>>>>>> muzamil_dev
+
     }
 </style>
 
@@ -116,16 +116,16 @@
             <form action="{{ route('admin.staff.update', $staff->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-<<<<<<< HEAD
+
 
                 <!-- Hidden user_id (cannot be changed here) -->
                 <input type="hidden" name="user_id" value="{{ $staff->user_id }}">
 
                 <!-- ✅ FIXED ALERT: proper alignment for icon + name + email + hint -->
-=======
+
                 <input type="hidden" name="user_id" value="{{ $staff->user_id }}">
 
->>>>>>> muzamil_dev
+
                 <div class="alert alert-info staff-linked-alert">
                     <i class="fa-solid fa-user staff-linked-icon"></i>
                     <div class="staff-linked-body">
@@ -141,22 +141,22 @@
                 </div>
 
                 <div class="row g-4">
-<<<<<<< HEAD
+
                     <!-- Basic Information -->
                     <div class="col-12"><h5 class="border-bottom pb-2">Basic Information</h5></div>
                     <div class="col-md-6">
                         <label class="form-label">Employee ID <span class="text-muted">(optional)</span></label>
-=======
+
 
                     <div class="col-12"><h5 class="border-bottom pb-2">Basic Information</h5></div>
                     <div class="col-md-6">
                         <label class="form-label">Employee ID</label>
->>>>>>> muzamil_dev
+
                         <input type="text" name="employee_id" class="form-control" value="{{ old('employee_id', $staff->employee_id) }}">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Full Name <span class="text-danger">*</span></label>
-<<<<<<< HEAD
+
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $staff->name) }}" required>
                         @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
@@ -174,7 +174,6 @@
                         <label class="form-label">CNIC <span class="text-muted">(optional)</span></label>
                         <input type="text" name="cnic" class="form-control @error('cnic') is-invalid @enderror" value="{{ old('cnic', $staff->cnic) }}">
                         @error('cnic')<div class="invalid-feedback">{{ $message }}</div>@enderror
-=======
                         <input type="text" name="name" class="form-control" value="{{ old('name', $staff->name) }}" required>
                     </div>
                     <div class="col-md-6">
@@ -188,21 +187,21 @@
                     <div class="col-md-6">
                         <label class="form-label">CNIC</label>
                         <input type="text" name="cnic" class="form-control" value="{{ old('cnic', $staff->cnic) }}">
->>>>>>> muzamil_dev
+
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Gender</label>
                         <select name="gender" class="form-select">
                             <option value="">Select</option>
-<<<<<<< HEAD
+
                             <option value="Male" {{ old('gender', $staff->gender)=='Male'?'selected':'' }}>Male</option>
                             <option value="Female" {{ old('gender', $staff->gender)=='Female'?'selected':'' }}>Female</option>
                             <option value="Other" {{ old('gender', $staff->gender)=='Other'?'selected':'' }}>Other</option>
-=======
+
                             @foreach(['Male','Female','Other'] as $g)
                                 <option value="{{ $g }}" {{ old('gender', $staff->gender)==$g?'selected':'' }}>{{ $g }}</option>
                             @endforeach
->>>>>>> muzamil_dev
+
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -210,10 +209,8 @@
                         <input type="date" name="date_of_birth" class="form-control" value="{{ old('date_of_birth', $staff->date_of_birth?->format('Y-m-d')) }}">
                     </div>
 
-<<<<<<< HEAD
-                    <!-- Emergency Contact -->
-=======
->>>>>>> muzamil_dev
+
+
                     <div class="col-12 mt-2"><h5 class="border-bottom pb-2">Emergency Contact</h5></div>
                     <div class="col-md-6">
                         <label class="form-label">Contact Name</label>
@@ -233,10 +230,7 @@
                         </select>
                     </div>
 
-<<<<<<< HEAD
-                    <!-- Images -->
-=======
->>>>>>> muzamil_dev
+
                     <div class="col-12 mt-2"><h5 class="border-bottom pb-2">Images & Documents</h5></div>
                     @foreach(['image'=>'Profile Image','cnic_front_image'=>'CNIC Front','cnic_back_image'=>'CNIC Back','cv_image'=>'CV/Resume','appointment_letter_image'=>'Appointment Letter'] as $field=>$label)
                         <div class="col-md-6">
@@ -251,7 +245,7 @@
                                     <span class="small text-muted text-truncate" style="max-width:150px;">{{ basename($staff->$field) }}</span>
                                 </div>
                             @endif
-<<<<<<< HEAD
+
                             <input type="file" name="{{ $field }}" class="form-control @error($field) is-invalid @enderror" accept="{{ $field=='cv_image'||$field=='appointment_letter_image' ? '.pdf,.png,.jpeg,.jpg,.jfif' : 'image/*' }}">
                             <div class="form-text">Leave empty to keep current file.</div>
                             @error($field)<div class="invalid-feedback">{{ $message }}</div>@enderror
@@ -275,7 +269,7 @@
                             <option value="Contract" {{ old('employee_type', $staff->employee_type)=='Contract'?'selected':'' }}>Contract</option>
                         </select>
                         @error('employee_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
-=======
+
                             <input type="file" name="{{ $field }}" class="form-control" accept="{{ in_array($field,['cv_image','appointment_letter_image']) ? '.pdf,.png,.jpeg,.jpg,.jfif' : 'image/*' }}">
                             <div class="form-text">Leave empty to keep current file.</div>
                         </div>
@@ -294,7 +288,7 @@
                                 <option value="{{ $t }}" {{ old('employee_type', $staff->employee_type)==$t?'selected':'' }}>{{ $t }}</option>
                             @endforeach
                         </select>
->>>>>>> muzamil_dev
+
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Department</label>
@@ -306,13 +300,13 @@
                         </select>
                     </div>
                     <div class="col-md-6">
-<<<<<<< HEAD
+
                         <label class="form-label">Designation (Job Title)</label>
                         <input type="text" name="designation" class="form-control" value="{{ old('designation', $staff->designation) }}" placeholder="e.g. Senior Waiter">
-=======
+
                         <label class="form-label">Designation</label>
                         <input type="text" name="designation" class="form-control" value="{{ old('designation', $staff->designation) }}">
->>>>>>> muzamil_dev
+
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Branch</label>
@@ -327,7 +321,7 @@
                         <label class="form-label">Work Shift</label>
                         <select name="work_shift" class="form-select">
                             <option value="">Select</option>
-<<<<<<< HEAD
+
                             <option value="Morning" {{ old('work_shift', $staff->work_shift)=='Morning'?'selected':'' }}>Morning</option>
                             <option value="Evening" {{ old('work_shift', $staff->work_shift)=='Evening'?'selected':'' }}>Evening</option>
                             <option value="Night" {{ old('work_shift', $staff->work_shift)=='Night'?'selected':'' }}>Night</option>
@@ -346,7 +340,7 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Reporting Manager <span class="text-muted">(optional)</span></label>
-=======
+
                             @foreach(['Morning','Evening','Night'] as $ws)
                                 <option value="{{ $ws }}" {{ old('work_shift', $staff->work_shift)==$ws?'selected':'' }}>{{ $ws }}</option>
                             @endforeach
@@ -362,7 +356,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Reporting Manager</label>
->>>>>>> muzamil_dev
+
                         <select name="reporting_manager_id" class="form-select">
                             <option value="">None</option>
                             @foreach($managers as $m)
@@ -371,7 +365,7 @@
                         </select>
                     </div>
 
-<<<<<<< HEAD
+
                     <!-- Salary -->
                     <div class="col-12 mt-2"><h5 class="border-bottom pb-2">Salary & Payroll</h5></div>
                     <div class="col-md-6">
@@ -392,7 +386,7 @@
                             <option value="Commission" {{ old('salary_type', $staff->salary_type)=='Commission'?'selected':'' }}>Commission</option>
                         </select>
                         @error('salary_type')<div class="invalid-feedback">{{ $message }}</div>@enderror
-=======
+
                     <div class="col-12 mt-2"><h5 class="border-bottom pb-2">Salary & Payroll</h5></div>
                     <div class="col-md-6">
                         <label class="form-label">Hire Date <span class="text-danger">*</span></label>
@@ -409,13 +403,12 @@
                                 <option value="{{ $st }}" {{ old('salary_type', $staff->salary_type)==$st?'selected':'' }}>{{ $st }}</option>
                             @endforeach
                         </select>
->>>>>>> muzamil_dev
+
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Hourly Rate (if applicable)</label>
                         <input type="number" step="0.01" name="hourly_rate" class="form-control" value="{{ old('hourly_rate', $staff->hourly_rate) }}">
                     </div>
-<<<<<<< HEAD
                     <div class="col-md-6">
                         <label class="form-label">Bank Account No.</label>
                         <input type="text" name="bank_account_no" class="form-control" value="{{ old('bank_account_no', $staff->bank_account_no) }}">
@@ -437,7 +430,7 @@
                     </div>
 
                     <!-- ✅ FIXED Submit Buttons -->
-=======
+
 
                     {{-- ⭐ PAYMENT METHOD --}}
                     <div class="col-md-6">
@@ -484,7 +477,7 @@
                         </select>
                     </div>
 
->>>>>>> muzamil_dev
+
                     <div class="col-12">
                         <div class="staff-form-actions">
                             <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">Update Staff</button>
@@ -496,8 +489,7 @@
         </div>
     </div>
 </div>
-<<<<<<< HEAD
-=======
+
 
 <script>
 (function(){

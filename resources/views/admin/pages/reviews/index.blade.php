@@ -445,22 +445,28 @@
                 <small>Manage customer reviews and feedback</small>
             </h2>
         </div>
-        <div class="stats-badge-group">
-            <span class="stat-badge">
-                <span class="dot dot-pending"></span>
-                Pending: <span class="count">{{ $reviews->where('status', 'pending')->count() }}</span>
-            </span>
-            <span class="stat-badge">
-                <span class="dot dot-approved"></span>
-                Approved: <span class="count">{{ $reviews->where('status', 'approved')->count() }}</span>
-            </span>
-            <span class="stat-badge">
-                <span class="dot dot-rejected"></span>
-                Rejected: <span class="count">{{ $reviews->where('status', 'rejected')->count() }}</span>
-            </span>
-            <span class="stat-badge">
-                📊 Total: <span class="count">{{ $reviews->total() }}</span>
-            </span>
+        
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ route('admin.reviews.staff') }}" class="btn-action" style="background:#ff2d7a; color:white; padding:10px 20px; font-size:14px; border-radius:8px; text-decoration:none; font-weight:600; box-shadow: 0 4px 12px rgba(255,45,122,0.25);">
+                ⭐ Staff Reviews
+            </a>
+            <div class="stats-badge-group">
+                <span class="stat-badge">
+                    <span class="dot dot-pending"></span>
+                    Pending: <span class="count">{{ $reviews->where('status', 'pending')->count() }}</span>
+                </span>
+                <span class="stat-badge">
+                    <span class="dot dot-approved"></span>
+                    Approved: <span class="count">{{ $reviews->where('status', 'approved')->count() }}</span>
+                </span>
+                <span class="stat-badge">
+                    <span class="dot dot-rejected"></span>
+                    Rejected: <span class="count">{{ $reviews->where('status', 'rejected')->count() }}</span>
+                </span>
+                <span class="stat-badge">
+                    📊 Total: <span class="count">{{ $reviews->total() }}</span>
+                </span>
+            </div>
         </div>
     </div>
 
