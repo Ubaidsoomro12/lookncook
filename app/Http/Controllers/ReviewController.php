@@ -187,6 +187,23 @@ class ReviewController extends Controller
         }
     }
 
+    // Admin: Delete ALL reviews
+    public function destroyAll()
+    {
+        try {
+            Review::whereNotNull('staff_id')->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'All reviews deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete all reviews.'
+            ], 500);
+        }
+    }
+
 
     // ✅ Staff: Submit Review (Table ID ke sath)
     public function staffReviewStore(Request $request)

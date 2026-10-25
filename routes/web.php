@@ -30,7 +30,9 @@ use App\Http\Controllers\backend\PayrollTypeController;
 use App\Http\Controllers\backend\PayrollPaymentMethodController;
 use App\Http\Controllers\backend\PayrollAllowanceCompanyController;
 use App\Http\Controllers\backend\StaffPaymentController;
-use App\Http\Controllers\pos\ReservationController; // Added
+use App\Http\Controllers\pos\ReservationController;
+use App\Http\Controllers\backend\AdminController; 
+use App\Http\Controllers\pos\PosDashboardController;
 
 
 //------------------------------------------ UI Pages Routes start here -------------------------------------------------
@@ -72,13 +74,8 @@ Route::middleware(['auth'])->group(function () {
                 </div>';
     })->name('dashboard');
 
-    // POS Dashboard for Manager
-    Route::get('/pos/dashboard', function () {
-        if (auth()->user()->role_id != 3) {
-            return redirect('/')->withErrors(['email' => 'You do not have manager privileges.']);
-        }
-        return view('pos.pos_dashboard');
-    })->name('pos.dashboard');
+    // ✅ FIXED: Pointing to PosDashboardController instead of Closure
+    Route::get('/pos/dashboard', [PosDashboardController::class, 'dashboard'])->name('pos.dashboard');
 
 
     // =============================================================
@@ -143,12 +140,8 @@ Route::middleware(['auth'])->group(function () {
     /* Admin Panel */
     Route::prefix('admin')->name('admin.')->group(function () {
 
-        Route::get('/dashboard', function () {
-            if (auth()->user()->role_id != 1) {
-                return redirect('/')->withErrors(['email' => 'You do not have administrative privileges to access this area.']);
-            }
-            return view('admin.dashboard');
-        })->name('dashboard');
+        // ✅ FIXED: Pointing to AdminController instead of Closure
+        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
         Route::prefix('staff')->name('staff.')->controller(StaffController::class)->group(function () {
             Route::get('/', 'index')->name('index');
@@ -322,8 +315,13 @@ Route::middleware(['auth'])->group(function () {
 
 
         Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
-        Route::get('/reviews/staff', [ReviewController::class, 'staffReviewsIndex'])->name('reviews.staff'); // NEW
-        Route::post('/reviews/{id}/update-rating', [ReviewController::class, 'updateStaffRating'])->name('reviews.update-rating'); // NEW ROUTE FOR SLIDER
+        Route::get('/reviews/staff', [ReviewController::class, 'staffReviewsIndex'])->name('reviews.staff');
+        
+        // ✅ NEW DELETE ALL ROUTES
+        Route::delete('/reviews/delete-all', [ReviewController::class, 'destroyAll'])->name('reviews.destroy-all');
+        Route::delete('/reviews/staff/delete-all', [ReviewController::class, 'destroyAll'])->name('reviews.staff.destroy-all');
+        
+        Route::post('/reviews/{id}/update-rating', [ReviewController::class, 'updateStaffRating'])->name('reviews.update-rating');
         Route::post('/reviews/{id}/approve', [ReviewController::class, 'approve'])->name('reviews.approve');
         Route::post('/reviews/{id}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
         Route::delete('/reviews/{id}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
@@ -360,6 +358,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('pos/orders')->name('pos.orders.')->controller(PosOrderController::class)->group(function () {
 
         Route::get('/', 'index')->name('index');
+        Route::get('/all', 'allOrders')->name('all'); // ✅ NEW ALL ORDERS ROUTE
         Route::get('/create', 'create')->name('create');
         Route::post('/', 'store')->name('store');
         Route::get('/{id}/edit', 'edit')->name('edit');
@@ -371,7 +370,6 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{id}/items/{itemId}', 'removeItem')->name('items.remove');
         Route::post('/{id}/charges', 'applyCharges')->name('charges');
 
-
         // 🧾 Print Receipt (opens new window with 2 receipts)
         Route::get('/{id}/print-receipt', 'printReceipt')->name('print.receipt');
 
@@ -380,10 +378,6 @@ Route::middleware(['auth'])->group(function () {
     });
 
 
-    //     Route::get('/{id}/print-receipt', 'printReceipt')->name('print.receipt');
-    //     Route::get('/{id}/receipt-data', 'receiptData')->name('receipt.data');
-    // });
-
     // =============================================================
     // POS RESERVATIONS ROUTES (NEW)
     // =============================================================
@@ -391,8 +385,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/create', 'create')->name('create');
         Route::post('/store', 'store')->name('store');
-        Route::get('/{id}/edit', 'edit')->name('edit');   // Added Edit
-        Route::put('/{id}', 'update')->name('update');    // Added Update
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
         Route::get('/{id}/print', 'print')->name('print');
         Route::delete('/{id}', 'destroy')->name('destroy');
         Route::get('/ajax/foods/{categoryId}', 'getFoods')->name('foods');
@@ -415,7 +409,6 @@ Route::get('/order/confirmation/{order}', [CheckoutController::class, 'orderSucc
      
     // ✅ NAYE ROUTES STAFF REVIEWS KE LIYE
     Route::get('/staff/customer-reviews', function () {
-        // pos_tables table se active tables fetch kar rahe hain
         $tables = \Illuminate\Support\Facades\DB::table('pos_tables')->where('is_active', 1)->get(); 
         return view('pages.reviews', compact('tables')); 
     })->name('staff.customer.reviews');

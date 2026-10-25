@@ -28,7 +28,7 @@ class PosOrderController extends Controller
     }
 
     /* ============================================================
-       INDEX
+       INDEX (✅ Excludes cancelled orders from active view)
     ============================================================ */
     public function index(Request $request)
     {
@@ -57,6 +57,48 @@ class PosOrderController extends Controller
         ];
 
         return view('pos.pages.orders.index', compact('orders', 'tables', 'waiters', 'categories', 'stats'));
+    }
+
+    /* ============================================================
+       ALL ORDERS (History) - ✅ Supports AJAX
+    ============================================================ */
+    public function allOrders(Request $request)
+    {
+        $query = PosOrder::with(['table', 'waiter', 'items'])
+            ->orderBy('created_at', 'desc');
+
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function ($q) use ($s) {
+                $q->where('order_number', 'like', "%$s%")
+                  ->orWhere('customer_name', 'like', "%$s%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        $orders = $query->paginate(15);
+        
+        $stats = [
+            'completed' => PosOrder::where('status', 'completed')->count(),
+            'cancelled' => PosOrder::where('status', 'cancelled')->count(),
+            'total_today' => PosOrder::whereDate('created_at', today())->count(),
+        ];
+
+        // ✅ AJAX Response
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('pos.pages.orders.partials.all_orders_table', compact('orders'))->render()
+            ]);
+        }
+
+        return view('pos.pages.orders.all_orders', compact('orders', 'stats'));
     }
 
     /* ============================================================
@@ -328,9 +370,6 @@ class PosOrderController extends Controller
 
     /* ============================================================
        PRINT RECEIPT — opens a new window with 2 receipts
-       - Customer copy on page 1
-       - Department copy on page 2
-       Browser's Ctrl+P handles the Windows Print dialog.
     ============================================================ */
     public function printReceipt($id)
     {
@@ -340,10 +379,6 @@ class PosOrderController extends Controller
 
     /* ============================================================
        RECEIPT DATA — Single PDF with BOTH receipts
-       - Page 1: Customer Receipt
-       - Page 2: Department Receipt
-       - Saves to D:\lookncook recipts
-       - Returns base64 JSON (bypasses IDM)
     ============================================================ */
     public function receiptData(Request $request, $id)
     {

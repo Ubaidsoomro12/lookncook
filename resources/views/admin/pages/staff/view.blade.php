@@ -2,10 +2,6 @@
 
 @section('title', 'View Staff')
 
-
-@section('title', 'View Staff')
-
-
 @section('content')
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -15,15 +11,6 @@
             <a href="{{ route('admin.staff.index') }}" class="btn btn-outline-secondary">Back</a>
         </div>
     </div>
-
-    @php $roles = [1=>'Admin',2=>'User',3=>'Manager',4=>'Waiter',5=>'Chef',6=>'Cashier',7=>'Cleaner',8=>'Delivery Rider']; @endphp
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Personal Details</h5>
-                    <table class="table table-borderless">
-
 
     @php
         $roles = [1=>'Admin',2=>'User',3=>'Manager',4=>'Waiter',5=>'Chef',6=>'Cashier',7=>'Cleaner',8=>'Delivery Rider'];
@@ -54,13 +41,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">Employment</h5>
-                    <table class="table table-borderless">
-
 
         {{-- EMPLOYMENT --}}
         <div class="col-md-6">
@@ -113,10 +93,6 @@
                             <i class="fa-solid fa-credit-card me-2" style="color:#ff2d7a;"></i>
                             Payment Details
                         </h5>
-                        <a href="{{ route('admin.payroll-payment-methods.index') }}" target="_blank"
-                           class="small text-decoration-none">
-                            <i class="fa-solid fa-gear"></i> Manage Methods
-                        </a>
                     </div>
 
                     @if(!$staff->paymentMethod)
@@ -178,17 +154,6 @@
                 <div class="card-body">
                     <h5 class="card-title">Documents</h5>
                     <div class="row g-3">
-
-                        @foreach(['image'=>'Profile','cnic_front_image'=>'CNIC Front','cnic_back_image'=>'CNIC Back','cv_image'=>'CV','appointment_letter_image'=>'Appointment Letter'] as $field=>$label)
-                            @if($staff->$field)
-                                <div class="col-md-2">
-                                    <a href="{{ asset($staff->$field) }}" target="_blank" class="d-block text-center">
-                                        @if(str_contains($field, 'image') || str_contains($field, 'cnic'))
-                                            <img src="{{ asset($staff->$field) }}" class="img-thumbnail" style="height:80px;object-fit:cover;">
-                                        @else
-                                            <i class="fa-solid fa-file-pdf fs-1 text-danger"></i>
-                                        @endif
-                                        <span class="small d-block">{{ $label }}</span>
 
                         @php
                             $hasDoc = false;

@@ -117,15 +117,12 @@ class StaffController extends Controller
         $branches = Branch::all();
         $managers = Staff::where('status', 'Active')->get();
 
-        return view('admin.pages.staff.create', compact('branches', 'managers'));
-
         $paymentMethods = \App\Models\PayrollPaymentMethod::active()
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
 
         return view('admin.pages.staff.create', compact('branches', 'managers', 'paymentMethods'));
-
     }
 
     private function validateShiftTimes($data)
@@ -215,12 +212,9 @@ class StaffController extends Controller
 
         $data = $request->all();
 
-
-        // Cast empty array to null so DB gets NULL, not empty JSON
         if (empty($data['payment_details'])) {
             $data['payment_details'] = null;
         }
-
 
         foreach (['image', 'cnic_front_image', 'cnic_back_image', 'cv_image', 'appointment_letter_image'] as $field) {
             if ($request->hasFile($field)) {
@@ -240,15 +234,13 @@ class StaffController extends Controller
         $branches = Branch::all();
         $managers = Staff::where('id', '!=', $id)->where('status', 'Active')->get();
 
-        return view('admin.pages.staff.edit', compact('staff', 'branches', 'managers'));
-
+        // ✅ FIXED: Fetching payment methods BEFORE the return statement
         $paymentMethods = \App\Models\PayrollPaymentMethod::active()
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();
 
         return view('admin.pages.staff.edit', compact('staff', 'branches', 'managers', 'paymentMethods'));
-
     }
 
     public function update(Request $request, $id)
@@ -306,12 +298,9 @@ class StaffController extends Controller
 
         $data = $request->except(['_token', '_method']);
 
-
-        // Cast empty array to null so DB gets NULL, not empty JSON
         if (empty($data['payment_details'])) {
             $data['payment_details'] = null;
         }
-
 
         foreach (['image', 'cnic_front_image', 'cnic_back_image', 'cv_image', 'appointment_letter_image'] as $field) {
             if ($request->hasFile($field)) {

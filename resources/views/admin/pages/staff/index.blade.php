@@ -38,6 +38,45 @@
             justify-content: center;
         }
     }
+
+    /* ✅ Custom Delete Modal Styles */
+    .delete-modal-content {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+    }
+    .delete-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        background: #fee2e2;
+        color: #ef4444;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        animation: pulseIcon 2s infinite;
+    }
+    @keyframes pulseIcon {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+        70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    .delete-modal-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: #111827;
+        margin-bottom: 8px;
+    }
+    .delete-modal-text {
+        color: #6b7280;
+        font-size: 14px;
+        margin-bottom: 24px;
+    }
+    .delete-modal-text strong {
+        color: #111827;
+    }
 </style>
 
 <div class="container-fluid py-4">
@@ -124,11 +163,46 @@
     </div>
 </div>
 
+<!-- ✅ Custom Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content delete-modal-content">
+            <div class="modal-body text-center p-5">
+                <div class="delete-icon-wrapper">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h5 class="delete-modal-title">Delete Staff Member?</h5>
+                <p class="delete-modal-text">
+                    Are you sure you want to delete <strong id="deleteStaffName">this staff member</strong>? <br>
+                    This action cannot be undone.
+                </p>
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger rounded-pill px-4" id="confirmDeleteBtn">
+                        <i class="fa-solid fa-trash-can me-1"></i> Yes, Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('staffSearch');
     const tbody = document.getElementById('staffTableBody');
+    
+    // Delete Modal Variables
+    const deleteModalElement = document.getElementById('deleteModal');
+    const deleteModal = new bootstrap.Modal(deleteModalElement);
+    const deleteStaffName = document.getElementById('deleteStaffName');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    
+    let deleteUrl = '';
+    let deleteRowId = '';
     let timer;
+
+    // --- Search Logic ---
     searchInput.addEventListener('input', function() {
         clearTimeout(timer);
         const q = this.value.trim();
@@ -162,39 +236,90 @@ document.addEventListener('DOMContentLoaded', function() {
                             </td>
                         </tr>
                     `).join('');
-                    document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDelete));
+                    // Reattach listeners after ajax render
+                    attachDeleteListeners();
                 })
                 .catch(() => {});
         }, 300);
     });
 
-    function handleDelete(e) {
-        const btn = e.currentTarget;
-        const id = btn.dataset.id;
-        const url = btn.dataset.url;
-        const name = btn.dataset.name || 'this staff';
-        if (confirm(`Are you sure you want to delete "${name}"?`)) {
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const row = document.getElementById('staff-row-' + id);
-                    if (row) row.remove();
-                    alert('Deleted successfully!');
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(() => alert('Something went wrong.'));
-        }
+    // --- Delete Logic ---
+    function attachDeleteListeners() {
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                deleteUrl = this.dataset.url;
+                deleteRowId = this.dataset.id;
+                const staffName = this.dataset.name || 'this staff member';
+                
+                // Set the name in the modal
+                deleteStaffName.textContent = staffName;
+                
+                // Show modal
+                deleteModal.show();
+            });
+        });
     }
-    document.querySelectorAll('.delete-btn').forEach(btn => btn.addEventListener('click', handleDelete));
+
+    // Confirm Delete Action
+    confirmDeleteBtn.addEventListener('click', function() {
+        // Add loading state
+        const originalHtml = this.innerHTML;
+        this.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin me-1"></i> Deleting...';
+        this.disabled = true;
+
+        fetch(deleteUrl, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Remove row
+                const row = document.getElementById('staff-row-' + deleteRowId);
+                if (row) {
+                    row.style.transition = 'all 0.3s ease';
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateX(-20px)';
+                    setTimeout(() => row.remove(), 300);
+                }
+                
+                // Close modal
+                deleteModal.hide();
+                
+                // Reset button (for next time)
+                this.innerHTML = originalHtml;
+                this.disabled = false;
+                
+                // Show success toast (or just alert)
+                setTimeout(() => {
+                    // Optional: show a small toast instead of alert
+                    const alertBox = document.createElement('div');
+                    alertBox.className = 'position-fixed top-0 end-0 m-3 alert alert-success shadow-sm rounded-3';
+                    alertBox.style.zIndex = '9999';
+                    alertBox.innerHTML = '<i class="fa-solid fa-check-circle me-2"></i> Staff deleted successfully!';
+                    document.body.appendChild(alertBox);
+                    setTimeout(() => alertBox.remove(), 3000);
+                }, 300);
+            } else {
+                alert('Error: ' + (data.message || 'Failed to delete.'));
+                this.innerHTML = originalHtml;
+                this.disabled = false;
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Something went wrong.');
+            this.innerHTML = originalHtml;
+            this.disabled = false;
+        });
+    });
+
+    // Initial listener attachment
+    attachDeleteListeners();
 });
 </script>
 @endsection

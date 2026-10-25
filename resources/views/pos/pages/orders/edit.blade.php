@@ -355,11 +355,11 @@
                                 </div>
                             </div>
                         </div>
-<<<<<<< HEAD
+
                         <div class="bill-row"><span>Tax Amount</span><span id="billTax">{{ number_format($order->tax_amount ?? $order->tax, 2) }}</span></div>
-=======
+
                         <div class="bill-row"><span>Tax Amount(GST)</span><span id="billTax">{{ number_format($order->tax_amount ?? $order->tax, 2) }}</span></div>
->>>>>>> muzamil_dev
+
                         <div class="bill-row"><span>Discount Amount</span><span id="billDiscount">{{ number_format($order->discount_amount ?? $order->discount, 2) }}</span></div>
 
                         <div class="bill-grand">

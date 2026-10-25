@@ -506,11 +506,7 @@ html, body{
                       </div>
                   </div>
               </div>
-<<<<<<< HEAD
               <div class="bill-row"><span>Tax Amount</span><span id="billTax">Rs 0.00</span></div>
-=======
-              <div class="bill-row"><span>Tax Amount(GST)</span><span id="billTax">Rs 0.00</span></div>
->>>>>>> muzamil_dev
               <div class="bill-row"><span>Discount Amount</span><span id="billDiscount">Rs 0.00</span></div>
 
               <div class="bill-grand">
@@ -540,7 +536,6 @@ html, body{
                     <button type="button" class="status-btn cancelled-btn" data-status="cancelled">
                         <i class="fa-solid fa-ban"></i>Cancelled
                     </button>
-<<<<<<< HEAD
                 </div>
                 <div class="d-flex gap-2">
                     <button type="button" class="status-btn complete-print-btn" data-status="completed">
@@ -550,23 +545,13 @@ html, body{
                         <i class="fa-solid fa-print"></i>Print
                     </button>
                 </div>
-=======
-                    <button type="button" class="status-btn complete-print-btn" data-status="completed">
-                        <i class="fa-solid fa-check"></i>Complete Order
-                    </button>
-                </div>
-                <!-- <div class="d-flex gap-2">
-                    
-                     <button type="button" class="status-btn print-btn" id="printBtn">
-                        <i class="fa-solid fa-print"></i>Print
-                    </button> 
-                </div> -->
->>>>>>> muzamil_dev
             </div>
           </div>
         </div>
       </div>
-      <div class="modal-footer bg-white border-top flex-wrap gap-2">
+      
+      <!-- ✅ FIXED MODAL FOOTER -->
+      <div class="modal-footer bg-white border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="fa-solid fa-xmark me-1"></i>Close</button>
         <button type="button" class="btn d-none" id="saveStatusBtn"
                 style="background:linear-gradient(135deg,#ff2d7a,#ff4b91);color:#fff;border:none;border-radius:10px;">

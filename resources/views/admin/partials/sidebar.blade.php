@@ -153,7 +153,7 @@
                         </a>
 
                         <a href="{{ route('admin.payroll-allowance-companies.index') }}"
-                             style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.payroll-allowance-companies.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
+                            style="display:flex; align-items:center; gap:10px; padding:8px 12px 8px 34px; border-radius:10px; transition:all 0.2s; text-decoration:none; font-size:13px; {{ request()->routeIs('admin.payroll-allowance-companies.*') ? 'background:rgba(255,45,122,0.08); color:#fff;' : 'color:#6b7280;' }}">
                             <i class="fa-solid fa-circle"
                             style="font-size:6px; {{ request()->routeIs('admin.payroll-allowance-companies.*') ? 'color:#ff2d7a;' : '' }}"></i>
                             <span>Allowance Companies</span>

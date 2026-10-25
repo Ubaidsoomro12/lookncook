@@ -155,15 +155,10 @@
   }
   .footer{
     display:flex;
-    justify-content:space-between;
+    justify-content:flex-end; /* Aligned to right since back button is gone */
     align-items:center;
     padding-top:20px;
     border-top:1px solid var(--border);
-  }
-  .back-link{
-    color:var(--muted);
-    text-decoration:underline;
-    font-size:14px;
   }
   .save-btn{
     background:var(--pink-600);
@@ -202,14 +197,13 @@
       gap:14px;
     }
     .save-btn{ width:100%; text-align:center; }
-    .back-link{ text-align:center; }
   }
 </style>
 
 <div class="card">
   <div class="header">
     <h1> Update About Form</h1>
-    <p>Keep your About section fresh â€” update the title, subtitle, description, and images anytime.</p>
+    <p>Keep your About section fresh — update the title, subtitle, description, and images anytime.</p>
   </div>
 
   <div class="body">
@@ -282,7 +276,6 @@
       </div>
 
       <div class="footer">
-        <a href="{{ route('admin.about.index') }}" class="back-link"><-- Back</a>
         <button type="submit" class="save-btn">Save Changes</button>
       </div>
 
